@@ -1,0 +1,396 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+
+.wrap { padding: 16px 0; }
+
+.tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.tab {
+  padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 500;
+  cursor: pointer; border: 1.5px solid var(--color-border-secondary);
+  color: var(--color-text-secondary); background: transparent; transition: all .18s;
+}
+.tab.active { background: #533AB7; border-color: #533AB7; color: #fff; }
+
+.legend { display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+.leg { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-secondary); }
+.dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.dot-a { background: #533AB7; }
+.dot-b { background: #0F6E56; }
+.dot-s { background: #B05B0A; }
+
+.day-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+
+.day-card {
+  border: 1px solid var(--color-border-tertiary);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.day-header {
+  padding: 12px 16px;
+  background: var(--color-background-secondary);
+  display: flex; justify-content: space-between; align-items: center;
+  cursor: pointer;
+}
+
+.day-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+.day-focus { font-size: 12px; color: var(--color-text-secondary); }
+.day-toggle { font-size: 11px; color: var(--color-text-tertiary); }
+
+.day-body { padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height .3s ease, padding .2s; }
+.day-body.open { max-height: 900px; padding: 14px 16px; }
+
+.ex-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--color-border-tertiary);
+  align-items: start;
+}
+.ex-row:last-child { border-bottom: none; }
+
+.ex-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+.ex-note { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+
+.pill {
+  font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 500;
+  display: inline-block; white-space: nowrap;
+}
+.pill-a { background: #EEEDFE; color: #3C3489; }
+.pill-b { background: #E1F5EE; color: #085041; }
+.pill-s { background: #FAEEDA; color: #633806; }
+
+.col-label { font-size: 10px; color: var(--color-text-tertiary); margin-bottom: 3px; }
+
+.tip-box {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--color-background-secondary);
+  border-left: 3px solid #533AB7;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
+.rule-card {
+  padding: 12px; border-radius: 10px;
+  border: 1px solid var(--color-border-tertiary);
+}
+.rule-title { font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--color-text-primary); }
+.rule-item { font-size: 12px; color: var(--color-text-secondary); line-height: 1.7; }
+
+@media (max-width: 480px) {
+  .rules-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="wrap">
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('week')">Weekly plan</button>
+    <button class="tab" onclick="showTab('prog')">Progressions</button>
+    <button class="tab" onclick="showTab('rules')">Partnership rules</button>
+  </div>
+
+  <div class="legend">
+    <div class="leg"><div class="dot dot-a"></div>71 kg (intermediate)</div>
+    <div class="leg"><div class="dot dot-b"></div>100 kg (beast)</div>
+    <div class="leg"><div class="dot dot-s"></div>Shared / together</div>
+  </div>
+
+  <!-- WEEK TAB -->
+  <div id="tab-week" class="day-grid">
+
+    <div class="day-card">
+      <div class="day-header" onclick="toggle(this)">
+        <div><div class="day-title">Day 1 — Push strength</div><div class="day-focus">Chest · shoulders · triceps</div></div>
+        <span class="day-toggle">▾</span>
+      </div>
+      <div class="day-body open">
+        <div class="ex-row">
+          <div><div class="ex-name">Warm-up</div><div class="ex-note">Band dislocates, wrist circles, 10 pike push-ups</div></div>
+          <div><div class="col-label">71 kg</div><span class="pill pill-s">Same</span></div>
+          <div><div class="col-label">100 kg</div><span class="pill pill-s">Same</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Push-ups (paused)</div><div class="ex-note">2-sec hold at bottom, full ROM</div></div>
+          <div><span class="pill pill-a">4×8 → 4×12</span></div>
+          <div><span class="pill pill-b">4×20 or weighted</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Pike push-up / HSPU</div><div class="ex-note">Kick into wall, hold for reps</div></div>
+          <div><span class="pill pill-a">3×5 pike PU</span></div>
+          <div><span class="pill pill-b">3×8 wall HSPU</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Dips (bars or rings)</div><div class="ex-note">Lean forward for chest focus</div></div>
+          <div><span class="pill pill-a">3×6 bars</span></div>
+          <div><span class="pill pill-b">3×10 rings</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Wall handstand hold</div><div class="ex-note">Both work this together</div></div>
+          <div><span class="pill pill-s">3×20–30 sec</span></div>
+          <div><span class="pill pill-s">3×30–60 sec</span></div>
+        </div>
+        <div class="tip-box">💡 Train together here: 71 kg rests while 100 kg goes, and vice versa. This naturally scales rest to effort.</div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header" onclick="toggle(this)">
+        <div><div class="day-title">Day 2 — Pull strength</div><div class="day-focus">Back · biceps · rear delts</div></div>
+        <span class="day-toggle">▾</span>
+      </div>
+      <div class="day-body">
+        <div class="ex-row">
+          <div><div class="ex-name">Dead hang + scapular pulls</div><div class="ex-note">Foundation for everyone</div></div>
+          <div><span class="pill pill-s">3×10 scap + 30s hang</span></div>
+          <div><span class="pill pill-s">Same</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Pull-ups (full ROM)</div><div class="ex-note">Dead stop at bottom, chin over bar</div></div>
+          <div><span class="pill pill-a">4×3–5 (add 1/week)</span></div>
+          <div><span class="pill pill-b">4×8–12</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Negative pull-ups</div><div class="ex-note">5-sec lowering</div></div>
+          <div><span class="pill pill-a">3×5</span></div>
+          <div><span class="pill pill-b">Skip / weighted</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Australian rows</div><div class="ex-note">Feet elevated for 100 kg</div></div>
+          <div><span class="pill pill-a">3×12 flat</span></div>
+          <div><span class="pill pill-b">3×10 feet elevated</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Towel face pull (band/rings)</div><div class="ex-note">Rear delt + external rotation</div></div>
+          <div><span class="pill pill-s">3×15</span></div>
+          <div><span class="pill pill-s">3×15</span></div>
+        </div>
+        <div class="tip-box">💡 71 kg: focus on a perfect slow rep over speed. 100 kg: add pauses mid-rep or L-sit pull-ups for extra stimulus.</div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header" onclick="toggle(this)">
+        <div><div class="day-title">Day 3 — Core + skill day</div><div class="day-focus">Abs · balance · handstand work</div></div>
+        <span class="day-toggle">▾</span>
+      </div>
+      <div class="day-body">
+        <div class="ex-row">
+          <div><div class="ex-name">Hollow body hold</div><div class="ex-note">Ribcage down, lower back flat</div></div>
+          <div><span class="pill pill-a">3×20 sec</span></div>
+          <div><span class="pill pill-b">3×40 sec</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">L-sit (floor / bars)</div><div class="ex-note">Tuck → tucked L → full L</div></div>
+          <div><span class="pill pill-a">3×10 sec tuck</span></div>
+          <div><span class="pill pill-b">3×15 sec full L</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Handstand kick-up + hold</div><div class="ex-note">Wall assisted</div></div>
+          <div><span class="pill pill-s">5 min practice</span></div>
+          <div><span class="pill pill-s">5 min freestanding</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Dragon flag negatives</div><div class="ex-note">4-sec lowering</div></div>
+          <div><span class="pill pill-a">3×3</span></div>
+          <div><span class="pill pill-b">3×6</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Jefferson curls</div><div class="ex-note">Mobility + hamstrings, light</div></div>
+          <div><span class="pill pill-s">3×8 bodyweight</span></div>
+          <div><span class="pill pill-s">3×8 light load</span></div>
+        </div>
+        <div class="tip-box">💡 This is a great day to train together — both are skill-building, rest is the same. Use this day to coach each other.</div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header" onclick="toggle(this)">
+        <div><div class="day-title">Day 4 — Legs + hinge</div><div class="day-focus">Glutes · hamstrings · explosives</div></div>
+        <span class="day-toggle">▾</span>
+      </div>
+      <div class="day-body">
+        <div class="ex-row">
+          <div><div class="ex-name">Pistol squat progression</div><div class="ex-note">Box pistol → assisted → full</div></div>
+          <div><span class="pill pill-a">3×5 box pistol</span></div>
+          <div><span class="pill pill-b">3×8 full pistol</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Nordic hamstring curl</div><div class="ex-note">Eccentric-focused</div></div>
+          <div><span class="pill pill-a">3×4 negative</span></div>
+          <div><span class="pill pill-b">3×6 full</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Bulgarian split squat</div><div class="ex-note">Rear foot elevated</div></div>
+          <div><span class="pill pill-a">3×8/side</span></div>
+          <div><span class="pill pill-b">3×10/side weighted</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Box jumps / broad jumps</div><div class="ex-note">Explosive power</div></div>
+          <div><span class="pill pill-s">3×5</span></div>
+          <div><span class="pill pill-s">3×5 max effort</span></div>
+        </div>
+        <div class="tip-box">💡 100 kg: weighted vest or dumbbell on split squats turns this into a genuine strength session. 71 kg: stay bodyweight and nail form.</div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header" onclick="toggle(this)">
+        <div><div class="day-title">Day 5 — Full body power + conditioning</div><div class="day-focus">Compound combos · circuits</div></div>
+        <span class="day-toggle">▾</span>
+      </div>
+      <div class="day-body">
+        <div class="ex-row">
+          <div><div class="ex-name">Muscle-up practice</div><div class="ex-note">Kipping for 71 kg, strict for 100 kg</div></div>
+          <div><span class="pill pill-a">5×2 kipping attempt</span></div>
+          <div><span class="pill pill-b">4×5 strict muscle-up</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Burpee pull-up combo</div><div class="ex-note">Max quality reps</div></div>
+          <div><span class="pill pill-a">3×5</span></div>
+          <div><span class="pill pill-b">3×8</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Push-up → planche lean</div><div class="ex-note">Hold 3-sec lean at top</div></div>
+          <div><span class="pill pill-a">3×6 +lean</span></div>
+          <div><span class="pill pill-b">3×10 +lean</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">AMRAP finisher (10 min)</div><div class="ex-note">5 pull + 10 push + 15 squat</div></div>
+          <div><span class="pill pill-a">AMRAP at 70% effort</span></div>
+          <div><span class="pill pill-b">AMRAP at 85% effort</span></div>
+        </div>
+        <div class="tip-box">💡 Best day to train as a true team — the AMRAP can be done side by side. 71 kg does the version above, 100 kg adds a ring row or weighted vest. Score each other.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PROGRESSIONS TAB -->
+  <div id="tab-prog" class="day-grid" style="display:none">
+    <div class="day-card">
+      <div class="day-header" onclick="toggle(this)">
+        <div><div class="day-title">71 kg — 8-week milestones</div><div class="day-focus">From intermediate to advanced</div></div>
+        <span class="day-toggle">▾</span>
+      </div>
+      <div class="day-body open">
+        <div class="ex-row">
+          <div><div class="ex-name">Weeks 1–2</div><div class="ex-note">Establish baseline. Paused reps, clean ROM</div></div>
+          <div><span class="pill pill-a">4 pull-ups</span></div>
+          <div><span class="pill pill-a">30 push-ups</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Weeks 3–4</div><div class="ex-note">Add 1 pull-up per set. Weighted push-up attempts</div></div>
+          <div><span class="pill pill-a">6 pull-ups</span></div>
+          <div><span class="pill pill-a">35 push-ups</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Weeks 5–6</div><div class="ex-note">Ring rows. L-sit attempt. Wall HS → freestanding kick</div></div>
+          <div><span class="pill pill-a">8 pull-ups</span></div>
+          <div><span class="pill pill-a">Wall HS 30s</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Weeks 7–8</div><div class="ex-note">Kipping muscle-up drill. Dragon flag full neg. HS kick + hold</div></div>
+          <div><span class="pill pill-a">10 pull-ups</span></div>
+          <div><span class="pill pill-a">First muscle-up</span></div>
+        </div>
+        <div class="tip-box">Key unlock: once pull-ups hit 8 clean reps, start muscle-up transition drills. The 100 kg can coach the technique here.</div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header" onclick="toggle(this)">
+        <div><div class="day-title">100 kg — 8-week targets</div><div class="day-focus">Stay sharp, add complexity</div></div>
+        <span class="day-toggle">▾</span>
+      </div>
+      <div class="day-body">
+        <div class="ex-row">
+          <div><div class="ex-name">Weeks 1–2</div><div class="ex-note">Audit movement quality, add pauses</div></div>
+          <div><span class="pill pill-b">Strict form baseline</span></div>
+          <div><span class="pill pill-b">Temp reduce volume 10%</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Weeks 3–4</div><div class="ex-note">Weighted pull-ups, ring dips, planche leans</div></div>
+          <div><span class="pill pill-b">+10kg pull-ups</span></div>
+          <div><span class="pill pill-b">Ring HSPU attempt</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Weeks 5–6</div><div class="ex-note">Freestanding HS, straddle planche lean, weighted pistols</div></div>
+          <div><span class="pill pill-b">Freestanding HS 5s</span></div>
+          <div><span class="pill pill-b">Straddle planche lean</span></div>
+        </div>
+        <div class="ex-row">
+          <div><div class="ex-name">Weeks 7–8</div><div class="ex-note">Front lever tuck hold, ring muscle-up, full L-sit pull-up</div></div>
+          <div><span class="pill pill-b">Front lever tuck 5s</span></div>
+          <div><span class="pill pill-b">L-sit pull-ups</span></div>
+        </div>
+        <div class="tip-box">Key challenge: at 100 kg, skill moves are harder by bodyweight. Ring work and weighted pull-ups keep the stimulus high without needing a bar skill to progress.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RULES TAB -->
+  <div id="tab-rules" style="display:none">
+    <div class="rules-grid">
+      <div class="rule-card">
+        <div class="rule-title" style="color:#533AB7">Partner system</div>
+        <div class="rule-item">
+          • One goes, one rests — natural load balance<br>
+          • 100 kg coaches pull-up form on 71 kg's sets<br>
+          • 71 kg times holds and counts reps for 100 kg<br>
+          • No ego lifting — finish your reps, don't rush
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title" style="color:#0F6E56">Programming logic</div>
+        <div class="rule-item">
+          • Same movement, scaled reps/variant<br>
+          • 5 days on, 2 days off (Sat/Sun rest)<br>
+          • Deload week every 4th week (–30% volume)<br>
+          • Skill days = always train together
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title" style="color:#B05B0A">Nutrition reminder</div>
+        <div class="rule-item">
+          • 71 kg: slight surplus if gaining, ~2.2g protein/kg<br>
+          • 100 kg: maintenance or slight cut, 2.4g protein/kg<br>
+          • Both: eat within 1hr post-session<br>
+          • Sleep 7–9h — most gains happen here
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title" style="color:#3C3489">When to diverge</div>
+        <div class="rule-item">
+          • 100 kg adds rings/weighted vest when bodyweight feels easy<br>
+          • 71 kg reduces sets (not reps) if form breaks<br>
+          • If 71 kg gets 10+ pull-ups: join 100 kg's track<br>
+          • Adjust every 4 weeks based on progress
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(name) {
+  ['week','prog','rules'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===name ? '' : 'none';
+  });
+  document.querySelectorAll('.tab').forEach((btn,i) => {
+    btn.classList.toggle('active', ['week','prog','rules'][i]===name);
+  });
+}
+function toggle(header) {
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('.day-toggle');
+  body.classList.toggle('open');
+  arrow.textContent = body.classList.contains('open') ? '▴' : '▾';
+}
+</script>
