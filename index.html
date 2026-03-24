@@ -1,396 +1,790 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calisthenics Dual Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
+:root {
+  --purple: #6C3FF5;
+  --teal: #00C48C;
+  --amber: #FF9E2C;
+  --bg: #0D0D14;
+  --surface: #16161F;
+  --surface2: #1E1E2A;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #F0EFF8;
+  --muted: rgba(240,239,248,0.55);
+  --faint: rgba(240,239,248,0.22);
+  --font-d: 'Barlow Condensed', sans-serif;
+  --font-b: 'DM Sans', sans-serif;
+  --r: 14px;
+  --r-sm: 8px;
+}
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font-sans); }
+body { font-family: var(--font-b); background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 3rem; }
 
-.wrap { padding: 16px 0; }
+/* HERO */
+.hero { background: linear-gradient(135deg, #1A0A3D 0%, #0D1A2E 50%, #0A1F1A 100%); padding: 2.5rem 1.25rem 2rem; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(108,63,245,0.35) 0%, transparent 70%); }
+.hero::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgba(0,196,140,0.2) 0%, transparent 70%); }
+.hero-label { font-family: var(--font-d); font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--teal); margin-bottom: 10px; position: relative; z-index: 1; }
+.hero-title { font-family: var(--font-d); font-size: clamp(36px, 10vw, 58px); font-weight: 800; line-height: 0.95; letter-spacing: -1px; text-transform: uppercase; position: relative; z-index: 1; margin-bottom: 16px; }
+.hero-title span { color: var(--purple); }
+.athletes { display: flex; gap: 10px; flex-wrap: wrap; position: relative; z-index: 1; margin-top: 20px; }
+.athlete-badge { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 50px; border: 1px solid; backdrop-filter: blur(8px); }
+.athlete-badge.a { background: rgba(108,63,245,0.15); border-color: rgba(108,63,245,0.4); }
+.athlete-badge.b { background: rgba(0,196,140,0.1); border-color: rgba(0,196,140,0.4); }
+.badge-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-d); font-weight: 800; font-size: 12px; }
+.badge-dot.a { background: var(--purple); color: #fff; }
+.badge-dot.b { background: var(--teal); color: #0a1f1a; }
+.badge-info { line-height: 1.2; }
+.badge-weight { font-family: var(--font-d); font-weight: 700; font-size: 18px; letter-spacing: -0.5px; }
+.badge-level { font-size: 11px; color: var(--muted); }
 
-.tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-.tab {
-  padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 500;
-  cursor: pointer; border: 1.5px solid var(--color-border-secondary);
-  color: var(--color-text-secondary); background: transparent; transition: all .18s;
-}
-.tab.active { background: #533AB7; border-color: #533AB7; color: #fff; }
+/* TABS */
+.tabs-wrap { padding: 0 1.25rem; position: sticky; top: 0; z-index: 100; background: var(--bg); border-bottom: 1px solid var(--border); padding-top: 12px; }
+.tabs { display: flex; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { font-family: var(--font-d); font-size: 13px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 10px 14px; border: none; background: transparent; color: var(--muted); cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; transition: all 0.2s; }
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--text); border-bottom-color: var(--purple); }
 
-.legend { display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
-.leg { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-secondary); }
-.dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-.dot-a { background: #533AB7; }
-.dot-b { background: #0F6E56; }
-.dot-s { background: #B05B0A; }
+/* CONTENT */
+.content { padding: 1.5rem 1.25rem 0; }
 
-.day-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+/* ── WORKOUT PLAN STYLES ── */
+.day-grid { display: grid; gap: 12px; }
+.day-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; transition: border-color 0.2s; }
+.day-card:hover { border-color: var(--border2); }
+.day-header { padding: 14px 16px; cursor: pointer; display: flex; align-items: center; gap: 12px; user-select: none; }
+.day-num { font-family: var(--font-d); font-weight: 800; font-size: 32px; line-height: 1; color: var(--purple); min-width: 36px; opacity: 0.9; }
+.day-info { flex: 1; min-width: 0; }
+.day-title { font-family: var(--font-d); font-weight: 700; font-size: 17px; letter-spacing: 0.3px; text-transform: uppercase; color: var(--text); line-height: 1.1; }
+.day-focus { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.toggle-btn { width: 28px; height: 28px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--muted); flex-shrink: 0; transition: all 0.2s; }
+.day-card.open .toggle-btn { background: var(--purple); color: #fff; }
+.day-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+.day-body.open { max-height: 2000px; }
+.col-headers { display: grid; grid-template-columns: 1fr 90px 90px; gap: 6px; padding: 0 16px 8px; border-bottom: 1px solid var(--border); }
+.col-hd { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--faint); }
+.col-hd:not(:first-child) { text-align: center; }
+.col-hd.col-a { color: rgba(108,63,245,0.7); }
+.col-hd.col-b { color: rgba(0,196,140,0.7); }
+.ex-row { display: grid; grid-template-columns: 1fr 90px 90px; gap: 6px; padding: 11px 16px; border-bottom: 1px solid var(--border); align-items: center; }
+.ex-row:last-of-type { border-bottom: none; }
+.ex-name { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.2; }
+.ex-note { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+.pill-wrap { display: flex; justify-content: center; }
+.pill { font-family: var(--font-d); font-size: 11px; font-weight: 700; letter-spacing: 0.3px; padding: 4px 9px; border-radius: 20px; white-space: nowrap; text-align: center; display: inline-block; }
+.pill-a { background: rgba(108,63,245,0.15); color: #B69EFF; border: 1px solid rgba(108,63,245,0.3); }
+.pill-b { background: rgba(0,196,140,0.12); color: #4DDEB8; border: 1px solid rgba(0,196,140,0.3); }
+.pill-s { background: rgba(255,158,44,0.12); color: #FFBC6E; border: 1px solid rgba(255,158,44,0.3); }
+.tip-box { margin: 0 16px 14px; padding: 10px 12px; border-radius: var(--r-sm); background: rgba(108,63,245,0.08); border-left: 3px solid var(--purple); font-size: 12px; color: var(--muted); line-height: 1.6; }
 
-.day-card {
-  border: 1px solid var(--color-border-tertiary);
-  border-radius: 12px;
-  overflow: hidden;
-}
+/* PROGRESSION CARDS */
+.prog-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+.prog-header { padding: 14px 16px 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+.prog-header-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: var(--font-d); font-weight: 800; font-size: 15px; flex-shrink: 0; }
+.prog-header-icon.a { background: rgba(108,63,245,0.2); color: #B69EFF; }
+.prog-header-icon.b { background: rgba(0,196,140,0.15); color: #4DDEB8; }
+.prog-info { flex: 1; }
+.prog-title { font-family: var(--font-d); font-weight: 700; font-size: 16px; text-transform: uppercase; letter-spacing: 0.3px; }
+.prog-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.week-row { padding: 12px 16px; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 80px 1fr; gap: 12px; align-items: start; }
+.week-row:last-child { border-bottom: none; }
+.week-label { font-family: var(--font-d); font-weight: 700; font-size: 13px; color: var(--purple); padding-top: 2px; }
+.week-note { font-size: 12px; color: var(--muted); line-height: 1.5; margin-bottom: 6px; }
+.week-pills { display: flex; gap: 6px; flex-wrap: wrap; }
 
-.day-header {
-  padding: 12px 16px;
-  background: var(--color-background-secondary);
-  display: flex; justify-content: space-between; align-items: center;
-  cursor: pointer;
-}
+/* RULES */
+.rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media(max-width:480px) { .rules-grid { grid-template-columns: 1fr; } }
+.rule-card { padding: 14px; border-radius: var(--r); border: 1px solid var(--border); background: var(--surface); }
+.rule-icon { font-size: 18px; margin-bottom: 10px; display: block; }
+.rule-title { font-family: var(--font-d); font-weight: 700; font-size: 15px; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 10px; }
+.rule-item { font-size: 12.5px; color: var(--muted); line-height: 1.75; list-style: none; }
+.rule-item li { padding-left: 14px; position: relative; margin-bottom: 2px; }
+.rule-item li::before { content: '—'; position: absolute; left: 0; color: var(--faint); }
 
-.day-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
-.day-focus { font-size: 12px; color: var(--color-text-secondary); }
-.day-toggle { font-size: 11px; color: var(--color-text-tertiary); }
+/* LEGEND */
+.legend { display: flex; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
+.leg { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); }
+.leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-.day-body { padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height .3s ease, padding .2s; }
-.day-body.open { max-height: 900px; padding: 14px 16px; }
+/* ── PROGRESS TRACKER STYLES ── */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+@media(max-width:500px) { .stats-row { grid-template-columns: repeat(2,1fr); } }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 14px; }
+.stat-label { font-size: 11px; color: var(--muted); letter-spacing: 0.5px; margin-bottom: 6px; }
+.stat-val { font-family: var(--font-d); font-size: 28px; font-weight: 800; line-height: 1; }
+.stat-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.athlete-toggle { display: flex; gap: 8px; margin-bottom: 20px; }
+.ath-btn { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font-family: var(--font-d); font-size: 15px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
+.ath-btn.active-a { background: rgba(108,63,245,0.15); border-color: rgba(108,63,245,0.4); color: #B69EFF; }
+.ath-btn.active-b { background: rgba(0,196,140,0.12); border-color: rgba(0,196,140,0.4); color: #4DDEB8; }
+.chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; margin-bottom: 20px; }
+.section-title { font-family: var(--font-d); font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+.chart-inner { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.chart-canvas-wrap { position: relative; width: 160px; height: 160px; flex-shrink: 0; }
+.chart-legend { flex: 1; min-width: 140px; display: flex; flex-direction: column; gap: 10px; }
+.legend-item { display: flex; align-items: center; gap: 10px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.legend-text { flex: 1; font-size: 13px; color: var(--muted); }
+.legend-val { font-family: var(--font-d); font-size: 15px; font-weight: 700; }
+.week-tracker { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; margin-bottom: 20px; }
+.week-days { display: grid; grid-template-columns: repeat(7,1fr); gap: 6px; margin-top: 12px; }
+.day-dot { aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 3px; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); transition: all 0.18s; }
+.day-dot:hover { border-color: var(--border2); }
+.day-dot.done { background: rgba(0,196,140,0.15); border-color: rgba(0,196,140,0.4); }
+.day-dot.today { border-color: var(--purple); box-shadow: 0 0 0 1px rgba(108,63,245,0.3); }
+.day-name { font-family: var(--font-d); font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.5px; }
+.day-dot.done .day-name { color: #4DDEB8; }
 
-.ex-row {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: 8px;
-  padding: 9px 0;
-  border-bottom: 1px solid var(--color-border-tertiary);
-  align-items: start;
-}
-.ex-row:last-child { border-bottom: none; }
+/* CHECKLIST */
+.checklist-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; margin-bottom: 14px; }
+.checklist-header { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.checklist-title { font-family: var(--font-d); font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+.progress-pill { font-family: var(--font-d); font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 20px; background: rgba(108,63,245,0.12); color: #B69EFF; border: 1px solid rgba(108,63,245,0.3); }
+.check-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; user-select: none; }
+.check-item:last-child { border-bottom: none; }
+.check-item:hover { background: rgba(255,255,255,0.02); }
+.check-item.done .check-text { color: var(--faint); text-decoration: line-through; }
+.check-item.done .check-note { opacity: 0.4; }
+.check-box { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; transition: all 0.18s; }
+.check-item.done .check-box { background: var(--teal); border-color: var(--teal); }
+.check-tick { width: 10px; height: 7px; border-left: 2px solid #0a1f1a; border-bottom: 2px solid #0a1f1a; transform: rotate(-45deg) translateY(-1px); opacity: 0; transition: opacity 0.15s; }
+.check-item.done .check-tick { opacity: 1; }
+.check-body { flex: 1; min-width: 0; }
+.check-text { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; transition: color 0.2s; }
+.check-note { font-size: 11px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+.check-tag { font-family: var(--font-d); font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; margin-left: 6px; letter-spacing: 0.3px; vertical-align: middle; }
+.tag-skill { background: rgba(108,63,245,0.15); color: #B69EFF; }
+.tag-strength { background: rgba(0,196,140,0.12); color: #4DDEB8; }
+.tag-core { background: rgba(255,158,44,0.12); color: #FFBC6E; }
 
-.ex-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
-.ex-note { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+/* LOG */
+.log-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; margin-bottom: 20px; }
+.log-entry { display: flex; gap: 14px; padding: 12px 16px; border-bottom: 1px solid var(--border); align-items: flex-start; }
+.log-entry:last-child { border-bottom: none; }
+.log-date { font-family: var(--font-d); font-size: 11px; font-weight: 700; color: var(--muted); min-width: 44px; padding-top: 2px; line-height: 1.3; text-align: center; }
+.log-line { width: 1px; background: var(--border); align-self: stretch; margin: 0 2px; flex-shrink: 0; }
+.log-body { flex: 1; }
+.log-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.log-note { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.log-badge { font-family: var(--font-d); font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 20px; margin-top: 6px; display: inline-block; }
+.badge-pr { background: rgba(108,63,245,0.15); color: #B69EFF; border: 1px solid rgba(108,63,245,0.3); }
+.badge-note { background: rgba(255,158,44,0.12); color: #FFBC6E; border: 1px solid rgba(255,158,44,0.3); }
+.badge-win { background: rgba(0,196,140,0.12); color: #4DDEB8; border: 1px solid rgba(0,196,140,0.3); }
+.add-log { padding: 14px 16px; border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.add-log input { flex: 1; min-width: 140px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text); font-family: var(--font-b); font-size: 13px; outline: none; }
+.add-log input::placeholder { color: var(--faint); }
+.add-log input:focus { border-color: rgba(108,63,245,0.5); }
+.add-log select { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; color: var(--muted); font-family: var(--font-b); font-size: 12px; outline: none; cursor: pointer; }
+.add-log button { background: var(--purple); border: none; border-radius: 8px; padding: 8px 16px; color: #fff; font-family: var(--font-d); font-size: 13px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; transition: opacity 0.18s; flex-shrink: 0; }
+.add-log button:hover { opacity: 0.85; }
+.tip-card { background: linear-gradient(135deg, rgba(108,63,245,0.08), rgba(0,196,140,0.05)); border: 1px solid rgba(108,63,245,0.2); border-radius: var(--r); padding: 14px 16px; margin-bottom: 14px; }
+.tip-row { display: flex; gap: 10px; align-items: flex-start; }
+.tip-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.tip-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.tip-text strong { color: var(--text); font-weight: 600; }
 
-.pill {
-  font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 500;
-  display: inline-block; white-space: nowrap;
-}
-.pill-a { background: #EEEDFE; color: #3C3489; }
-.pill-b { background: #E1F5EE; color: #085041; }
-.pill-s { background: #FAEEDA; color: #633806; }
-
-.col-label { font-size: 10px; color: var(--color-text-tertiary); margin-bottom: 3px; }
-
-.tip-box {
-  margin-top: 12px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  background: var(--color-background-secondary);
-  border-left: 3px solid #533AB7;
-  font-size: 12px;
-  color: var(--color-text-secondary);
-  line-height: 1.6;
-}
-
-.rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
-.rule-card {
-  padding: 12px; border-radius: 10px;
-  border: 1px solid var(--color-border-tertiary);
-}
-.rule-title { font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--color-text-primary); }
-.rule-item { font-size: 12px; color: var(--color-text-secondary); line-height: 1.7; }
-
-@media (max-width: 480px) {
-  .rules-grid { grid-template-columns: 1fr; }
+@media(max-width:400px) {
+  .ex-row { grid-template-columns: 1fr; gap: 8px; }
+  .col-headers { display: none; }
+  .pill-wrap { justify-content: flex-start; }
+  .week-row { grid-template-columns: 1fr; gap: 4px; }
 }
 </style>
+</head>
+<body>
 
-<div class="wrap">
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">8-Week Program</div>
+  <div class="hero-title">Cali<span>STHENICS</span><br>Dual Plan</div>
+  <div class="athletes">
+    <div class="athlete-badge a">
+      <div class="badge-dot a">71</div>
+      <div class="badge-info"><div class="badge-weight">71 kg</div><div class="badge-level">Intermediate</div></div>
+    </div>
+    <div class="athlete-badge b">
+      <div class="badge-dot b">100</div>
+      <div class="badge-info"><div class="badge-weight">100 kg</div><div class="badge-level">Beast Mode</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
   <div class="tabs">
-    <button class="tab active" onclick="showTab('week')">Weekly plan</button>
-    <button class="tab" onclick="showTab('prog')">Progressions</button>
-    <button class="tab" onclick="showTab('rules')">Partnership rules</button>
+    <button class="tab active" onclick="showTab('week',this)">Weekly Plan</button>
+    <button class="tab" onclick="showTab('prog',this)">Progressions</button>
+    <button class="tab" onclick="showTab('rules',this)">Partnership Rules</button>
+    <button class="tab" onclick="showTab('overview',this)">📊 Progress</button>
+    <button class="tab" onclick="showTab('checklist',this)">✅ Checklist</button>
+    <button class="tab" onclick="showTab('log',this)">📝 Log</button>
   </div>
+</div>
 
+<div class="content">
+
+<!-- ══════════════════════════════════════
+     TAB 1: WEEKLY PLAN
+══════════════════════════════════════ -->
+<div id="tab-week">
   <div class="legend">
-    <div class="leg"><div class="dot dot-a"></div>71 kg (intermediate)</div>
-    <div class="leg"><div class="dot dot-b"></div>100 kg (beast)</div>
-    <div class="leg"><div class="dot dot-s"></div>Shared / together</div>
+    <div class="leg"><div class="leg-dot" style="background:#B69EFF"></div>71 kg (intermediate)</div>
+    <div class="leg"><div class="leg-dot" style="background:#4DDEB8"></div>100 kg (beast)</div>
+    <div class="leg"><div class="leg-dot" style="background:#FFBC6E"></div>Shared / together</div>
   </div>
+  <div class="day-grid">
 
-  <!-- WEEK TAB -->
-  <div id="tab-week" class="day-grid">
-
-    <div class="day-card">
-      <div class="day-header" onclick="toggle(this)">
-        <div><div class="day-title">Day 1 — Push strength</div><div class="day-focus">Chest · shoulders · triceps</div></div>
-        <span class="day-toggle">▾</span>
+    <!-- DAY 1 -->
+    <div class="day-card open" id="dc-1">
+      <div class="day-header" onclick="toggleDay('dc-1')">
+        <div class="day-num">01</div>
+        <div class="day-info"><div class="day-title">Push Strength</div><div class="day-focus">Chest · Shoulders · Triceps</div></div>
+        <div class="toggle-btn">▴</div>
       </div>
       <div class="day-body open">
+        <div class="col-headers"><div class="col-hd">Exercise</div><div class="col-hd col-a">71 kg</div><div class="col-hd col-b">100 kg</div></div>
         <div class="ex-row">
           <div><div class="ex-name">Warm-up</div><div class="ex-note">Band dislocates, wrist circles, 10 pike push-ups</div></div>
-          <div><div class="col-label">71 kg</div><span class="pill pill-s">Same</span></div>
-          <div><div class="col-label">100 kg</div><span class="pill pill-s">Same</span></div>
+          <div class="pill-wrap"><span class="pill pill-s">Same</span></div>
+          <div class="pill-wrap"><span class="pill pill-s">Same</span></div>
         </div>
         <div class="ex-row">
           <div><div class="ex-name">Push-ups (paused)</div><div class="ex-note">2-sec hold at bottom, full ROM</div></div>
-          <div><span class="pill pill-a">4×8 → 4×12</span></div>
-          <div><span class="pill pill-b">4×20 or weighted</span></div>
+          <div class="pill-wrap"><span class="pill pill-a">4×8 → 4×12</span></div>
+          <div class="pill-wrap"><span class="pill pill-b">4×20 or weighted</span></div>
         </div>
         <div class="ex-row">
           <div><div class="ex-name">Pike push-up / HSPU</div><div class="ex-note">Kick into wall, hold for reps</div></div>
-          <div><span class="pill pill-a">3×5 pike PU</span></div>
-          <div><span class="pill pill-b">3×8 wall HSPU</span></div>
+          <div class="pill-wrap"><span class="pill pill-a">3×5 pike PU</span></div>
+          <div class="pill-wrap"><span class="pill pill-b">3×8 wall HSPU</span></div>
         </div>
         <div class="ex-row">
           <div><div class="ex-name">Dips (bars or rings)</div><div class="ex-note">Lean forward for chest focus</div></div>
-          <div><span class="pill pill-a">3×6 bars</span></div>
-          <div><span class="pill pill-b">3×10 rings</span></div>
+          <div class="pill-wrap"><span class="pill pill-a">3×6 bars</span></div>
+          <div class="pill-wrap"><span class="pill pill-b">3×10 rings</span></div>
         </div>
         <div class="ex-row">
           <div><div class="ex-name">Wall handstand hold</div><div class="ex-note">Both work this together</div></div>
-          <div><span class="pill pill-s">3×20–30 sec</span></div>
-          <div><span class="pill pill-s">3×30–60 sec</span></div>
+          <div class="pill-wrap"><span class="pill pill-s">3×20–30s</span></div>
+          <div class="pill-wrap"><span class="pill pill-s">3×30–60s</span></div>
         </div>
         <div class="tip-box">💡 Train together here: 71 kg rests while 100 kg goes, and vice versa. This naturally scales rest to effort.</div>
       </div>
     </div>
 
-    <div class="day-card">
-      <div class="day-header" onclick="toggle(this)">
-        <div><div class="day-title">Day 2 — Pull strength</div><div class="day-focus">Back · biceps · rear delts</div></div>
-        <span class="day-toggle">▾</span>
+    <!-- DAY 2 -->
+    <div class="day-card" id="dc-2">
+      <div class="day-header" onclick="toggleDay('dc-2')">
+        <div class="day-num">02</div>
+        <div class="day-info"><div class="day-title">Pull Strength</div><div class="day-focus">Back · Biceps · Rear Delts</div></div>
+        <div class="toggle-btn">▾</div>
       </div>
       <div class="day-body">
+        <div class="col-headers"><div class="col-hd">Exercise</div><div class="col-hd col-a">71 kg</div><div class="col-hd col-b">100 kg</div></div>
         <div class="ex-row">
           <div><div class="ex-name">Dead hang + scapular pulls</div><div class="ex-note">Foundation for everyone</div></div>
-          <div><span class="pill pill-s">3×10 scap + 30s hang</span></div>
-          <div><span class="pill pill-s">Same</span></div>
+          <div class="pill-wrap"><span class="pill pill-s">3×10 + 30s</span></div>
+          <div class="pill-wrap"><span class="pill pill-s">Same</span></div>
         </div>
         <div class="ex-row">
           <div><div class="ex-name">Pull-ups (full ROM)</div><div class="ex-note">Dead stop at bottom, chin over bar</div></div>
-          <div><span class="pill pill-a">4×3–5 (add 1/week)</span></div>
-          <div><span class="pill pill-b">4×8–12</span></div>
+          <div class="pill-wrap"><span class="pill pill-a">4×3–5</span></div>
+          <div class="pill-wrap"><span class="pill pill-b">4×8–12</span></div>
         </div>
         <div class="ex-row">
           <div><div class="ex-name">Negative pull-ups</div><div class="ex-note">5-sec lowering</div></div>
-          <div><span class="pill pill-a">3×5</span></div>
-          <div><span class="pill pill-b">Skip / weighted</span></div>
+          <div class="pill-wrap"><span class="pill pill-a">3×5</span></div>
+          <div class="pill-wrap"><span class="pill pill-b">Skip / weighted</span></div>
         </div>
         <div class="ex-row">
           <div><div class="ex-name">Australian rows</div><div class="ex-note">Feet elevated for 100 kg</div></div>
-          <div><span class="pill pill-a">3×12 flat</span></div>
-          <div><span class="pill pill-b">3×10 feet elevated</span></div>
+          <div class="pill-wrap"><span class="pill pill-a">3×12 flat</span></div>
+          <div class="pill-wrap"><span class="pill pill-b">3×10 elevated</span></div>
         </div>
         <div class="ex-row">
           <div><div class="ex-name">Towel face pull (band/rings)</div><div class="ex-note">Rear delt + external rotation</div></div>
-          <div><span class="pill pill-s">3×15</span></div>
-          <div><span class="pill pill-s">3×15</span></div>
+          <div class="pill-wrap"><span class="pill pill-s">3×15</span></div>
+          <div class="pill-wrap"><span class="pill pill-s">3×15</span></div>
         </div>
         <div class="tip-box">💡 71 kg: focus on a perfect slow rep over speed. 100 kg: add pauses mid-rep or L-sit pull-ups for extra stimulus.</div>
       </div>
     </div>
 
-    <div class="day-card">
-      <div class="day-header" onclick="toggle(this)">
-        <div><div class="day-title">Day 3 — Core + skill day</div><div class="day-focus">Abs · balance · handstand work</div></div>
-        <span class="day-toggle">▾</span>
+    <!-- DAY 3 -->
+    <div class="day-card" id="dc-3">
+      <div class="day-header" onclick="toggleDay('dc-3')">
+        <div class="day-num">03</div>
+        <div class="day-info"><div class="day-title">Core + Skill Day</div><div class="day-focus">Abs · Balance · Handstand</div></div>
+        <div class="toggle-btn">▾</div>
       </div>
       <div class="day-body">
+        <div class="col-headers"><div class="col-hd">Exercise</div><div class="col-hd col-a">71 kg</div><div class="col-hd col-b">100 kg</div></div>
         <div class="ex-row">
           <div><div class="ex-name">Hollow body hold</div><div class="ex-note">Ribcage down, lower back flat</div></div>
-          <div><span class="pill pill-a">3×20 sec</span></div>
-          <div><span class="pill pill-b">3×40 sec</span></div>
+          <div class="pill-wrap"><span class="pill pill-a">3×20 sec</span></div>
+          <div class="pill-wrap"><span class="pill pill-b">3×40 sec</span></div>
         </div>
         <div class="ex-row">
           <div><div class="ex-name">L-sit (floor / bars)</div><div class="ex-note">Tuck → tucked L → full L</div></div>
-          <div><span class="pill pill-a">3×10 sec tuck</span></div>
-          <div><span class="pill pill-b">3×15 sec full L</span></div>
+          <div class="pill-wrap"><span class="pill pill-a">3×10s tuck</span></div>
+          <div class="pill-wrap"><span class="pill pill-b">3×15s full L</span></div>
         </div>
         <div class="ex-row">
           <div><div class="ex-name">Handstand kick-up + hold</div><div class="ex-note">Wall assisted</div></div>
-          <div><span class="pill pill-s">5 min practice</span></div>
-          <div><span class="pill pill-s">5 min freestanding</span></div>
+          <div class="pill-wrap"><span class="pill pill-s">5 min wall</span></div>
+          <div class="pill-wrap"><span class="pill pill-s">5 min free</span></div>
         </div>
         <div class="ex-row">
           <div><div class="ex-name">Dragon flag negatives</div><div class="ex-note">4-sec lowering</div></div>
-          <div><span class="pill pill-a">3×3</span></div>
-          <div><span class="pill pill-b">3×6</span></div>
+          <div class="pill-wrap"><span class="pill pill-a">3×3</span></div>
+          <div class="pill-wrap"><span class="pill pill-b">3×6</span></div>
         </div>
         <div class="ex-row">
           <div><div class="ex-name">Jefferson curls</div><div class="ex-note">Mobility + hamstrings, light</div></div>
-          <div><span class="pill pill-s">3×8 bodyweight</span></div>
-          <div><span class="pill pill-s">3×8 light load</span></div>
+          <div class="pill-wrap"><span class="pill pill-s">3×8 BW</span></div>
+          <div class="pill-wrap"><span class="pill pill-s">3×8 light</span></div>
         </div>
-        <div class="tip-box">💡 This is a great day to train together — both are skill-building, rest is the same. Use this day to coach each other.</div>
+        <div class="tip-box">💡 Great day to train together — both are skill-building. Use this day to coach each other.</div>
       </div>
     </div>
 
-    <div class="day-card">
-      <div class="day-header" onclick="toggle(this)">
-        <div><div class="day-title">Day 4 — Legs + hinge</div><div class="day-focus">Glutes · hamstrings · explosives</div></div>
-        <span class="day-toggle">▾</span>
+    <!-- DAY 4 -->
+    <div class="day-card" id="dc-4">
+      <div class="day-header" onclick="toggleDay('dc-4')">
+        <div class="day-num">04</div>
+        <div class="day-info"><div class="day-title">Legs + Hinge</div><div class="day-focus">Glutes · Hamstrings · Explosives</div></div>
+        <div class="toggle-btn">▾</div>
       </div>
       <div class="day-body">
+        <div class="col-headers"><div class="col-hd">Exercise</div><div class="col-hd col-a">71 kg</div><div class="col-hd col-b">100 kg</div></div>
         <div class="ex-row">
           <div><div class="ex-name">Pistol squat progression</div><div class="ex-note">Box pistol → assisted → full</div></div>
-          <div><span class="pill pill-a">3×5 box pistol</span></div>
-          <div><span class="pill pill-b">3×8 full pistol</span></div>
+          <div class="pill-wrap"><span class="pill pill-a">3×5 box</span></div>
+          <div class="pill-wrap"><span class="pill pill-b">3×8 full</span></div>
         </div>
         <div class="ex-row">
           <div><div class="ex-name">Nordic hamstring curl</div><div class="ex-note">Eccentric-focused</div></div>
-          <div><span class="pill pill-a">3×4 negative</span></div>
-          <div><span class="pill pill-b">3×6 full</span></div>
+          <div class="pill-wrap"><span class="pill pill-a">3×4 negative</span></div>
+          <div class="pill-wrap"><span class="pill pill-b">3×6 full</span></div>
         </div>
         <div class="ex-row">
           <div><div class="ex-name">Bulgarian split squat</div><div class="ex-note">Rear foot elevated</div></div>
-          <div><span class="pill pill-a">3×8/side</span></div>
-          <div><span class="pill pill-b">3×10/side weighted</span></div>
+          <div class="pill-wrap"><span class="pill pill-a">3×8/side</span></div>
+          <div class="pill-wrap"><span class="pill pill-b">3×10/side +wt</span></div>
         </div>
         <div class="ex-row">
           <div><div class="ex-name">Box jumps / broad jumps</div><div class="ex-note">Explosive power</div></div>
-          <div><span class="pill pill-s">3×5</span></div>
-          <div><span class="pill pill-s">3×5 max effort</span></div>
+          <div class="pill-wrap"><span class="pill pill-s">3×5</span></div>
+          <div class="pill-wrap"><span class="pill pill-s">3×5 max</span></div>
         </div>
         <div class="tip-box">💡 100 kg: weighted vest or dumbbell on split squats turns this into a genuine strength session. 71 kg: stay bodyweight and nail form.</div>
       </div>
     </div>
 
-    <div class="day-card">
-      <div class="day-header" onclick="toggle(this)">
-        <div><div class="day-title">Day 5 — Full body power + conditioning</div><div class="day-focus">Compound combos · circuits</div></div>
-        <span class="day-toggle">▾</span>
+    <!-- DAY 5 -->
+    <div class="day-card" id="dc-5">
+      <div class="day-header" onclick="toggleDay('dc-5')">
+        <div class="day-num">05</div>
+        <div class="day-info"><div class="day-title">Full Body Power</div><div class="day-focus">Compound Combos · Circuits</div></div>
+        <div class="toggle-btn">▾</div>
       </div>
       <div class="day-body">
+        <div class="col-headers"><div class="col-hd">Exercise</div><div class="col-hd col-a">71 kg</div><div class="col-hd col-b">100 kg</div></div>
         <div class="ex-row">
           <div><div class="ex-name">Muscle-up practice</div><div class="ex-note">Kipping for 71 kg, strict for 100 kg</div></div>
-          <div><span class="pill pill-a">5×2 kipping attempt</span></div>
-          <div><span class="pill pill-b">4×5 strict muscle-up</span></div>
+          <div class="pill-wrap"><span class="pill pill-a">5×2 kipping</span></div>
+          <div class="pill-wrap"><span class="pill pill-b">4×5 strict</span></div>
         </div>
         <div class="ex-row">
           <div><div class="ex-name">Burpee pull-up combo</div><div class="ex-note">Max quality reps</div></div>
-          <div><span class="pill pill-a">3×5</span></div>
-          <div><span class="pill pill-b">3×8</span></div>
+          <div class="pill-wrap"><span class="pill pill-a">3×5</span></div>
+          <div class="pill-wrap"><span class="pill pill-b">3×8</span></div>
         </div>
         <div class="ex-row">
           <div><div class="ex-name">Push-up → planche lean</div><div class="ex-note">Hold 3-sec lean at top</div></div>
-          <div><span class="pill pill-a">3×6 +lean</span></div>
-          <div><span class="pill pill-b">3×10 +lean</span></div>
+          <div class="pill-wrap"><span class="pill pill-a">3×6 +lean</span></div>
+          <div class="pill-wrap"><span class="pill pill-b">3×10 +lean</span></div>
         </div>
         <div class="ex-row">
           <div><div class="ex-name">AMRAP finisher (10 min)</div><div class="ex-note">5 pull + 10 push + 15 squat</div></div>
-          <div><span class="pill pill-a">AMRAP at 70% effort</span></div>
-          <div><span class="pill pill-b">AMRAP at 85% effort</span></div>
+          <div class="pill-wrap"><span class="pill pill-a">70% effort</span></div>
+          <div class="pill-wrap"><span class="pill pill-b">85% effort</span></div>
         </div>
-        <div class="tip-box">💡 Best day to train as a true team — the AMRAP can be done side by side. 71 kg does the version above, 100 kg adds a ring row or weighted vest. Score each other.</div>
+        <div class="tip-box">💡 Best day to train as a true team — the AMRAP can be done side by side. Score each other.</div>
       </div>
     </div>
 
   </div>
+</div>
 
-  <!-- PROGRESSIONS TAB -->
-  <div id="tab-prog" class="day-grid" style="display:none">
-    <div class="day-card">
-      <div class="day-header" onclick="toggle(this)">
-        <div><div class="day-title">71 kg — 8-week milestones</div><div class="day-focus">From intermediate to advanced</div></div>
-        <span class="day-toggle">▾</span>
+<!-- ══════════════════════════════════════
+     TAB 2: PROGRESSIONS
+══════════════════════════════════════ -->
+<div id="tab-prog" style="display:none">
+  <div class="day-grid">
+    <div class="prog-card" id="pc-1">
+      <div class="prog-header" onclick="toggleProg('pc-1')">
+        <div class="prog-header-icon a">71</div>
+        <div class="prog-info"><div class="prog-title" style="color:#B69EFF">71 kg — 8-Week Milestones</div><div class="prog-sub">From intermediate to advanced</div></div>
+        <div class="toggle-btn" style="background:rgba(108,63,245,0.15);">▾</div>
       </div>
       <div class="day-body open">
-        <div class="ex-row">
-          <div><div class="ex-name">Weeks 1–2</div><div class="ex-note">Establish baseline. Paused reps, clean ROM</div></div>
-          <div><span class="pill pill-a">4 pull-ups</span></div>
-          <div><span class="pill pill-a">30 push-ups</span></div>
-        </div>
-        <div class="ex-row">
-          <div><div class="ex-name">Weeks 3–4</div><div class="ex-note">Add 1 pull-up per set. Weighted push-up attempts</div></div>
-          <div><span class="pill pill-a">6 pull-ups</span></div>
-          <div><span class="pill pill-a">35 push-ups</span></div>
-        </div>
-        <div class="ex-row">
-          <div><div class="ex-name">Weeks 5–6</div><div class="ex-note">Ring rows. L-sit attempt. Wall HS → freestanding kick</div></div>
-          <div><span class="pill pill-a">8 pull-ups</span></div>
-          <div><span class="pill pill-a">Wall HS 30s</span></div>
-        </div>
-        <div class="ex-row">
-          <div><div class="ex-name">Weeks 7–8</div><div class="ex-note">Kipping muscle-up drill. Dragon flag full neg. HS kick + hold</div></div>
-          <div><span class="pill pill-a">10 pull-ups</span></div>
-          <div><span class="pill pill-a">First muscle-up</span></div>
-        </div>
+        <div class="week-row"><div class="week-label">Wk 1–2</div><div><div class="week-note">Establish baseline. Paused reps, clean ROM</div><div class="week-pills"><span class="pill pill-a">4 pull-ups</span><span class="pill pill-a">30 push-ups</span></div></div></div>
+        <div class="week-row"><div class="week-label">Wk 3–4</div><div><div class="week-note">Add 1 pull-up per set. Weighted push-up attempts</div><div class="week-pills"><span class="pill pill-a">6 pull-ups</span><span class="pill pill-a">35 push-ups</span></div></div></div>
+        <div class="week-row"><div class="week-label">Wk 5–6</div><div><div class="week-note">Ring rows. L-sit attempt. Wall HS → freestanding kick</div><div class="week-pills"><span class="pill pill-a">8 pull-ups</span><span class="pill pill-a">Wall HS 30s</span></div></div></div>
+        <div class="week-row"><div class="week-label">Wk 7–8</div><div><div class="week-note">Kipping muscle-up drill. Dragon flag full neg. HS kick + hold</div><div class="week-pills"><span class="pill pill-a">10 pull-ups</span><span class="pill pill-a">First muscle-up</span></div></div></div>
         <div class="tip-box">Key unlock: once pull-ups hit 8 clean reps, start muscle-up transition drills. The 100 kg can coach the technique here.</div>
       </div>
     </div>
-
-    <div class="day-card">
-      <div class="day-header" onclick="toggle(this)">
-        <div><div class="day-title">100 kg — 8-week targets</div><div class="day-focus">Stay sharp, add complexity</div></div>
-        <span class="day-toggle">▾</span>
+    <div class="prog-card" id="pc-2">
+      <div class="prog-header" onclick="toggleProg('pc-2')">
+        <div class="prog-header-icon b">100</div>
+        <div class="prog-info"><div class="prog-title" style="color:#4DDEB8">100 kg — 8-Week Targets</div><div class="prog-sub">Stay sharp, add complexity</div></div>
+        <div class="toggle-btn" style="background:rgba(0,196,140,0.12);">▾</div>
       </div>
       <div class="day-body">
-        <div class="ex-row">
-          <div><div class="ex-name">Weeks 1–2</div><div class="ex-note">Audit movement quality, add pauses</div></div>
-          <div><span class="pill pill-b">Strict form baseline</span></div>
-          <div><span class="pill pill-b">Temp reduce volume 10%</span></div>
-        </div>
-        <div class="ex-row">
-          <div><div class="ex-name">Weeks 3–4</div><div class="ex-note">Weighted pull-ups, ring dips, planche leans</div></div>
-          <div><span class="pill pill-b">+10kg pull-ups</span></div>
-          <div><span class="pill pill-b">Ring HSPU attempt</span></div>
-        </div>
-        <div class="ex-row">
-          <div><div class="ex-name">Weeks 5–6</div><div class="ex-note">Freestanding HS, straddle planche lean, weighted pistols</div></div>
-          <div><span class="pill pill-b">Freestanding HS 5s</span></div>
-          <div><span class="pill pill-b">Straddle planche lean</span></div>
-        </div>
-        <div class="ex-row">
-          <div><div class="ex-name">Weeks 7–8</div><div class="ex-note">Front lever tuck hold, ring muscle-up, full L-sit pull-up</div></div>
-          <div><span class="pill pill-b">Front lever tuck 5s</span></div>
-          <div><span class="pill pill-b">L-sit pull-ups</span></div>
-        </div>
-        <div class="tip-box">Key challenge: at 100 kg, skill moves are harder by bodyweight. Ring work and weighted pull-ups keep the stimulus high without needing a bar skill to progress.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- RULES TAB -->
-  <div id="tab-rules" style="display:none">
-    <div class="rules-grid">
-      <div class="rule-card">
-        <div class="rule-title" style="color:#533AB7">Partner system</div>
-        <div class="rule-item">
-          • One goes, one rests — natural load balance<br>
-          • 100 kg coaches pull-up form on 71 kg's sets<br>
-          • 71 kg times holds and counts reps for 100 kg<br>
-          • No ego lifting — finish your reps, don't rush
-        </div>
-      </div>
-      <div class="rule-card">
-        <div class="rule-title" style="color:#0F6E56">Programming logic</div>
-        <div class="rule-item">
-          • Same movement, scaled reps/variant<br>
-          • 5 days on, 2 days off (Sat/Sun rest)<br>
-          • Deload week every 4th week (–30% volume)<br>
-          • Skill days = always train together
-        </div>
-      </div>
-      <div class="rule-card">
-        <div class="rule-title" style="color:#B05B0A">Nutrition reminder</div>
-        <div class="rule-item">
-          • 71 kg: slight surplus if gaining, ~2.2g protein/kg<br>
-          • 100 kg: maintenance or slight cut, 2.4g protein/kg<br>
-          • Both: eat within 1hr post-session<br>
-          • Sleep 7–9h — most gains happen here
-        </div>
-      </div>
-      <div class="rule-card">
-        <div class="rule-title" style="color:#3C3489">When to diverge</div>
-        <div class="rule-item">
-          • 100 kg adds rings/weighted vest when bodyweight feels easy<br>
-          • 71 kg reduces sets (not reps) if form breaks<br>
-          • If 71 kg gets 10+ pull-ups: join 100 kg's track<br>
-          • Adjust every 4 weeks based on progress
-        </div>
+        <div class="week-row"><div class="week-label">Wk 1–2</div><div><div class="week-note">Audit movement quality, add pauses</div><div class="week-pills"><span class="pill pill-b">Strict form baseline</span><span class="pill pill-b">–10% volume</span></div></div></div>
+        <div class="week-row"><div class="week-label">Wk 3–4</div><div><div class="week-note">Weighted pull-ups, ring dips, planche leans</div><div class="week-pills"><span class="pill pill-b">+10kg pull-ups</span><span class="pill pill-b">Ring HSPU attempt</span></div></div></div>
+        <div class="week-row"><div class="week-label">Wk 5–6</div><div><div class="week-note">Freestanding HS, straddle planche lean, weighted pistols</div><div class="week-pills"><span class="pill pill-b">Freestanding HS 5s</span><span class="pill pill-b">Straddle planche</span></div></div></div>
+        <div class="week-row"><div class="week-label">Wk 7–8</div><div><div class="week-note">Front lever tuck hold, ring muscle-up, full L-sit pull-up</div><div class="week-pills"><span class="pill pill-b">Front lever 5s</span><span class="pill pill-b">L-sit pull-ups</span></div></div></div>
+        <div class="tip-box">Key challenge: at 100 kg, skill moves are harder by bodyweight. Ring work and weighted pull-ups keep the stimulus high.</div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- ══════════════════════════════════════
+     TAB 3: PARTNERSHIP RULES
+══════════════════════════════════════ -->
+<div id="tab-rules" style="display:none">
+  <div class="rules-grid">
+    <div class="rule-card" style="border-top:2px solid var(--purple)">
+      <span class="rule-icon">🤝</span>
+      <div class="rule-title" style="color:#B69EFF">Partner System</div>
+      <ul class="rule-item"><li>One goes, one rests — natural load balance</li><li>100 kg coaches pull-up form on 71 kg's sets</li><li>71 kg times holds and counts reps for 100 kg</li><li>No ego lifting — finish your reps, don't rush</li></ul>
+    </div>
+    <div class="rule-card" style="border-top:2px solid var(--teal)">
+      <span class="rule-icon">📋</span>
+      <div class="rule-title" style="color:#4DDEB8">Programming Logic</div>
+      <ul class="rule-item"><li>Same movement, scaled reps/variant</li><li>5 days on, 2 days off (Sat/Sun rest)</li><li>Deload week every 4th week (–30% volume)</li><li>Skill days = always train together</li></ul>
+    </div>
+    <div class="rule-card" style="border-top:2px solid var(--amber)">
+      <span class="rule-icon">🥩</span>
+      <div class="rule-title" style="color:#FFBC6E">Nutrition Reminder</div>
+      <ul class="rule-item"><li>71 kg: slight surplus if gaining, ~2.2g protein/kg</li><li>100 kg: maintenance or slight cut, 2.4g/kg</li><li>Both: eat within 1hr post-session</li><li>Sleep 7–9h — most gains happen here</li></ul>
+    </div>
+    <div class="rule-card" style="border-top:2px solid rgba(108,63,245,0.5)">
+      <span class="rule-icon">🔀</span>
+      <div class="rule-title" style="color:#B69EFF">When to Diverge</div>
+      <ul class="rule-item"><li>100 kg adds rings/weighted vest when bodyweight feels easy</li><li>71 kg reduces sets (not reps) if form breaks</li><li>If 71 kg gets 10+ pull-ups: join 100 kg's track</li><li>Adjust every 4 weeks based on progress</li></ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 4: PROGRESS OVERVIEW
+══════════════════════════════════════ -->
+<div id="tab-overview" style="display:none">
+  <div class="athlete-toggle">
+    <button class="ath-btn active-a" id="btn-a" onclick="switchAthlete('a')">71 kg — Intermediate</button>
+    <button class="ath-btn" id="btn-b" onclick="switchAthlete('b')">100 kg — Beast</button>
+  </div>
+  <div class="stats-row" id="stats-row"></div>
+  <div class="week-tracker">
+    <div class="section-title">This week's sessions</div>
+    <div class="week-days" id="week-days"></div>
+  </div>
+  <div class="chart-wrap">
+    <div class="section-title">Goal completion — week 1</div>
+    <div class="chart-inner">
+      <div class="chart-canvas-wrap"><canvas id="pieChart"></canvas></div>
+      <div class="chart-legend" id="pie-legend"></div>
+    </div>
+  </div>
+  <div class="chart-wrap">
+    <div class="section-title">Pull-up reps — 8 week projection</div>
+    <div style="position:relative;width:100%;height:200px;"><canvas id="barChart"></canvas></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 5: CHECKLIST
+══════════════════════════════════════ -->
+<div id="tab-checklist" style="display:none">
+  <div class="athlete-toggle">
+    <button class="ath-btn active-a" id="cbtn-a" onclick="switchCheckAthlete('a')">71 kg</button>
+    <button class="ath-btn" id="cbtn-b" onclick="switchCheckAthlete('b')">100 kg</button>
+  </div>
+  <div class="tip-card"><div class="tip-row"><span class="tip-icon">💡</span><div class="tip-text"><strong>Tap any item</strong> to mark it complete. Progress saves for this session.</div></div></div>
+
+  <!-- 71 KG LISTS -->
+  <div id="list-a">
+    <div class="checklist-wrap">
+      <div class="checklist-header"><div class="checklist-title" style="color:#B69EFF">Weeks 1–2 · Baseline</div><div class="progress-pill" id="prog-a1">0 / 5</div></div>
+      <div id="group-a1">
+        <div class="check-item" onclick="tick(this,'a1')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">Complete 4 clean pull-ups <span class="check-tag tag-strength">Strength</span></div><div class="check-note">Dead stop at bottom, chin over bar, no kipping</div></div></div>
+        <div class="check-item" onclick="tick(this,'a1')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">30 consecutive push-ups <span class="check-tag tag-strength">Strength</span></div><div class="check-note">Full ROM, chest to floor, elbows at 45°</div></div></div>
+        <div class="check-item" onclick="tick(this,'a1')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">Hollow body hold 20 sec <span class="check-tag tag-core">Core</span></div><div class="check-note">Lower back flat on floor, ribs down</div></div></div>
+        <div class="check-item" onclick="tick(this,'a1')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">5 pike push-ups with control <span class="check-tag tag-strength">Strength</span></div><div class="check-note">Head through arms at the bottom</div></div></div>
+        <div class="check-item" onclick="tick(this,'a1')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">Wall handstand 20 sec hold <span class="check-tag tag-skill">Skill</span></div><div class="check-note">Belly to wall, straight body line</div></div></div>
+      </div>
+    </div>
+    <div class="checklist-wrap">
+      <div class="checklist-header"><div class="checklist-title" style="color:#B69EFF">Weeks 3–4 · Building</div><div class="progress-pill" id="prog-a2">0 / 5</div></div>
+      <div id="group-a2">
+        <div class="check-item" onclick="tick(this,'a2')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">6 pull-ups per set <span class="check-tag tag-strength">Strength</span></div><div class="check-note">+1 rep from week 1–2 target</div></div></div>
+        <div class="check-item" onclick="tick(this,'a2')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">35 push-ups consecutive <span class="check-tag tag-strength">Strength</span></div><div class="check-note">Upgrade with 2s pause at bottom</div></div></div>
+        <div class="check-item" onclick="tick(this,'a2')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">Tuck L-sit 10 sec hold <span class="check-tag tag-core">Core</span></div><div class="check-note">On parallettes or floor bars</div></div></div>
+        <div class="check-item" onclick="tick(this,'a2')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">Box pistol squat 5 reps/side <span class="check-tag tag-strength">Strength</span></div><div class="check-note">Controlled descent onto box, full extension up</div></div></div>
+        <div class="check-item" onclick="tick(this,'a2')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">Dragon flag negative 3 reps <span class="check-tag tag-core">Core</span></div><div class="check-note">4-sec controlled lowering from top</div></div></div>
+      </div>
+    </div>
+    <div class="checklist-wrap">
+      <div class="checklist-header"><div class="checklist-title" style="color:#B69EFF">Weeks 5–6 · Advanced</div><div class="progress-pill" id="prog-a3">0 / 4</div></div>
+      <div id="group-a3">
+        <div class="check-item" onclick="tick(this,'a3')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">8 pull-ups per set <span class="check-tag tag-strength">Strength</span></div><div class="check-note">Start muscle-up transition drills after this</div></div></div>
+        <div class="check-item" onclick="tick(this,'a3')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">Wall handstand 30 sec hold <span class="check-tag tag-skill">Skill</span></div><div class="check-note">Then try freestanding kick-ups</div></div></div>
+        <div class="check-item" onclick="tick(this,'a3')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">Ring row 12 reps <span class="check-tag tag-strength">Strength</span></div><div class="check-note">Feet elevated, body horizontal</div></div></div>
+        <div class="check-item" onclick="tick(this,'a3')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">Full L-sit attempt <span class="check-tag tag-core">Core</span></div><div class="check-note">Even 2–3 sec counts as unlocked</div></div></div>
+      </div>
+    </div>
+    <div class="checklist-wrap">
+      <div class="checklist-header"><div class="checklist-title" style="color:#B69EFF">Weeks 7–8 · Unlock</div><div class="progress-pill" id="prog-a4">0 / 3</div></div>
+      <div id="group-a4">
+        <div class="check-item" onclick="tick(this,'a4')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">10 pull-ups per set <span class="check-tag tag-strength">Strength</span></div><div class="check-note">Milestone — ready for 100 kg track</div></div></div>
+        <div class="check-item" onclick="tick(this,'a4')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">First muscle-up (any style) <span class="check-tag tag-skill">Skill</span></div><div class="check-note">Kipping counts — clean up form next cycle</div></div></div>
+        <div class="check-item" onclick="tick(this,'a4')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">Freestanding handstand kick + hold <span class="check-tag tag-skill">Skill</span></div><div class="check-note">3+ sec away from wall</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 100 KG LISTS -->
+  <div id="list-b" style="display:none">
+    <div class="checklist-wrap">
+      <div class="checklist-header"><div class="checklist-title" style="color:#4DDEB8">Weeks 1–2 · Quality Audit</div><div class="progress-pill" id="prog-b1" style="background:rgba(0,196,140,0.12);color:#4DDEB8;border-color:rgba(0,196,140,0.3)">0 / 4</div></div>
+      <div id="group-b1">
+        <div class="check-item" onclick="tick(this,'b1')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">Strict form baseline complete <span class="check-tag tag-strength">Strength</span></div><div class="check-note">Audit every movement — add 2s pauses</div></div></div>
+        <div class="check-item" onclick="tick(this,'b1')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">8 wall HSPU per set <span class="check-tag tag-skill">Skill</span></div><div class="check-note">Full range, head touches floor</div></div></div>
+        <div class="check-item" onclick="tick(this,'b1')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">L-sit hold 15 sec full L <span class="check-tag tag-core">Core</span></div><div class="check-note">Legs fully extended and horizontal</div></div></div>
+        <div class="check-item" onclick="tick(this,'b1')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">Hollow body 40 sec hold <span class="check-tag tag-core">Core</span></div><div class="check-note">No lower back gap, arms by ears</div></div></div>
+      </div>
+    </div>
+    <div class="checklist-wrap">
+      <div class="checklist-header"><div class="checklist-title" style="color:#4DDEB8">Weeks 3–4 · Load Up</div><div class="progress-pill" id="prog-b2" style="background:rgba(0,196,140,0.12);color:#4DDEB8;border-color:rgba(0,196,140,0.3)">0 / 4</div></div>
+      <div id="group-b2">
+        <div class="check-item" onclick="tick(this,'b2')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">+10 kg weighted pull-ups × 5 <span class="check-tag tag-strength">Strength</span></div><div class="check-note">Belt or vest — strict form throughout</div></div></div>
+        <div class="check-item" onclick="tick(this,'b2')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">Ring HSPU attempt <span class="check-tag tag-skill">Skill</span></div><div class="check-note">Even a negative counts as attempted</div></div></div>
+        <div class="check-item" onclick="tick(this,'b2')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">Planche lean hold 10 sec <span class="check-tag tag-skill">Skill</span></div><div class="check-note">Lean forward until shoulders past wrists</div></div></div>
+        <div class="check-item" onclick="tick(this,'b2')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">10 ring dips full ROM <span class="check-tag tag-strength">Strength</span></div><div class="check-note">Rings turned out at top, controlled descent</div></div></div>
+      </div>
+    </div>
+    <div class="checklist-wrap">
+      <div class="checklist-header"><div class="checklist-title" style="color:#4DDEB8">Weeks 5–6 · Skill Moves</div><div class="progress-pill" id="prog-b3" style="background:rgba(0,196,140,0.12);color:#4DDEB8;border-color:rgba(0,196,140,0.3)">0 / 3</div></div>
+      <div id="group-b3">
+        <div class="check-item" onclick="tick(this,'b3')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">Freestanding handstand 5 sec <span class="check-tag tag-skill">Skill</span></div><div class="check-note">Away from wall — consistent attempts</div></div></div>
+        <div class="check-item" onclick="tick(this,'b3')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">Straddle planche lean <span class="check-tag tag-skill">Skill</span></div><div class="check-note">Legs straddled, hips above hands</div></div></div>
+        <div class="check-item" onclick="tick(this,'b3')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">Weighted pistol squat 10/side <span class="check-tag tag-strength">Strength</span></div><div class="check-note">Hold dumbbell or wear vest</div></div></div>
+      </div>
+    </div>
+    <div class="checklist-wrap">
+      <div class="checklist-header"><div class="checklist-title" style="color:#4DDEB8">Weeks 7–8 · Elite Goals</div><div class="progress-pill" id="prog-b4" style="background:rgba(0,196,140,0.12);color:#4DDEB8;border-color:rgba(0,196,140,0.3)">0 / 3</div></div>
+      <div id="group-b4">
+        <div class="check-item" onclick="tick(this,'b4')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">Front lever tuck hold 5 sec <span class="check-tag tag-skill">Skill</span></div><div class="check-note">Horizontal, tuck position, no kipping</div></div></div>
+        <div class="check-item" onclick="tick(this,'b4')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">Ring muscle-up (strict) <span class="check-tag tag-skill">Skill</span></div><div class="check-note">The king of ring movements</div></div></div>
+        <div class="check-item" onclick="tick(this,'b4')"><div class="check-box"><div class="check-tick"></div></div><div class="check-body"><div class="check-text">L-sit pull-ups × 3 <span class="check-tag tag-skill">Skill</span></div><div class="check-note">Full L throughout entire pull</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 6: IMPROVEMENT LOG
+══════════════════════════════════════ -->
+<div id="tab-log" style="display:none">
+  <div class="tip-card"><div class="tip-row"><span class="tip-icon">📝</span><div class="tip-text">Log every personal record, training note, or win. Build your story session by session.</div></div></div>
+  <div class="log-wrap">
+    <div class="checklist-header">
+      <div class="checklist-title">Improvement Log</div>
+      <div class="progress-pill" id="log-count">3 entries</div>
+    </div>
+    <div id="log-list">
+      <div class="log-entry">
+        <div class="log-date">DAY<br>1</div>
+        <div class="log-line"></div>
+        <div class="log-body"><div class="log-title">First session complete — both athletes</div><div class="log-note">71 kg: 4×8 paused push-ups felt solid. Wall HS hold hit 25 sec. 100 kg: Ring dips 3×10, wall HSPU form check needed next session.</div><span class="log-badge badge-win">Session Win</span></div>
+      </div>
+      <div class="log-entry">
+        <div class="log-date">DAY<br>3</div>
+        <div class="log-line"></div>
+        <div class="log-body"><div class="log-title">71 kg — pull-up PR</div><div class="log-note">Hit 5 clean pull-ups for the first time. Dead stop at bottom each rep. 100 kg coached the last 2 reps.</div><span class="log-badge badge-pr">New PR 🎯</span></div>
+      </div>
+      <div class="log-entry">
+        <div class="log-date">DAY<br>5</div>
+        <div class="log-line"></div>
+        <div class="log-body"><div class="log-title">100 kg — AMRAP score</div><div class="log-note">AMRAP result: 6 full rounds in 10 min at 85% effort. 71 kg got 4 rounds. Competitive gap closing.</div><span class="log-badge badge-note">Benchmark Set</span></div>
+      </div>
+    </div>
+    <div class="add-log">
+      <input type="text" id="log-input" placeholder="Log a win, PR, or note…" />
+      <select id="log-type">
+        <option value="win">Session Win</option>
+        <option value="pr">New PR</option>
+        <option value="note">Note</option>
+      </select>
+      <button onclick="addLog()">+ Add</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
 <script>
-function showTab(name) {
-  ['week','prog','rules'].forEach(t => {
+/* ── TAB SWITCHING ── */
+var allTabs = ['week','prog','rules','overview','checklist','log'];
+function showTab(name, btn) {
+  allTabs.forEach(function(t) {
     document.getElementById('tab-'+t).style.display = t===name ? '' : 'none';
   });
-  document.querySelectorAll('.tab').forEach((btn,i) => {
-    btn.classList.toggle('active', ['week','prog','rules'][i]===name);
+  document.querySelectorAll('.tab').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  if (name==='overview' && !chartsReady) { setTimeout(function(){ renderPie('a'); renderBar('a'); chartsReady=true; },80); }
+}
+
+/* ── WORKOUT PLAN TOGGLES ── */
+function toggleDay(id) {
+  var card = document.getElementById(id);
+  var body = card.querySelector('.day-body');
+  var btn  = card.querySelector('.toggle-btn');
+  var open = body.classList.contains('open');
+  body.classList.toggle('open');
+  card.classList.toggle('open');
+  btn.textContent = open ? '▾' : '▴';
+}
+function toggleProg(id) {
+  var card = document.getElementById(id);
+  card.querySelector('.day-body').classList.toggle('open');
+}
+
+/* ── PROGRESS / CHARTS ── */
+var currentAthlete = 'a';
+var chartsReady = false;
+var weekState = [true, true, false, true, true, false, false];
+var statsData = {
+  a: { sessions:5, streak:3, done:17, total:17, pullups:5 },
+  b: { sessions:5, streak:3, done:14, total:14, pullups:12 }
+};
+var pieData = {
+  a: [{label:'Push strength',val:80,color:'#6C3FF5'},{label:'Pull strength',val:60,color:'#00C48C'},{label:'Core & skill',val:40,color:'#FF9E2C'},{label:'Legs',val:75,color:'#FF4D6A'}],
+  b: [{label:'Push strength',val:90,color:'#6C3FF5'},{label:'Pull strength',val:85,color:'#00C48C'},{label:'Core & skill',val:70,color:'#FF9E2C'},{label:'Legs',val:80,color:'#FF4D6A'}]
+};
+var barData = {
+  a: [4,5,6,6,7,8,9,10],
+  b: [10,11,12,12,13,14,15,16]
+};
+var pieChart, barChart;
+
+function renderStats(ath) {
+  var s = statsData[ath];
+  var col = ath==='a' ? '#B69EFF' : '#4DDEB8';
+  document.getElementById('stats-row').innerHTML =
+    sc('Sessions',s.sessions,'this week',col)+sc('Streak',s.streak,'days',col)+sc('Goals done',s.done,'of '+s.total,col)+sc('Pull-ups',s.pullups,'max reps',col);
+}
+function sc(label,val,sub,col){ return '<div class="stat-card"><div class="stat-label">'+label+'</div><div class="stat-val" style="color:'+col+'">'+val+'</div><div class="stat-sub">'+sub+'</div></div>'; }
+
+function renderWeek() {
+  var days=['MON','TUE','WED','THU','FRI','SAT','SUN'];
+  var html='';
+  days.forEach(function(d,i){
+    var cls='day-dot'+(weekState[i]?' done':'')+(i===2?' today':'');
+    var icon=weekState[i]?'✓':(i>=5?'—':'○');
+    var icol=weekState[i]?'#4DDEB8':'rgba(240,239,248,0.25)';
+    html+='<div class="'+cls+'" onclick="toggleWeekDay('+i+')">';
+    html+='<div class="day-name">'+d+'</div>';
+    html+='<div style="font-size:11px;color:'+icol+';font-weight:600;">'+icon+'</div></div>';
+  });
+  document.getElementById('week-days').innerHTML=html;
+}
+function toggleWeekDay(i){ if(i>=5)return; weekState[i]=!weekState[i]; renderWeek(); }
+
+function renderPie(ath) {
+  var d=pieData[ath];
+  if(pieChart){ pieChart.destroy(); }
+  pieChart=new Chart(document.getElementById('pieChart'),{
+    type:'doughnut',
+    data:{ labels:d.map(function(x){return x.label;}), datasets:[{data:d.map(function(x){return x.val;}), backgroundColor:d.map(function(x){return x.color;}), borderWidth:0, hoverOffset:4}] },
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'68%', plugins:{ legend:{display:false}, tooltip:{callbacks:{label:function(ctx){return ' '+ctx.label+': '+ctx.parsed+'%';}}} } }
+  });
+  var leg='';
+  d.forEach(function(item){ leg+='<div class="legend-item"><div class="legend-dot" style="background:'+item.color+'"></div><div class="legend-text">'+item.label+'</div><div class="legend-val" style="color:'+item.color+'">'+item.val+'%</div></div>'; });
+  document.getElementById('pie-legend').innerHTML=leg;
+}
+
+function renderBar(ath) {
+  var d=barData[ath];
+  var col=ath==='a'?'#6C3FF5':'#00C48C';
+  if(barChart){ barChart.destroy(); }
+  barChart=new Chart(document.getElementById('barChart'),{
+    type:'bar',
+    data:{ labels:['Wk1','Wk2','Wk3','Wk4','Wk5','Wk6','Wk7','Wk8'], datasets:[{label:'Pull-ups', data:d, backgroundColor:d.map(function(v,i){return i<2?col:col+'44';}), borderRadius:6, borderSkipped:false}] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'rgba(240,239,248,0.45)',font:{size:11}}}, y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'rgba(240,239,248,0.45)',font:{size:11}},min:0} } }
   });
 }
-function toggle(header) {
-  const body = header.nextElementSibling;
-  const arrow = header.querySelector('.day-toggle');
-  body.classList.toggle('open');
-  arrow.textContent = body.classList.contains('open') ? '▴' : '▾';
+
+function switchAthlete(ath) {
+  currentAthlete=ath;
+  document.getElementById('btn-a').className='ath-btn'+(ath==='a'?' active-a':'');
+  document.getElementById('btn-b').className='ath-btn'+(ath==='b'?' active-b':'');
+  renderStats(ath); renderPie(ath); renderBar(ath);
 }
+
+/* ── CHECKLIST ── */
+function switchCheckAthlete(ath) {
+  document.getElementById('cbtn-a').className='ath-btn'+(ath==='a'?' active-a':'');
+  document.getElementById('cbtn-b').className='ath-btn'+(ath==='b'?' active-b':'');
+  document.getElementById('list-a').style.display=ath==='a'?'':'none';
+  document.getElementById('list-b').style.display=ath==='b'?'':'none';
+}
+var groupCounts={a1:5,a2:5,a3:4,a4:3,b1:4,b2:4,b3:3,b4:3};
+var groupDone={a1:0,a2:0,a3:0,a4:0,b1:0,b2:0,b3:0,b4:0};
+function tick(el,group) {
+  var was=el.classList.contains('done');
+  el.classList.toggle('done');
+  groupDone[group]+=was?-1:1;
+  var pill=document.getElementById('prog-'+group);
+  if(pill) pill.textContent=groupDone[group]+' / '+groupCounts[group];
+}
+
+/* ── LOG ── */
+var logDay=5;
+var typeBadge={win:'badge-win',pr:'badge-pr',note:'badge-note'};
+var typeLabel={win:'Session Win',pr:'New PR 🎯',note:'Note'};
+function addLog() {
+  var val=document.getElementById('log-input').value.trim();
+  if(!val)return;
+  var type=document.getElementById('log-type').value;
+  logDay++;
+  var entry=document.createElement('div');
+  entry.className='log-entry';
+  entry.innerHTML='<div class="log-date">DAY<br>'+logDay+'</div><div class="log-line"></div><div class="log-body"><div class="log-title">'+val+'</div><span class="log-badge '+typeBadge[type]+'">'+typeLabel[type]+'</span></div>';
+  var list=document.getElementById('log-list');
+  list.insertBefore(entry,list.firstChild);
+  document.getElementById('log-input').value='';
+  var c=list.querySelectorAll('.log-entry').length;
+  document.getElementById('log-count').textContent=c+(c===1?' entry':' entries');
+}
+
+/* ── INIT ── */
+renderStats('a');
+renderWeek();
 </script>
+</body>
+</html>
