@@ -31,269 +31,811 @@
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;min-height:100vh}
 
-/* ── SETUP BANNER ── */
-#setupBanner{
-  background:linear-gradient(135deg,rgba(232,83,58,.15),rgba(244,201,122,.1));
-  border-bottom:1px solid rgba(232,83,58,.3);
-  padding:14px 20px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
-}
-#setupBanner span{font-size:13px;color:#f0ede6}
-.setup-fields{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;width:100%}
-.setup-fields input{
-  flex:1;min-width:220px;background:rgba(255,255,255,.06);border:1px solid var(--border2);
-  color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;
-  padding:7px 12px;border-radius:8px;outline:none;
-}
-.btn-connect{
-  padding:8px 18px;border-radius:8px;border:none;
-  background:var(--accent);color:#fff;font-family:'DM Sans',sans-serif;
-  font-size:13px;font-weight:600;cursor:pointer;transition:opacity .2s;white-space:nowrap;
-}
-#connStatus{font-family:'Space Mono',monospace;font-size:11px;padding:4px 10px;border-radius:6px;white-space:nowrap}
-#connStatus.ok{background:rgba(129,199,132,.15);color:var(--done);border:1px solid rgba(129,199,132,.3)}
-#connStatus.err{background:rgba(232,83,58,.15);color:var(--accent);border:1px solid rgba(232,83,58,.3)}
+
 
 /* ── HERO ── */
 .hero{padding:64px 24px 48px;text-align:center;position:relative;overflow:hidden}
-.hero-tag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.3em;color:var(--accent);text-transform:uppercase;margin-bottom:14px;}
-.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,10vw,110px);line-height:.9;letter-spacing:.02em;margin-bottom:14px;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 45% at 15% 60%,rgba(232,83,58,.09) 0%,transparent 65%),radial-gradient(ellipse 45% 55% at 85% 40%,rgba(80,160,140,.08) 0%,transparent 65%);pointer-events:none}
+.hero-tag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.3em;color:var(--accent);text-transform:uppercase;margin-bottom:14px;opacity:0;animation:fadeUp .6s ease forwards .2s}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,10vw,110px);line-height:.9;letter-spacing:.02em;margin-bottom:14px;opacity:0;animation:fadeUp .7s ease forwards .35s}
 .hero-title span{color:var(--accent)}
-.athletes{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:40px;}
+.hero-sub{font-size:14px;color:var(--muted);max-width:400px;margin:0 auto 36px;opacity:0;animation:fadeUp .7s ease forwards .5s}
+.athletes{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:40px;opacity:0;animation:fadeUp .7s ease forwards .65s}
 .ab{padding:14px 18px;border-radius:12px;border:1px solid;text-align:left;min-width:165px}
 .ab.a{border-color:var(--a-col);background:var(--a-bg)}
 .ab.b{border-color:var(--b-col);background:var(--b-bg)}
 .ab-tag{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:5px}
+.ab.a .ab-tag{color:var(--a-col)}.ab.b .ab-tag{color:var(--b-col)}
 .ab-name{font-size:16px;font-weight:600;margin-bottom:2px}
 .ab-stats{font-size:11px;color:var(--muted);line-height:1.9}
 
-/* ── TRACKER STYLES ── */
+/* ── WEEK NAV ── */
 .main-wrap{max-width:900px;margin:0 auto;padding:0 20px 60px}
+.sec-tag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.3em;color:var(--accent);text-transform:uppercase;margin-bottom:6px}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:42px;line-height:1}
+.wn-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
 .week-tabs{display:flex;gap:7px;flex-wrap:wrap}
-.wtab{padding:7px 14px;border-radius:100px;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;}
-.wtab.active{background:var(--accent);color:#fff}
+.wtab{padding:7px 14px;border-radius:100px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .18s}
+.wtab:hover{border-color:var(--text);color:var(--text)}
+.wtab.active{background:var(--accent);border-color:var(--accent);color:#fff}
 
-.prog-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:22px}
-.ps{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;}
-.ps.complete{border-color:var(--done)}
+/* progress strip */
+.prog-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:22px}
+.ps{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;transition:border-color .3s}
+.ps.complete{border-color:rgba(129,199,132,.4)}
+.ps-day{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--accent);text-transform:uppercase;margin-bottom:2px}
+.ps-label{font-size:11px;font-weight:600;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps-bar-bg{height:3px;background:var(--border2);border-radius:2px;overflow:hidden;margin-bottom:4px}
+.ps-bar{height:3px;border-radius:2px;transition:width .5s ease;background:var(--a-col)}
+.ps.complete .ps-bar{background:var(--done)}
+.ps-pct{font-size:11px;font-weight:600;color:var(--muted)}
+.ps.complete .ps-pct{color:var(--done)}
 
+/* legend */
+.gleg{display:flex;gap:14px;flex-wrap:wrap;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:20px}
+.lg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.lgd{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* ── DAY CARDS ── */
 .day-list{display:flex;flex-direction:column;gap:12px}
-.day-card{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--surface)}
-.day-hd{display:flex;align-items:center;gap:12px;padding:15px 18px;cursor:pointer;}
-.day-body{display:none;background:var(--bg);padding-bottom:20px}
+.day-card{border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color .25s}
+.day-card:hover{border-color:var(--border2)}
+.day-card.complete{border-color:rgba(129,199,132,.35)}
+
+.day-hd{display:flex;align-items:center;gap:12px;padding:15px 18px;cursor:pointer;background:var(--surface);user-select:none;transition:background .15s}
+.day-hd:hover{background:var(--surface2)}
+
+.day-ring{width:34px;height:34px;border-radius:50%;border:2px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .25s;color:var(--muted)}
+.day-card.complete .day-ring{border-color:var(--done);background:var(--done-bg);color:var(--done)}
+
+.day-info{flex:1;min-width:0}
+.day-weekday{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--accent);text-transform:uppercase}
+.day-name{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.day-focus{font-size:11px;color:var(--muted)}
+
+.day-meta-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.day-count{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)}
+.day-chev{width:22px;height:22px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);transition:transform .3s}
+.day-card.open .day-chev{transform:rotate(180deg)}
+
+/* body */
+.day-body{display:none;background:var(--bg)}
 .day-card.open .day-body{display:block}
 
-.ex-row{display:grid;grid-template-columns:26px 1fr 110px 110px;gap:8px;padding:10px 18px;border-bottom:1px solid var(--border)}
-.pill{display:inline-block;padding:4px 9px;border-radius:100px;font-size:10px;font-weight:500;border:1px solid}
+/* exercise rows */
+.ex-wrap{padding:8px 18px 4px}
+.ex-header{display:grid;grid-template-columns:26px 1fr 110px 110px;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:2px}
+.ex-header span{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase}
+.ex-header .eh-a{color:var(--a-col)}.ex-header .eh-b{color:var(--b-col)}
+
+.ex-row{display:grid;grid-template-columns:26px 1fr 110px 110px;gap:8px;align-items:start;padding:10px 0;border-bottom:1px solid var(--border);transition:opacity .2s}
+.ex-row:last-child{border-bottom:none}
+.ex-row.checked{opacity:.5}
+
+.cb-wrap{padding-top:3px}
+.cb{width:20px;height:20px;border-radius:6px;border:2px solid var(--border2);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.cb:hover{border-color:var(--done)}
+.ex-row.checked .cb{background:var(--done);border-color:var(--done)}
+.cb-tick{display:none;font-size:12px;color:#111;font-weight:800;line-height:1}
+.ex-row.checked .cb-tick{display:block}
+
+.ex-info .en{font-size:13px;font-weight:600;margin-bottom:1px}
+.ex-info .en2{font-size:11px;color:var(--muted)}
+
+.pill{display:inline-block;padding:4px 9px;border-radius:100px;font-size:10px;font-weight:500;white-space:nowrap;border:1px solid}
 .pill-a{background:var(--a-bg);color:var(--a-col);border-color:var(--a-border)}
 .pill-b{background:var(--b-bg);color:var(--b-col);border-color:var(--b-border)}
 .pill-s{background:rgba(244,201,122,.1);color:var(--accent2);border-color:rgba(244,201,122,.3)}
+.ex-row.checked .pill{background:var(--done-bg);color:var(--done);border-color:rgba(129,199,132,.3)}
 
-.comment-list{padding:18px;display:flex;flex-direction:column;gap:8px}
-.comment-item{padding:10px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)}
-.cm-input{width:100%;background:var(--surface);border:1px solid var(--border2);color:#fff;padding:10px;border-radius:8px;margin-top:10px}
+/* tip */
+.day-tip{margin:4px 18px 12px;padding:10px 14px;border-radius:9px;background:rgba(232,83,58,.07);border-left:3px solid var(--accent);font-size:12px;color:#bbb;line-height:1.7}
+
+/* ── COMMENTS ── */
+.comments-sec{padding:0 18px 6px}
+.cs-title{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--b-col);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.comment-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;max-height:280px;overflow-y:auto}
+.comment-list::-webkit-scrollbar{width:3px}.comment-list::-webkit-scrollbar-track{background:transparent}.comment-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.comment-item{padding:10px 12px;border-radius:10px;background:var(--surface);border:1px solid var(--border)}
+.ci-header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.ci-who{font-size:11px;font-weight:600;padding:2px 8px;border-radius:100px}
+.ci-who.a{background:var(--a-bg);color:var(--a-col);border:1px solid var(--a-border)}
+.ci-who.b{background:var(--b-bg);color:var(--b-col);border:1px solid var(--b-border)}
+.ci-time{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted)}
+.ci-ex{font-size:10px;color:var(--accent2);font-style:italic}
+.ci-text{font-size:13px;color:var(--text);line-height:1.5}
+.ci-del{margin-left:auto;background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:0 4px;transition:color .15s}
+.ci-del:hover{color:var(--accent)}
+.no-comments{font-size:12px;color:var(--hint);font-style:italic;padding:8px 0}
+
+.add-comment{display:grid;grid-template-columns:1fr auto auto;gap:8px;margin-bottom:4px}
+.cm-who-sel{background:var(--surface);border:1px solid var(--border2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;padding:8px 10px;border-radius:8px;outline:none;cursor:pointer}
+.cm-who-sel:focus{border-color:var(--b-col)}
+.cm-ex-sel{background:var(--surface);border:1px solid var(--border2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;padding:8px 10px;border-radius:8px;outline:none;cursor:pointer}
+.cm-ex-sel:focus{border-color:var(--b-col)}
+.add-comment-row2{display:flex;gap:8px;margin-bottom:14px}
+.cm-input{flex:1;background:var(--surface);border:1px solid var(--border2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:9px 12px;border-radius:8px;outline:none;resize:none;min-height:42px}
+.cm-input::placeholder{color:var(--muted)}
+.cm-input:focus{border-color:var(--b-col)}
+.btn-comment{padding:9px 16px;border-radius:8px;border:1px solid var(--b-col);background:rgba(128,203,196,.12);color:var(--b-col);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .18s;white-space:nowrap;align-self:flex-end}
+.btn-comment:hover{background:rgba(128,203,196,.22)}
+
+/* ── NOTES ── */
+.notes-sec{padding:0 18px 16px}
+.ns-divider{height:1px;background:linear-gradient(to right,transparent,var(--border2),transparent);margin-bottom:14px}
+.ns-title{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--accent);text-transform:uppercase;margin-bottom:10px}
+.notes-duo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:560px){.notes-duo{grid-template-columns:1fr}}
+.nb{border:1px solid var(--border);border-radius:11px;overflow:hidden}
+.nb.a{border-color:var(--a-border)}.nb.b{border-color:var(--b-border)}
+.nb-hd{padding:7px 11px;font-size:10px;font-weight:600;font-family:'Space Mono',monospace;letter-spacing:.1em}
+.nb.a .nb-hd{background:var(--a-bg);color:var(--a-col)}.nb.b .nb-hd{background:var(--b-bg);color:var(--b-col)}
+.nb-ta{width:100%;min-height:82px;background:var(--surface);border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;line-height:1.6;padding:10px 11px;resize:vertical}
+.nb-ta::placeholder{color:var(--hint);font-style:italic}
+.ss{margin-top:10px;border:1px solid var(--border);border-radius:11px;overflow:hidden}
+.ss-hd{padding:7px 11px;background:var(--surface);font-size:10px;font-weight:600;font-family:'Space Mono',monospace;letter-spacing:.1em;color:var(--accent2)}
+.ss-ta{width:100%;min-height:64px;background:var(--bg);border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;line-height:1.6;padding:10px 11px;resize:vertical}
+.ss-ta::placeholder{color:var(--hint);font-style:italic}
+
+.day-actions{display:flex;gap:8px;padding:0 18px 16px;flex-wrap:wrap;align-items:center}
+.btn-act{padding:7px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .18s}
+.btn-reset{border:1px solid var(--border2);background:transparent;color:var(--muted)}.btn-reset:hover{border-color:var(--accent);color:var(--accent)}
+.btn-save{border:1px solid var(--done);background:rgba(129,199,132,.1);color:var(--done)}.btn-save:hover{background:rgba(129,199,132,.2)}
+.saved-msg{font-size:11px;color:var(--done);font-family:'Space Mono',monospace;display:none;align-items:center;gap:4px}
+.saved-msg.show{display:flex}
+.sync-msg{font-size:11px;color:var(--accent2);font-family:'Space Mono',monospace}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:linear-gradient(to right,transparent,var(--border),transparent);margin:0 20px 48px}
+
+/* ── RULES ── */
+.rules-sec{max-width:900px;margin:0 auto;padding:0 20px 60px}
+.rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.rules-grid{grid-template-columns:1fr}}
+.rc{padding:18px;border-radius:14px;border:1px solid var(--border);background:var(--surface)}
+.rc-icon{font-size:20px;margin-bottom:8px}
+.rc-title{font-size:14px;font-weight:600;margin-bottom:7px}
+.rc-body{font-size:12px;color:var(--muted);line-height:2}
+
+
+
+footer{border-top:1px solid var(--border);padding:24px 20px;text-align:center;font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:.05em}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+.syncing{animation:pulse .8s ease-in-out infinite}
 </style>
 </head>
 <body>
 
-<div id="setupBanner">
-  <div style="width:100%">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-      <span style="font-weight:600">🔌 Database Connection</span>
-      <div id="connStatus" class="err">● Not connected</div>
-    </div>
-    <div class="setup-fields">
-      <input id="sbUrl" type="text" placeholder="Supabase URL" />
-      <input id="sbKey" type="text" placeholder="Anon public key" />
-      <button class="btn-connect" onclick="connectSupabase()">Connect</button>
-    </div>
-  </div>
-</div>
 
+
+<!-- HERO -->
 <div class="hero">
-  <div class="hero-tag">Beginner to Beast · 2026</div>
+  <div class="hero-tag">Calisthenics Bros · Training Tracker 2026</div>
   <h1 class="hero-title">CALIS<span>THEN</span>ICS<br>BROS</h1>
+  <p class="hero-sub">Check off exercises. Leave comments. Track every week.</p>
   <div class="athletes">
     <div class="ab a">
       <div class="ab-tag">Athlete A · 71 kg</div>
       <div class="ab-name">The Beginner</div>
-      <div class="ab-stats">Focus: Form & Foundations<br>Goal: 10 clean pull-ups</div>
+      <div class="ab-stats">Building foundation · Learning form<br>Consistency over intensity</div>
     </div>
     <div class="ab b">
       <div class="ab-tag">Athlete B · 100 kg</div>
-      <div class="ab-name">The Powerlifter</div>
-      <div class="ab-stats">Focus: Joint Prep & Volume<br>Goal: Master Body Control</div>
+      <div class="ab-name">The Comeback</div>
+      <div class="ab-stats">Shoulder rehab · 3 months off<br>Smart return — no overhead yet</div>
     </div>
   </div>
 </div>
 
+<!-- MAIN -->
 <div class="main-wrap">
-  <div class="week-tabs" id="weekTabs" style="margin-bottom:20px"></div>
+  <div class="wn-hd">
+    <div>
+      <div class="sec-tag">5-day program</div>
+      <div class="sec-title">Weekly Tracker</div>
+    </div>
+    <div class="week-tabs" id="weekTabs"></div>
+  </div>
+
   <div class="prog-strip" id="progStrip"></div>
+
+  <div class="gleg">
+    <div class="lg"><div class="lgd" style="background:var(--a-col)"></div>71 kg — A</div>
+    <div class="lg"><div class="lgd" style="background:var(--b-col)"></div>100 kg — B</div>
+    <div class="lg"><div class="lgd" style="background:var(--accent2)"></div>Shared</div>
+    <div class="lg"><div class="lgd" style="background:var(--done)"></div>Done ✓</div>
+    <div class="lg" style="margin-left:auto;font-family:'Space Mono',monospace;font-size:10px" id="syncLabel">● offline mode</div>
+  </div>
+
   <div class="day-list" id="dayList"></div>
 </div>
 
+<div class="divider"></div>
+
+<!-- RULES -->
+<div class="rules-sec">
+  <div class="sec-tag">partnership system</div>
+  <div class="sec-title" style="margin-bottom:20px">Training Rules</div>
+  <div class="rules-grid">
+    <div class="rc"><div class="rc-icon">🤝</div><div class="rc-title">Partner system</div><div class="rc-body">One goes, one rests — coach each other<br>B watches A's form on push/pull<br>A counts reps and times B's holds<br>No ego — finish clean every rep</div></div>
+    <div class="rc"><div class="rc-icon">📆</div><div class="rc-title">Programming logic</div><div class="rc-body">Same movement, scaled reps/variant<br>5 days on, 2 days off (Sat/Sun rest)<br>Deload week every 4th week (–30%)<br>Reassess every 4 weeks together</div></div>
+    <div class="rc"><div class="rc-icon">🩺</div><div class="rc-title">B's shoulder rules</div><div class="rc-body">NO overhead pressing for 4+ weeks<br>NO dips past 90° elbow bend<br>Band pull-aparts daily on rest days<br>Pain = stop immediately, not push through</div></div>
+    <div class="rc"><div class="rc-icon">🌱</div><div class="rc-title">A's beginner rules</div><div class="rc-body">Form first — reps second, always<br>Add 1 rep per set each week<br>If form breaks, reduce reps not sets<br>Log how it felt — data beats guessing</div></div>
+  </div>
+</div>
+
+<!-- SQL SETUP -->
+<div style="max-width:900px;margin:0 auto;padding:0 20px 60px">
+  <div class="sec-tag">supabase setup</div>
+  <div class="sec-title" style="font-size:28px;margin-bottom:14px">SQL Tables</div>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Run this in your Supabase SQL editor to create the required tables:</p>
+  <pre style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;font-family:'Space Mono',monospace;font-size:11px;color:#c8c0b0;overflow-x:auto;line-height:1.8">-- Checkbox state
+CREATE TABLE IF NOT EXISTS cb_state (
+  id BIGSERIAL PRIMARY KEY,
+  week INT NOT NULL,
+  day_id TEXT NOT NULL,
+  ex_idx INT NOT NULL,
+  checked BOOLEAN DEFAULT false,
+  updated_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(week, day_id, ex_idx)
+);
+
+-- Session notes
+CREATE TABLE IF NOT EXISTS session_notes (
+  id BIGSERIAL PRIMARY KEY,
+  week INT NOT NULL,
+  day_id TEXT NOT NULL,
+  note_a TEXT DEFAULT '',
+  note_b TEXT DEFAULT '',
+  summary TEXT DEFAULT '',
+  updated_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(week, day_id)
+);
+
+-- Comments
+CREATE TABLE IF NOT EXISTS comments (
+  id BIGSERIAL PRIMARY KEY,
+  week INT NOT NULL,
+  day_id TEXT NOT NULL,
+  ex_name TEXT,
+  athlete TEXT NOT NULL,
+  body TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Enable RLS (optional but recommended)
+ALTER TABLE cb_state ENABLE ROW LEVEL SECURITY;
+ALTER TABLE session_notes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
+
+-- Allow all for anon (adjust for auth later)
+CREATE POLICY "allow_all" ON cb_state FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "allow_all" ON session_notes FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "allow_all" ON comments FOR ALL USING (true) WITH CHECK (true);</pre>
+</div>
+
+<div class="divider"></div>
+
+
+<footer>Built for two brothers · Track · Check · Comment · Improve</footer>
+
 <script>
-// Revised doable exercises
+// ─────────────────────────────────────────────
+//  CONFIG
+// ─────────────────────────────────────────────
 const DAYS = [
-  { id:'mon', weekday:'Monday', type:'Push Day', name:'Push Foundations', focus:'Chest & Shoulders', tip:'100kg: Focus on a 3-second descent on every push-up.',
+  { id:'sun', weekday:'Sunday', type:'Rest / Active Recovery', name:'Rest Day', focus:'Mobility · Breathing · Light Movement',
+    tip:'No loading today. B: use this day to do your shoulder rehab band work — 10 min is enough. A: spend time on hip flexors and thoracic spine.',
     exercises:[
-      {name:'Warm-up', note:'Arm circles + 10 Wall Push-ups', type:'s', a:'Same', b:'Same'},
-      {name:'Incline Push-ups', note:'Chest-to-bar focus', type:'ab', a:'3x10', b:'3x15 (Standard)'},
-      {name:'Pike Hold', note:'Shoulder stability', type:'ab', a:'3x20s', b:'3x30s'},
-      {name:'Bench Dips', note:'Tricep focus', type:'ab', a:'3x8', b:'3x12'},
+      {name:'Diaphragmatic breathing', note:'Lie flat, belly rises first — 4 sec in, 6 sec out', type:'s', a:'3×10 breaths', b:'3×10 breaths'},
+      {name:'Cat-cow + thoracic rotations', note:'On all fours, slow and controlled', type:'s', a:'2×10 each', b:'2×10 each'},
+      {name:'Hip flexor stretch (couch stretch)', note:'30 sec per side, hold the wall', type:'s', a:'2×30 sec/side', b:'2×30 sec/side'},
+      {name:'Glute bridges', note:'Bodyweight, squeeze at top, no shoulder load for B', type:'s', a:'2×15', b:'2×15'},
+      {name:'Band pull-aparts (B only)', note:'Light band — horizontal pull, rehab for shoulder', type:'ab', a:'Rest / skip', b:'3×15 light band'},
+      {name:'Foam rolling', note:'Lats, quads, upper back — 30 sec each spot', type:'s', a:'10 min', b:'10 min'},
     ]
   },
-  { id:'tue', weekday:'Tuesday', type:'Pull Day', name:'Pull Foundations', focus:'Back & Grip', tip:'Dead hangs are key for grip strength at 100kg.',
+  { id:'mon', weekday:'Monday', type:'Push Day', name:'Push Strength', focus:'Chest · Triceps · Shoulder-Safe Press',
+    tip:'B: NO overhead pressing yet. Stick to incline and flat push patterns. A: focus on keeping elbows at 45°, not flared. Rest 90 sec between sets — you are going first, B coaches form.',
     exercises:[
-      {name:'Scapular Pulls', note:'Engage the back first', type:'s', a:'3x8', b:'3x10'},
-      {name:'Dead Hangs', note:'Grip strength', type:'s', a:'3x20s', b:'3x30s'},
-      {name:'Australian Rows', note:'Bar at chest height', type:'ab', a:'3x8', b:'3x12 (Lower bar)'},
-      {name:'Bicep Chin-up Negatives', note:'Jump up, slowly lower', type:'ab', a:'3x3', b:'3x5'},
+      {name:'Warm-up — wrist circles + arm swings', note:'Slow and controlled, 30 sec each direction', type:'s', a:'2 min', b:'2 min'},
+      {name:'Incline push-ups (hands on bar/bench)', note:'Easier angle — builds foundation safely', type:'ab', a:'3×10', b:'3×12 slow tempo'},
+      {name:'Knee push-ups', note:'A: transition to full when 3×15 feels easy', type:'ab', a:'3×8–10', b:'Skip → flat push-ups 3×10'},
+      {name:'Full push-ups', note:'Chest to floor, elbows 45°, full lock-out', type:'ab', a:'2×5 (if ready)', b:'3×12 controlled'},
+      {name:'Tricep dips (low bar / chair)', note:'B: keep shoulders depressed, no dipping past 90°', type:'ab', a:'3×6 assisted', b:'3×10 bodyweight'},
+      {name:'Plank hold', note:'Straight line head to heel — build that shoulder stability', type:'s', a:'3×20 sec', b:'3×30 sec'},
     ]
   },
-  { id:'wed', weekday:'Wednesday', type:'Core/Skill', name:'Core Basics', focus:'Abs & Balance', tip:'Keep lower back pressed into the floor.',
+  { id:'tue', weekday:'Tuesday', type:'Pull Day', name:'Pull Strength', focus:'Back · Biceps · Scapular Health',
+    tip:'B: scapular work is your priority right now — it directly rehabilitates the shoulder. A: dead hangs build grip and lat engagement before you attempt pull-up reps. Take your time.',
     exercises:[
-      {name:'Plank', note:'Max tension', type:'s', a:'3x30s', b:'3x45s'},
-      {name:'Knee Tucks', note:'On floor or bar', type:'ab', a:'3x10', b:'3x12'},
-      {name:'Bird-Dogs', note:'Stability focus', type:'s', a:'3x10', b:'3x10'},
+      {name:'Dead hang', note:'Passive hang — relax shoulders, feel the stretch', type:'s', a:'3×15–20 sec', b:'3×20–30 sec'},
+      {name:'Scapular pulls (bar)', note:'Arms straight, just shrug shoulder blades DOWN and back', type:'s', a:'3×8', b:'3×10 — feel each one'},
+      {name:'Australian rows (horizontal pull)', note:'Feet on ground, body at angle — beginner friendly', type:'ab', a:'3×8 bent knees', b:'3×10 straight body'},
+      {name:'Negative pull-ups', note:'Jump or step up, lower yourself slowly in 4–5 sec', type:'ab', a:'3×3 slow negatives', b:'3×5 — control the descent'},
+      {name:'Band-assisted pull-ups', note:'Loop band on bar, knee in band for support', type:'ab', a:'3×5 with band', b:'3×6 with light band'},
+      {name:'Face pulls (band)', note:'B: crucial for rotator cuff — external rotation at end', type:'s', a:'3×12', b:'3×15 with pause'},
     ]
   },
-  { id:'thu', weekday:'Thursday', type:'Leg Day', name:'Leg Foundations', focus:'Quads & Glutes', tip:'Powerlifter: Use your mobility advantage here.',
+  { id:'wed', weekday:'Wednesday', type:'Core & Skill Day', name:'Core + Skill', focus:'Abs · Stability · Body Control',
+    tip:'Skill days are equalizers — both start from scratch here. B: avoid any core exercise that loads the shoulder (no ab wheel). A: focus on learning the movement pattern, not reps.',
     exercises:[
-      {name:'Bodyweight Squats', note:'Full depth', type:'ab', a:'3x12', b:'3x20'},
-      {name:'Assisted Split Squats', note:'Balance help if needed', type:'ab', a:'3x8 each', b:'3x10 each'},
-      {name:'Calf Raises', note:'Slow and controlled', type:'s', a:'3x15', b:'3x15'},
+      {name:'Dead bug', note:'Lower back flat on floor the whole time', type:'s', a:'3×6 per side', b:'3×8 per side'},
+      {name:'Hollow body hold', note:'Arms by sides (easier) or overhead (harder)', type:'ab', a:'3×15 sec arms at sides', b:'3×25 sec arms overhead'},
+      {name:'Side plank', note:'B: bottom arm supports — no shoulder overhead stress', type:'ab', a:'3×15 sec/side', b:'3×25 sec/side'},
+      {name:'Tuck L-sit (parallel bars or floor)', note:'Both knees tucked, press down, lift hips', type:'ab', a:'3×8 sec', b:'3×12 sec'},
+      {name:'Wall sit', note:'Legs only — both can push hard here', type:'s', a:'3×30 sec', b:'3×45 sec'},
+      {name:'Superman hold', note:'Lie face down, lift chest + legs, hold — safe for B', type:'s', a:'3×20 sec', b:'3×30 sec'},
     ]
   },
-  { id:'fri', weekday:'Friday', type:'Full Body', name:'The Finisher', focus:'Total Body', tip:'End the week strong.',
+  { id:'thu', weekday:'Thursday', type:'Leg Day', name:'Legs + Hinge', focus:'Glutes · Hamstrings · Quads · Power',
+    tip:'Leg day is where B can work hard without shoulder risk. A: use the wall for balance on single-leg work. Nordic curls — one holds feet, one does reps. Perfect partner move.',
     exercises:[
-      {name:'Push-up to Plank hold', note:'Hybrid move', type:'ab', a:'3x5 reps', b:'3x8 reps'},
-      {name:'Row to Hang hold', note:'Hybrid move', type:'ab', a:'3x5 reps', b:'3x8 reps'},
-      {name:'Air Squat AMRAP', note:'As many as possible in 1 min', type:'s', a:'1 min', b:'1 min'},
+      {name:'Bodyweight squat', note:'Full depth, heels flat, chest up', type:'s', a:'3×12', b:'3×15'},
+      {name:'Glute bridge', note:'Drive through heels, squeeze at top', type:'s', a:'3×12', b:'3×20 or single-leg'},
+      {name:'Reverse lunges', note:'Step back, back knee hovers 2 cm off floor', type:'ab', a:'3×6/side', b:'3×10/side'},
+      {name:'Box step-ups', note:'Use a bench or step — controlled up and down', type:'ab', a:'3×8/side', b:'3×12/side weighted'},
+      {name:'Nordic hamstring curl negatives', note:'Partner holds feet — lean forward 3 sec controlled', type:'ab', a:'3×3 negatives', b:'3×5 negatives'},
+      {name:'Calf raises (single leg)', note:'Hang off a step edge, full range', type:'s', a:'3×12/side', b:'3×15/side'},
     ]
   },
-  { id:'sat', weekday:'Saturday', type:'Rest', name:'Active Recovery', focus:'Walking', tip:'Go for a 30 min walk.', exercises:[]},
-  { id:'sun', weekday:'Sunday', type:'Rest', name:'Full Rest', focus:'Recovery', tip:'Sleep well.', exercises:[]},
+  { id:'fri', weekday:'Friday', type:'Full Body Conditioning', name:'Full Body Flow', focus:'Endurance · Control · Mental Toughness',
+    tip:'This is your mindset day. The AMRAP is not a race — it is about staying composed when it burns. B: swap pull-ups for Australian rows in the circuit. A: keep moving, even if slow.',
+    exercises:[
+      {name:'Jump rope / jogging warm-up', note:'Get blood moving — 3 min easy pace', type:'s', a:'3 min', b:'3 min (low impact jog)'},
+      {name:'Push-up + squat superset', note:'10 push-ups then immediately 10 squats = 1 round', type:'ab', a:'3 rounds, 60 sec rest', b:'3 rounds, 45 sec rest'},
+      {name:'Australian row + lunge superset', note:'8 rows + 8 lunges/side = 1 round', type:'ab', a:'3 rounds', b:'3 rounds'},
+      {name:'Burpees (modified for B)', note:'B: step back instead of jumping to protect shoulder', type:'ab', a:'3×5 full burpees', b:'3×8 step-back burpees'},
+      {name:'AMRAP finisher (8 min)', note:'A: 5 push-ups + 10 squats + 15 sec plank / B: 8 rows + 10 squats + 15 sec hollow hold', type:'ab', a:'Max rounds in 8 min', b:'Max rounds in 8 min'},
+      {name:'Cool-down stretch', note:'Child's pose, pigeon, chest opener — hold 40 sec each', type:'s', a:'5 min', b:'5 min'},
+    ]
+  },
+  { id:'sat', weekday:'Saturday', type:'Rest / Fun Activity', name:'Rest Day', focus:'Play · Recovery · Mental Reset',
+    tip:'Move for joy, not performance. Basketball, swimming, hiking — anything goes. B: avoid throwing motions or overhead reaching. A: use this as an extra mobility day if energy allows.',
+    exercises:[
+      {name:'Optional fun activity', note:'Basketball, cycling, swimming, hiking — your call', type:'s', a:'Optional', b:'Optional (avoid overhead)'},
+      {name:'Shoulder pendulum swings (B only)', note:'Lean forward, let arm hang and swing gently in circles', type:'ab', a:'Rest', b:'2×1 min each direction'},
+      {name:'Full body stretch', note:'Spend 30 sec on any area that felt tight this week', type:'s', a:'10–15 min', b:'10–15 min'},
+    ]
+  },
 ];
 
+// ─────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────
 let currentWeek = 1;
 let sbClient = null;
 let isOnline = false;
 const openCards = new Set();
 
-async function initSupabase(url, key){
-  try {
-    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
-    sbClient = createClient(url, key);
-    const { error } = await sbClient.from('comments').select('id').limit(1);
-    if(error && error.code !== 'PGRST116') throw error;
-    isOnline = true;
-    document.getElementById('connStatus').className = 'ok';
-    document.getElementById('connStatus').textContent = '● Connected';
-    renderAll();
-  } catch(e) {
-    console.error(e);
-    document.getElementById('connStatus').textContent = '● Connection Error (Check RLS)';
-  }
+function lsKey(w,id,type){ return `cbros_${type}_w${w}_${id}`; }
+
+function loadLocal(w,id,numEx){
+  const cb = JSON.parse(localStorage.getItem(lsKey(w,id,'cb')) || 'null');
+  const notes = JSON.parse(localStorage.getItem(lsKey(w,id,'notes')) || 'null');
+  const comments = JSON.parse(localStorage.getItem(lsKey(w,id,'cmt')) || '[]');
+  return {
+    checks: cb || Array(numEx).fill(false),
+    noteA: notes?.noteA || '', noteB: notes?.noteB || '', summary: notes?.summary || '',
+    comments
+  };
 }
 
+function saveLocalCb(w,id,checks){ localStorage.setItem(lsKey(w,id,'cb'), JSON.stringify(checks)); }
+function saveLocalNotes(w,id,noteA,noteB,summary){ localStorage.setItem(lsKey(w,id,'notes'), JSON.stringify({noteA,noteB,summary})); }
+function saveLocalComments(w,id,comments){ localStorage.setItem(lsKey(w,id,'cmt'), JSON.stringify(comments)); }
+
+// ─────────────────────────────────────────────
+//  SUPABASE
+// ─────────────────────────────────────────────
 function connectSupabase(){
   const url = document.getElementById('sbUrl').value.trim();
   const key = document.getElementById('sbKey').value.trim();
-  if(!url || !key) return;
+  if(!url || !key){ alert('Enter both URL and anon key'); return; }
   localStorage.setItem('sb_url', url);
   localStorage.setItem('sb_key', key);
   initSupabase(url, key);
 }
 
-// Fixed for SQL Schema
-async function dbAddComment(w, dayId, athlete, exName, body){
-  const newC = {
-    week: w, 
-    day_id: dayId, 
-    athlete: athlete, 
-    ex_name: exName, 
-    content: body // Matches SQL 'content' column
-  };
+async function initSupabase(url, key){
+  setStatus('loading','● connecting…');
+  try {
+    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+    sbClient = createClient(url, key);
+    // test connection
+    const { error } = await sbClient.from('cb_state').select('id').limit(1);
+    if(error) throw error;
+    isOnline = true;
+    setStatus('ok','● supabase live');
+    document.getElementById('syncLabel').style.color = 'var(--done)';
+    document.getElementById('syncLabel').textContent = '● supabase live';
+    renderAll();
+  } catch(e) {
+    isOnline = false;
+    setStatus('err','● conn failed — offline');
+    console.error('Supabase error:', e);
+  }
+}
 
-  if(isOnline && sbClient) {
-    const { data, error } = await sbClient.from('comments').insert([newC]).select().single();
-    if(error) console.error("Upload failed (Check RLS policies)", error);
-    return data;
+function setStatus(cls, txt){
+  const el = document.getElementById('connStatus');
+  el.className = cls; el.textContent = txt;
+}
+
+function toggleBanner(){
+  const b = document.getElementById('setupBanner');
+  b.style.display = b.style.display === 'none' ? '' : 'none';
+}
+
+// ─────────────────────────────────────────────
+//  DB OPERATIONS (with local fallback)
+// ─────────────────────────────────────────────
+async function dbSetCheck(w, dayId, exIdx, checked){
+  saveLocalCb(w, dayId, getLocalChecks(w, dayId, DAYS.find(d=>d.id===dayId).exercises.length).map((v,i)=>i===exIdx?checked:v));
+  if(!isOnline || !sbClient) return;
+  await sbClient.from('cb_state').upsert({week:w, day_id:dayId, ex_idx:exIdx, checked, updated_at:new Date().toISOString()},{onConflict:'week,day_id,ex_idx'});
+}
+
+function getLocalChecks(w,id,numEx){ return JSON.parse(localStorage.getItem(lsKey(w,id,'cb')) || 'null') || Array(numEx).fill(false); }
+
+async function dbGetChecks(w, dayId, numEx){
+  if(!isOnline || !sbClient) return getLocalChecks(w,dayId,numEx);
+  const { data, error } = await sbClient.from('cb_state').select('ex_idx,checked').eq('week',w).eq('day_id',dayId);
+  if(error || !data) return getLocalChecks(w,dayId,numEx);
+  const arr = Array(numEx).fill(false);
+  data.forEach(r=>{ if(r.ex_idx < numEx) arr[r.ex_idx] = r.checked; });
+  saveLocalCb(w,dayId,arr);
+  return arr;
+}
+
+async function dbSaveNotes(w, dayId, noteA, noteB, summary){
+  saveLocalNotes(w,dayId,noteA,noteB,summary);
+  if(!isOnline || !sbClient) return;
+  await sbClient.from('session_notes').upsert({week:w, day_id:dayId, note_a:noteA, note_b:noteB, summary, updated_at:new Date().toISOString()},{onConflict:'week,day_id'});
+}
+
+async function dbGetNotes(w, dayId){
+  if(!isOnline || !sbClient){
+    const n = JSON.parse(localStorage.getItem(lsKey(w,dayId,'notes')) || 'null');
+    return n || {noteA:'',noteB:'',summary:''};
+  }
+  const { data } = await sbClient.from('session_notes').select('note_a,note_b,summary').eq('week',w).eq('day_id',dayId).maybeSingle();
+  const res = {noteA: data?.note_a||'', noteB: data?.note_b||'', summary: data?.summary||''};
+  saveLocalNotes(w,dayId,res.noteA,res.noteB,res.summary);
+  return res;
+}
+
+async function dbAddComment(w, dayId, athlete, exName, body){
+  const newC = {id: Date.now(), week:w, day_id:dayId, athlete, ex_name:exName, body, created_at:new Date().toISOString()};
+  // local
+  const existing = JSON.parse(localStorage.getItem(lsKey(w,dayId,'cmt')) || '[]');
+  existing.push(newC); saveLocalComments(w,dayId,existing);
+  if(isOnline && sbClient){
+    const {data} = await sbClient.from('comments').insert({week:w, day_id:dayId, athlete, ex_name:exName, body}).select().single();
+    if(data) { existing[existing.length-1].id = data.id; saveLocalComments(w,dayId,existing); newC.id = data.id; }
   }
   return newC;
 }
 
-async function renderDays(){
-  const el = document.getElementById('dayList');
-  el.innerHTML = '';
-
-  for (const day of DAYS) {
-    const isOpen = openCards.has(day.id);
-    const card = document.createElement('div');
-    card.className = `day-card ${isOpen ? 'open' : ''}`;
-    
-    let exHtml = day.exercises.map(ex => `
-      <div class="ex-row">
-        <div style="font-weight:bold">✓</div>
-        <div>${ex.name}</div>
-        <div><span class="pill pill-a">${ex.a}</span></div>
-        <div><span class="pill pill-b">${ex.b}</span></div>
-      </div>
-    `).join('');
-
-    card.innerHTML = `
-      <div class="day-hd" onclick="toggleDay('${day.id}')">
-        <div><strong>${day.weekday}</strong>: ${day.name}</div>
-      </div>
-      <div class="day-body">
-        ${exHtml}
-        <div class="comment-list" id="cmts_${day.id}"></div>
-        <div style="padding:18px">
-          <select id="sel_${day.id}"><option value="A">71kg</option><option value="B">100kg</option></select>
-          <input type="text" id="inp_${day.id}" class="cm-input" placeholder="Add a comment...">
-          <button onclick="postC('${day.id}')" style="margin-top:10px; padding:5px 15px">Post</button>
-        </div>
-      </div>
-    `;
-    el.appendChild(card);
-    if(isOnline) loadComments(day.id);
-  }
+async function dbGetComments(w, dayId){
+  if(!isOnline || !sbClient) return JSON.parse(localStorage.getItem(lsKey(w,dayId,'cmt')) || '[]');
+  const {data} = await sbClient.from('comments').select('*').eq('week',w).eq('day_id',dayId).order('created_at',{ascending:true});
+  const res = (data||[]).map(r=>({id:r.id, athlete:r.athlete, ex_name:r.ex_name, body:r.body, created_at:r.created_at}));
+  saveLocalComments(w,dayId,res);
+  return res;
 }
 
-async function loadComments(dayId){
-  const { data } = await sbClient.from('comments').select('*').eq('week', currentWeek).eq('day_id', dayId);
-  if(data) {
-    const list = document.getElementById('cmts_'+dayId);
-    list.innerHTML = data.map(c => `<div class="comment-item"><strong>${c.athlete}</strong>: ${c.content}</div>`).join('');
-  }
+async function dbDeleteComment(w, dayId, cmtId){
+  const existing = JSON.parse(localStorage.getItem(lsKey(w,dayId,'cmt')) || '[]');
+  const filtered = existing.filter(c=>c.id !== cmtId);
+  saveLocalComments(w,dayId,filtered);
+  if(isOnline && sbClient) await sbClient.from('comments').delete().eq('id',cmtId);
 }
 
-async function postC(dayId){
-  const athlete = document.getElementById('sel_'+dayId).value;
-  const content = document.getElementById('inp_'+dayId).value;
-  await dbAddComment(currentWeek, dayId, athlete, 'General', content);
-  loadComments(dayId);
-  document.getElementById('inp_'+dayId).value = '';
-}
-
-function toggleDay(id){
-  if(openCards.has(id)) openCards.delete(id);
-  else openCards.add(id);
-  renderDays();
+// ─────────────────────────────────────────────
+//  RENDER
+// ─────────────────────────────────────────────
+function pillCls(type,which){
+  if(type==='s') return 'pill-s';
+  return which==='a'?'pill-a':'pill-b';
 }
 
 function renderWeekTabs(){
   const el = document.getElementById('weekTabs');
-  el.innerHTML = [1,2,3,4].map(w => `<button class="wtab ${w===currentWeek?'active':''}" onclick="currentWeek=${w};renderAll()">${w}</button>`).join('');
+  el.innerHTML = [1,2,3,4,5,6,7,8].map(w=>`<button class="wtab ${w===currentWeek?'active':''}" onclick="setWeek(${w},this)">Week ${w}</button>`).join('');
 }
 
-function renderAll(){
+async function renderProgressStrip(){
+  const el = document.getElementById('progStrip');
+  const results = await Promise.all(DAYS.map(d=>dbGetChecks(currentWeek,d.id,d.exercises.length)));
+  el.innerHTML = DAYS.map((d,i)=>{
+    const checks = results[i];
+    const done = checks.filter(Boolean).length;
+    const total = d.exercises.length;
+    const pct = total>0?Math.round(done/total*100):0;
+    const complete = pct===100;
+    return `<div class="ps ${complete?'complete':''}" title="${d.weekday} — ${d.type}">
+      <div class="ps-day">${d.weekday.slice(0,3).toUpperCase()}</div>
+      <div class="ps-label">${d.type}</div>
+      <div class="ps-bar-bg"><div class="ps-bar" style="width:${pct}%"></div></div>
+      <div class="ps-pct">${done}/${total}</div>
+    </div>`;
+  }).join('');
+}
+
+async function renderDays(){
+  const el = document.getElementById('dayList');
+  el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">Loading…</div>';
+
+  const allData = await Promise.all(DAYS.map(async d=>{
+    const [checks, notes, comments] = await Promise.all([
+      dbGetChecks(currentWeek,d.id,d.exercises.length),
+      dbGetNotes(currentWeek,d.id),
+      dbGetComments(currentWeek,d.id)
+    ]);
+    return {checks,notes,comments};
+  }));
+
+  el.innerHTML = DAYS.map((day,di)=>{
+    const {checks,notes,comments} = allData[di];
+    const done = checks.filter(Boolean).length;
+    const total = day.exercises.length;
+    const complete = done===total;
+    const isOpen = openCards.has(day.id);
+
+    const exRows = day.exercises.map((ex,ei)=>{
+      const chk = checks[ei];
+      const pA = pillCls(ex.type,'a');
+      const pB = pillCls(ex.type,'b');
+      return `<div class="ex-row ${chk?'checked':''}" id="exrow_${day.id}_${ei}">
+        <div class="cb-wrap">
+          <div class="cb" onclick="toggleCheck('${day.id}',${ei})" title="Mark done">
+            <span class="cb-tick">✓</span>
+          </div>
+        </div>
+        <div class="ex-info">
+          <div class="en">${ex.name}</div>
+          <div class="en2">${ex.note}</div>
+        </div>
+        <div><span class="pill ${pA}">${ex.a}</span></div>
+        <div><span class="pill ${pB}">${ex.b}</span></div>
+      </div>`;
+    }).join('');
+
+    const cmtHtml = comments.length===0
+      ? '<div class="no-comments">No comments yet — be first!</div>'
+      : comments.map(c=>`<div class="comment-item">
+          <div class="ci-header">
+            <span class="ci-who ${c.athlete==='A'?'a':'b'}">${c.athlete==='A'?'71 kg — A':'100 kg — B'}</span>
+            ${c.ex_name?`<span class="ci-ex">on: ${c.ex_name}</span>`:''}
+            <span class="ci-time">${formatTime(c.created_at)}</span>
+            <button class="ci-del" onclick="deleteComment('${day.id}',${JSON.stringify(c.id)})" title="Delete">✕</button>
+          </div>
+          <div class="ci-text">${escHtml(c.body)}</div>
+        </div>`).join('');
+
+    const exOptions = day.exercises.map(ex=>`<option value="${escHtml(ex.name)}">${escHtml(ex.name)}</option>`).join('');
+
+    return `<div class="day-card ${complete?'complete':''} ${isOpen?'open':''}" id="daycard_${day.id}">
+      <div class="day-hd" onclick="toggleDay('${day.id}')">
+        <div class="day-ring">${complete?'✓':'○'}</div>
+        <div class="day-info">
+          <div class="day-weekday">${day.weekday} · ${day.type}</div>
+          <div class="day-name">${day.name}</div>
+          <div class="day-focus">${day.focus}</div>
+        </div>
+        <div class="day-meta-right">
+          <div class="day-count">${done}/${total}</div>
+          <div class="day-chev">▾</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="ex-wrap">
+          <div class="ex-header">
+            <span></span><span>Exercise</span><span class="eh-a">71 kg</span><span class="eh-b">100 kg</span>
+          </div>
+          ${exRows}
+        </div>
+        <div class="day-tip">💡 ${day.tip}</div>
+
+        <!-- COMMENTS -->
+        <div class="comments-sec">
+          <div class="cs-title">💬 Exercise Comments</div>
+          <div class="comment-list" id="cmtlist_${day.id}">${cmtHtml}</div>
+          <div class="add-comment">
+            <select class="cm-who-sel" id="cmwho_${day.id}">
+              <option value="A">71 kg — Athlete A</option>
+              <option value="B">100 kg — Athlete B</option>
+            </select>
+            <select class="cm-ex-sel" id="cmex_${day.id}">
+              <option value="">All exercises</option>
+              ${exOptions}
+            </select>
+          </div>
+          <div class="add-comment-row2">
+            <textarea class="cm-input" id="cminput_${day.id}" placeholder="Your thoughts on today's workout, form tips, PRs…" rows="2"></textarea>
+            <button class="btn-comment" onclick="addComment('${day.id}')">Post</button>
+          </div>
+        </div>
+
+        <!-- NOTES -->
+        <div class="notes-sec">
+          <div class="ns-divider"></div>
+          <div class="ns-title">📝 Session Notes</div>
+          <div class="notes-duo">
+            <div class="nb a"><div class="nb-hd">71 kg — Athlete A</div>
+              <textarea class="nb-ta" id="noteA_${day.id}" placeholder="How did it feel? Any PRs? Pain points…" onchange="autoSaveNotes('${day.id}')">${escHtml(notes.noteA)}</textarea></div>
+            <div class="nb b"><div class="nb-hd">100 kg — Athlete B</div>
+              <textarea class="nb-ta" id="noteB_${day.id}" placeholder="How did it feel? Any PRs? Pain points…" onchange="autoSaveNotes('${day.id}')">${escHtml(notes.noteB)}</textarea></div>
+          </div>
+          <div class="ss"><div class="ss-hd">📋 Session Summary</div>
+            <textarea class="ss-ta" id="sum_${day.id}" placeholder="Overall notes — what to adjust, energy levels, form wins…" onchange="autoSaveNotes('${day.id}')">${escHtml(notes.summary)}</textarea></div>
+        </div>
+
+        <div class="day-actions">
+          <button class="btn-act btn-reset" onclick="resetDay('${day.id}',${day.exercises.length})">↺ Reset</button>
+          <button class="btn-act btn-save" onclick="manualSave('${day.id}')">✓ Save notes</button>
+          <div class="saved-msg" id="savedmsg_${day.id}">✓ Saved!</div>
+          <div class="sync-msg" id="syncmsg_${day.id}" style="display:none"></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function renderAll(){
   renderWeekTabs();
-  renderDays();
+  await renderProgressStrip();
+  await renderDays();
 }
 
-renderAll();
+// ─────────────────────────────────────────────
+//  INTERACTIONS
+// ─────────────────────────────────────────────
+function toggleDay(id){
+  const card = document.getElementById('daycard_'+id);
+  card.classList.toggle('open');
+  if(card.classList.contains('open')) openCards.add(id);
+  else openCards.delete(id);
+}
+
+async function toggleCheck(dayId, exIdx){
+  const day = DAYS.find(d=>d.id===dayId);
+  const checks = await dbGetChecks(currentWeek, dayId, day.exercises.length);
+  const newVal = !checks[exIdx];
+  await dbSetCheck(currentWeek, dayId, exIdx, newVal);
+
+  // update row
+  const row = document.getElementById(`exrow_${dayId}_${exIdx}`);
+  if(row) row.classList.toggle('checked', newVal);
+
+  // update ring + count
+  const newChecks = await dbGetChecks(currentWeek, dayId, day.exercises.length);
+  const done = newChecks.filter(Boolean).length;
+  const total = day.exercises.length;
+  const complete = done===total;
+
+  const card = document.getElementById('daycard_'+dayId);
+  if(card){
+    card.classList.toggle('complete', complete);
+    const ring = card.querySelector('.day-ring');
+    if(ring) ring.textContent = complete?'✓':'○';
+    const cnt = card.querySelector('.day-count');
+    if(cnt) cnt.textContent = `${done}/${total}`;
+  }
+  renderProgressStrip();
+}
+
+async function addComment(dayId){
+  const athlete = document.getElementById('cmwho_'+dayId).value;
+  const exName = document.getElementById('cmex_'+dayId).value;
+  const body = document.getElementById('cminput_'+dayId).value.trim();
+  if(!body) return;
+  document.getElementById('cminput_'+dayId).value = '';
+  const newC = await dbAddComment(currentWeek, dayId, athlete, exName, body);
+  // append to list
+  const list = document.getElementById('cmtlist_'+dayId);
+  if(list){
+    const noMsg = list.querySelector('.no-comments');
+    if(noMsg) noMsg.remove();
+    const div = document.createElement('div');
+    div.className = 'comment-item';
+    div.innerHTML = `<div class="ci-header">
+      <span class="ci-who ${athlete==='A'?'a':'b'}">${athlete==='A'?'71 kg — A':'100 kg — B'}</span>
+      ${exName?`<span class="ci-ex">on: ${exName}</span>`:''}
+      <span class="ci-time">just now</span>
+      <button class="ci-del" onclick="deleteComment('${dayId}',${JSON.stringify(newC.id)})" title="Delete">✕</button>
+    </div><div class="ci-text">${escHtml(body)}</div>`;
+    list.appendChild(div);
+    list.scrollTop = list.scrollHeight;
+  }
+}
+
+async function deleteComment(dayId, cmtId){
+  await dbDeleteComment(currentWeek, dayId, cmtId);
+  // re-render comments section
+  const comments = await dbGetComments(currentWeek, dayId);
+  const list = document.getElementById('cmtlist_'+dayId);
+  if(list){
+    list.innerHTML = comments.length===0
+      ? '<div class="no-comments">No comments yet — be first!</div>'
+      : comments.map(c=>`<div class="comment-item">
+          <div class="ci-header">
+            <span class="ci-who ${c.athlete==='A'?'a':'b'}">${c.athlete==='A'?'71 kg — A':'100 kg — B'}</span>
+            ${c.ex_name?`<span class="ci-ex">on: ${c.ex_name}</span>`:''}
+            <span class="ci-time">${formatTime(c.created_at)}</span>
+            <button class="ci-del" onclick="deleteComment('${dayId}',${JSON.stringify(c.id)})" title="Delete">✕</button>
+          </div>
+          <div class="ci-text">${escHtml(c.body)}</div>
+        </div>`).join('');
+  }
+}
+
+async function autoSaveNotes(dayId){
+  const noteA = document.getElementById('noteA_'+dayId)?.value || '';
+  const noteB = document.getElementById('noteB_'+dayId)?.value || '';
+  const summary = document.getElementById('sum_'+dayId)?.value || '';
+  await dbSaveNotes(currentWeek, dayId, noteA, noteB, summary);
+}
+
+async function manualSave(dayId){
+  await autoSaveNotes(dayId);
+  const msg = document.getElementById('savedmsg_'+dayId);
+  if(msg){ msg.classList.add('show'); setTimeout(()=>msg.classList.remove('show'),2200); }
+}
+
+async function resetDay(dayId, numEx){
+  if(!confirm('Reset all checkboxes for this day? Notes will remain.')) return;
+  for(let i=0;i<numEx;i++) await dbSetCheck(currentWeek, dayId, i, false);
+  // update UI
+  document.querySelectorAll(`[id^="exrow_${dayId}_"]`).forEach(r=>r.classList.remove('checked'));
+  const card = document.getElementById('daycard_'+dayId);
+  if(card){
+    card.classList.remove('complete');
+    const ring = card.querySelector('.day-ring');
+    if(ring) ring.textContent = '○';
+    const cnt = card.querySelector('.day-count');
+    if(cnt) cnt.textContent = `0/${numEx}`;
+  }
+  renderProgressStrip();
+}
+
+function setWeek(w, btn){
+  currentWeek = w;
+  document.querySelectorAll('.wtab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll();
+}
+
+// ─────────────────────────────────────────────
+//  UTILS
+// ─────────────────────────────────────────────
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function formatTime(iso){
+  if(!iso) return '';
+  const d = new Date(iso);
+  const now = new Date();
+  const diff = (now - d)/1000;
+  if(diff < 60) return 'just now';
+  if(diff < 3600) return `${Math.floor(diff/60)}m ago`;
+  if(diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+  return d.toLocaleDateString();
+}
+
+// ─────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────
+const savedUrl = localStorage.getItem('sb_url');
+const savedKey = localStorage.getItem('sb_key');
+if(savedUrl && savedKey){
+  document.getElementById('sbUrl').value = savedUrl;
+  document.getElementById('sbKey').value = savedKey;
+  initSupabase(savedUrl, savedKey);
+} else {
+  renderAll();
+}
 </script>
 </body>
 </html>
