@@ -266,59 +266,6 @@ footer{border-top:1px solid var(--border);padding:24px 20px;text-align:center;fo
   </div>
 </div>
 
-<!-- SQL SETUP -->
-<div style="max-width:900px;margin:0 auto;padding:0 20px 60px">
-  <div class="sec-tag">supabase setup</div>
-  <div class="sec-title" style="font-size:28px;margin-bottom:14px">SQL Tables</div>
-  <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Run this in your Supabase SQL editor to create the required tables:</p>
-  <pre style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;font-family:'Space Mono',monospace;font-size:11px;color:#c8c0b0;overflow-x:auto;line-height:1.8">-- Checkbox state
-CREATE TABLE IF NOT EXISTS cb_state (
-  id BIGSERIAL PRIMARY KEY,
-  week INT NOT NULL,
-  day_id TEXT NOT NULL,
-  ex_idx INT NOT NULL,
-  checked BOOLEAN DEFAULT false,
-  updated_at TIMESTAMPTZ DEFAULT now(),
-  UNIQUE(week, day_id, ex_idx)
-);
-
--- Session notes
-CREATE TABLE IF NOT EXISTS session_notes (
-  id BIGSERIAL PRIMARY KEY,
-  week INT NOT NULL,
-  day_id TEXT NOT NULL,
-  note_a TEXT DEFAULT '',
-  note_b TEXT DEFAULT '',
-  summary TEXT DEFAULT '',
-  updated_at TIMESTAMPTZ DEFAULT now(),
-  UNIQUE(week, day_id)
-);
-
--- Comments
-CREATE TABLE IF NOT EXISTS comments (
-  id BIGSERIAL PRIMARY KEY,
-  week INT NOT NULL,
-  day_id TEXT NOT NULL,
-  ex_name TEXT,
-  athlete TEXT NOT NULL,
-  body TEXT NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-
--- Enable RLS (optional but recommended)
-ALTER TABLE cb_state ENABLE ROW LEVEL SECURITY;
-ALTER TABLE session_notes ENABLE ROW LEVEL SECURITY;
-ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
-
--- Allow all for anon (adjust for auth later)
-CREATE POLICY "allow_all" ON cb_state FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "allow_all" ON session_notes FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "allow_all" ON comments FOR ALL USING (true) WITH CHECK (true);</pre>
-</div>
-
-<div class="divider"></div>
-
-
 <footer>Built for two brothers · Track · Check · Comment · Improve</footer>
 
 <script>
