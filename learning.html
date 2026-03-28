@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Full-Stack Learning Roadmap</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; padding: 40px 20px; }
+  .container { max-width: 860px; margin: 0 auto; }
+
+  h1 { font-size: 2rem; font-weight: 800; text-align: center; margin-bottom: 6px; background: linear-gradient(90deg, #6366f1, #a78bfa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .subtitle { text-align: center; color: #94a3b8; font-size: 0.95rem; margin-bottom: 40px; }
+
+  .phase { background: #1e2130; border-radius: 16px; margin-bottom: 28px; overflow: hidden; border: 1px solid #2d3348; }
+  .phase-header { display: flex; align-items: center; gap: 14px; padding: 18px 24px; cursor: pointer; user-select: none; }
+  .phase-header:hover { background: #252840; }
+  .phase-emoji { font-size: 1.5rem; }
+  .phase-title { flex: 1; }
+  .phase-title h2 { font-size: 1.1rem; font-weight: 700; color: #f1f5f9; }
+  .phase-title p { font-size: 0.8rem; color: #64748b; margin-top: 2px; }
+  .phase-badge { font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 99px; white-space: nowrap; }
+  .green .phase-badge  { background: #064e3b; color: #34d399; }
+  .yellow .phase-badge { background: #451a03; color: #fbbf24; }
+  .blue .phase-badge   { background: #0c1a4e; color: #60a5fa; }
+  .purple .phase-badge { background: #2e1065; color: #c084fc; }
+  .toggle { color: #475569; font-size: 1.1rem; transition: transform .3s; }
+  .phase.open .toggle { transform: rotate(180deg); }
+
+  .phase-body { display: none; padding: 0 24px 20px; }
+  .phase.open .phase-body { display: block; }
+
+  .section { margin-bottom: 18px; }
+  .section-title { font-size: 0.7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #475569; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #2d3348; }
+
+  .task { display: flex; align-items: flex-start; gap: 12px; padding: 10px 12px; border-radius: 10px; margin-bottom: 6px; cursor: pointer; transition: background .15s; }
+  .task:hover { background: #252840; }
+  .task.done { opacity: 0.45; }
+  .task.done .task-name { text-decoration: line-through; }
+  .checkbox { width: 20px; height: 20px; border-radius: 6px; border: 2px solid #334155; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all .2s; }
+  .task.done .checkbox { background: #22c55e; border-color: #22c55e; }
+  .checkmark { color: white; font-size: 12px; display: none; }
+  .task.done .checkmark { display: block; }
+  .task-info { flex: 1; }
+  .task-name { font-size: 0.9rem; color: #e2e8f0; font-weight: 500; }
+  .task-desc { font-size: 0.78rem; color: #64748b; margin-top: 2px; }
+  .task-tag { font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 99px; margin-left: auto; flex-shrink: 0; align-self: center; }
+  .tag-free    { background: #064e3b; color: #34d399; }
+  .tag-tool    { background: #1e3a5f; color: #60a5fa; }
+  .tag-concept { background: #2e1065; color: #c084fc; }
+
+  .progress-bar-wrap { background: #1e2130; border-radius: 16px; padding: 20px 24px; margin-bottom: 28px; border: 1px solid #2d3348; }
+  .progress-bar-wrap h3 { font-size: 0.85rem; color: #94a3b8; margin-bottom: 10px; }
+  .progress-bar { height: 10px; background: #2d3348; border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #a78bfa); border-radius: 99px; transition: width .4s; width: 0%; }
+  .progress-text { font-size: 0.8rem; color: #64748b; margin-top: 8px; text-align: right; }
+
+  .tip { background: #1a2235; border-left: 3px solid #6366f1; border-radius: 0 10px 10px 0; padding: 12px 16px; margin-bottom: 18px; font-size: 0.82rem; color: #94a3b8; }
+  .tip strong { color: #a78bfa; }
+
+  @media print {
+    body { background: white; color: black; }
+    .phase { border: 1px solid #ccc; }
+    .phase-body { display: block !important; }
+    .toggle { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>🚀 Full-Stack Learning Roadmap</h1>
+  <p class="subtitle">Next.js · Tailwind · Prisma · Neon · Clerk · Vercel — Offline Checklist</p>
+
+  <div class="progress-bar-wrap">
+    <h3>📊 Overall Progress</h3>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText">0 / 0 tasks completed</div>
+  </div>
+
+  <div class="tip"><strong>💡 Vibe Coder Tip:</strong> You don't need internet to learn the concepts. Read docs offline, write code locally with <code>npm run dev</code>, and use AI (Cursor) when stuck. Focus on <em>building</em> — not memorizing.</div>
+
+  <!-- PHASE 1 -->
+  <div class="phase green open" id="phase1">
+    <div class="phase-header" onclick="togglePhase('phase1')">
+      <span class="phase-emoji">🟢</span>
+      <div class="phase-title">
+        <h2>Phase 1 — The Basics</h2>
+        <p>Week 1–2 · Get your first page live</p>
+      </div>
+      <span class="phase-badge">Beginner</span>
+      <span class="toggle">▼</span>
+    </div>
+    <div class="phase-body">
+
+      <div class="section">
+        <div class="section-title">⚙️ Setup (Day 1)</div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Install Node.js (v18+)</div><div class="task-desc">Download from nodejs.org — required for everything</div></div><span class="task-tag tag-tool">Tool</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Install VS Code or Cursor</div><div class="task-desc">Cursor = VS Code + AI built-in, best for vibe coding</div></div><span class="task-tag tag-tool">Tool</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Install Git</div><div class="task-desc">git-scm.com — needed for GitHub + Vercel deploy</div></div><span class="task-tag tag-tool">Tool</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Run: npx create-next-app@latest my-app</div><div class="task-desc">Creates your first Next.js project. Choose TypeScript: No, Tailwind: Yes, App Router: Yes</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Run: npm run dev — see it in browser</div><div class="task-desc">Go to localhost:3000 and see your app running locally</div></div><span class="task-tag tag-free">Free</span></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">📄 Next.js Basics (Days 2–5)</div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Understand the /app folder structure</div><div class="task-desc">page.jsx = a page, layout.jsx = shared wrapper, folder name = URL route</div></div><span class="task-tag tag-concept">Concept</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Create 3 pages: /, /about, /contact</div><div class="task-desc">Make a folder for each, add a page.jsx inside</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Learn React components (functions that return HTML)</div><div class="task-desc">const MyCard = () => return &lt;div&gt;...&lt;/div&gt;</div></div><span class="task-tag tag-concept">Concept</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Learn useState — make a counter button</div><div class="task-desc">import { useState } from 'react' — track changing values</div></div><span class="task-tag tag-concept">Concept</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Build a simple navbar component and reuse it</div><div class="task-desc">Put it in /components/Navbar.jsx and import on every page</div></div><span class="task-tag tag-free">Free</span></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">🎨 Tailwind CSS (Days 4–7)</div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Learn the core idea: classes = styles</div><div class="task-desc">text-xl = font size, font-bold = bold, bg-blue-500 = background color</div></div><span class="task-tag tag-concept">Concept</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Learn flex and grid layout classes</div><div class="task-desc">flex, items-center, justify-between, grid, grid-cols-3, gap-4</div></div><span class="task-tag tag-concept">Concept</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Learn responsive classes: sm: md: lg:</div><div class="task-desc">md:text-2xl = only applies on medium screens and up</div></div><span class="task-tag tag-concept">Concept</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Rebuild your HTML project homepage in Tailwind</div><div class="task-desc">Take your old HTML design and recreate it with Tailwind classes</div></div><span class="task-tag tag-free">Free</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase yellow" id="phase2">
+    <div class="phase-header" onclick="togglePhase('phase2')">
+      <span class="phase-emoji">🟡</span>
+      <div class="phase-title">
+        <h2>Phase 2 — Real Features</h2>
+        <p>Week 3–5 · Database, Auth, Backend</p>
+      </div>
+      <span class="phase-badge">Intermediate</span>
+      <span class="toggle">▼</span>
+    </div>
+    <div class="phase-body">
+
+      <div class="section">
+        <div class="section-title">🗄️ Database with Prisma + Neon (Week 3)</div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Create a free Neon.tech account and database</div><div class="task-desc">neon.tech — free Postgres DB, copy the connection string</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Install Prisma: npm install prisma @prisma/client</div><div class="task-desc">Then run: npx prisma init</div></div><span class="task-tag tag-tool">Tool</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Write your first schema in prisma/schema.prisma</div><div class="task-desc">Define a model (like a User or Post) with fields</div></div><span class="task-tag tag-concept">Concept</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Run: npx prisma db push</div><div class="task-desc">This sends your schema to Neon and creates the tables</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Use Prisma Studio to see your data visually</div><div class="task-desc">Run: npx prisma studio — opens a visual DB editor at localhost:5555</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Write a query: prisma.user.findMany()</div><div class="task-desc">Learn create, findMany, findUnique, update, delete</div></div><span class="task-tag tag-concept">Concept</span></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">⚙️ Backend with API Routes (Week 4)</div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Understand what an API route is</div><div class="task-desc">app/api/hello/route.js — a backend endpoint inside Next.js</div></div><span class="task-tag tag-concept">Concept</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Create a GET route that returns data from your DB</div><div class="task-desc">export async function GET() { const data = await prisma... }</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Create a POST route that saves data to DB</div><div class="task-desc">Read request body, validate it, write to database</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Connect a form on the frontend to your POST route</div><div class="task-desc">User fills form → fetch('/api/...') → data saved in DB</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Learn Zod for input validation</div><div class="task-desc">npm install zod — validate data before saving to DB</div></div><span class="task-tag tag-tool">Tool</span></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">🔐 Auth with Clerk (Week 5)</div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Create a free Clerk account at clerk.com</div><div class="task-desc">Create an app, choose Google + Email login</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Install Clerk: npm install @clerk/nextjs</div><div class="task-desc">Follow their Next.js quickstart guide</div></div><span class="task-tag tag-tool">Tool</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Add ClerkProvider to your layout.jsx</div><div class="task-desc">Wraps your app so auth works everywhere</div></div><span class="task-tag tag-concept">Concept</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Protect a page — only logged in users can see it</div><div class="task-desc">Use middleware.js to block routes from unauthenticated users</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Show user info: useUser() hook</div><div class="task-desc">Display user's name/avatar from Clerk in your navbar</div></div><span class="task-tag tag-concept">Concept</span></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">🧩 UI Components with shadcn/ui</div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Install shadcn: npx shadcn@latest init</div><div class="task-desc">Follow the setup wizard — choose your theme color</div></div><span class="task-tag tag-tool">Tool</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Add a Button component: npx shadcn@latest add button</div><div class="task-desc">Import and use: &lt;Button&gt;Click me&lt;/Button&gt;</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Add Card, Input, Dialog, Table components</div><div class="task-desc">These cover 80% of all UI you'll ever need</div></div><span class="task-tag tag-free">Free</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase blue" id="phase3">
+    <div class="phase-header" onclick="togglePhase('phase3')">
+      <span class="phase-emoji">🔵</span>
+      <div class="phase-title">
+        <h2>Phase 3 — Polish & Ship</h2>
+        <p>Week 6–7 · Emails, Uploads, Deploy</p>
+      </div>
+      <span class="phase-badge">Advanced</span>
+      <span class="toggle">▼</span>
+    </div>
+    <div class="phase-body">
+
+      <div class="section">
+        <div class="section-title">📧 Emails with Resend</div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Create free Resend account at resend.com</div><div class="task-desc">3,000 free emails/month — perfect for starting out</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Install: npm install resend react-email</div><div class="task-desc">react-email lets you design emails as React components</div></div><span class="task-tag tag-tool">Tool</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Send a welcome email when user signs up</div><div class="task-desc">Call Resend API from a Next.js API route</div></div><span class="task-tag tag-free">Free</span></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">📁 File Uploads with Uploadthing</div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Create free account at uploadthing.com</div><div class="task-desc">2GB free storage, built specifically for Next.js</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Install and configure Uploadthing in your app</div><div class="task-desc">npm install uploadthing @uploadthing/react</div></div><span class="task-tag tag-tool">Tool</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Build a profile picture upload feature</div><div class="task-desc">Use their UploadButton component — drag and drop in minutes</div></div><span class="task-tag tag-free">Free</span></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">🚀 Deploy to Vercel</div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Push your project to GitHub</div><div class="task-desc">git init → git add . → git commit → git push</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Connect GitHub repo to Vercel</div><div class="task-desc">vercel.com → New Project → Import from GitHub → Deploy</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Add all ENV variables in Vercel dashboard</div><div class="task-desc">Settings → Environment Variables → paste from .env file</div></div><span class="task-tag tag-concept">Concept</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">✅ Your app is LIVE — share the URL!</div><div class="task-desc">Every future git push auto-deploys. You're a developer now 🎉</div></div><span class="task-tag tag-free">Free</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PHASE 4 BONUS -->
+  <div class="phase purple" id="phase4">
+    <div class="phase-header" onclick="togglePhase('phase4')">
+      <span class="phase-emoji">🟣</span>
+      <div class="phase-title">
+        <h2>Phase 4 — Bonus: AI Features</h2>
+        <p>Week 8 · Add AI to your app</p>
+      </div>
+      <span class="phase-badge">Bonus</span>
+      <span class="toggle">▼</span>
+    </div>
+    <div class="phase-body">
+
+      <div class="section">
+        <div class="section-title">🤖 Add AI with Vercel AI SDK</div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Install: npm install ai @anthropic-ai/sdk</div><div class="task-desc">Vercel AI SDK makes streaming AI responses easy</div></div><span class="task-tag tag-tool">Tool</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Get a free Claude API key from console.anthropic.com</div><div class="task-desc">Free credits to start — enough to build and test</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Build a simple AI chat page in your app</div><div class="task-desc">useChat() hook + a text input = AI chatbot in 20 lines</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Use v0.dev to generate UI by describing it</div><div class="task-desc">v0.dev — type what you want, get Next.js + shadcn code instantly</div></div><span class="task-tag tag-free">Free</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="text-align:center; color:#475569; font-size:0.8rem; margin-top:30px; padding-top:20px; border-top:1px solid #2d3348;">
+    🖨️ Print this page to use offline &nbsp;·&nbsp; Progress saves in your browser &nbsp;·&nbsp; Built for vibe coders 🚀
+  </div>
+</div>
+
+<script>
+  function togglePhase(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+
+  function toggle(el) {
+    el.classList.toggle('done');
+    saveProgress();
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const all = document.querySelectorAll('.task');
+    const done = document.querySelectorAll('.task.done');
+    const pct = all.length ? Math.round((done.length / all.length) * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressText').textContent = done.length + ' / ' + all.length + ' tasks completed (' + pct + '%)';
+  }
+
+  function saveProgress() {
+    const tasks = document.querySelectorAll('.task');
+    const state = Array.from(tasks).map(t => t.classList.contains('done'));
+    localStorage.setItem('roadmap_progress', JSON.stringify(state));
+  }
+
+  function loadProgress() {
+    const saved = localStorage.getItem('roadmap_progress');
+    if (!saved) return;
+    const state = JSON.parse(saved);
+    const tasks = document.querySelectorAll('.task');
+    state.forEach((done, i) => { if (done && tasks[i]) tasks[i].classList.add('done'); });
+    updateProgress();
+  }
+
+  loadProgress();
+  updateProgress();
+</script>
+</body>
+</html>
