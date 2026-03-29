@@ -77,6 +77,9 @@ nav::-webkit-scrollbar{display:none}
 .ss-day.complete .ss-bar{background:var(--done)}
 .ss-pct{font-size:9px;font-weight:600;color:var(--muted);font-family:'Space Mono',monospace}
 .ss-day.complete .ss-pct{color:var(--done)}
+.ss-day.today{border-color:var(--accent2);box-shadow:0 0 0 1px var(--accent2);}
+.ss-day.today .ss-weekday{color:var(--accent2)}
+.today-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent2);margin-left:4px;vertical-align:middle;}
 .ss-rest-label{font-size:9px;color:var(--muted);margin-top:4px}
 
 /* ── UNLOCK BANNER ── */
@@ -568,7 +571,45 @@ const DAYS = [
 ];
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
-let currentWeek = 1;
+
+// ── Date helpers ──────────────────────────────────────────────────────────────
+// Program start date is stored in localStorage so it persists.
+// Nepal week order: Sun=0…Sat=6
+const DAY_IDS = ['sun','mon','tue','wed','thu','fri','sat'];
+
+function getProgramStartDate(){
+  const stored = localStorage.getItem('cbros_start_date');
+  if(stored) return new Date(stored);
+  // Default: the most recent Sunday on or before today (Nepal week starts Sunday)
+  const now = new Date();
+  const dow = now.getDay(); // 0=Sun,1=Mon…6=Sat
+  const diffToSun = dow; // days since last Sunday
+  const sunday = new Date(now);
+  sunday.setHours(0,0,0,0);
+  sunday.setDate(now.getDate() - diffToSun);
+  localStorage.setItem('cbros_start_date', sunday.toISOString());
+  return sunday;
+}
+
+function getTodayDayId(){
+  const dow = new Date().getDay(); // 0=Sun…6=Sat
+  // Map JS getDay → our DAYS order (mon=0…sun=6)
+  const map = {0:'sun',1:'mon',2:'tue',3:'wed',4:'thu',5:'fri',6:'sat'};
+  return map[dow];
+}
+
+function getCurrentWeekFromDate(){
+  const start = getProgramStartDate();
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  const diffMs = now - start;
+  const diffDays = Math.floor(diffMs / 86400000);
+  const week = Math.floor(diffDays / 7) + 1;
+  return Math.max(1, Math.min(8, week));
+}
+
+let currentWeek = getCurrentWeekFromDate();
+const todayDayId = getTodayDayId();
 const openCards = new Set();
 
 function lsKey(w,id,type){ return `cbros_${type}_w${w}_${id}`; }
@@ -632,15 +673,22 @@ function checkAnyUnlocks(){
 // ─── RENDER ───────────────────────────────────────────────────────────────────
 function renderWeekTabs(){
   document.getElementById('weekTabs').innerHTML =
-    [1,2,3,4,5,6,7,8].map(w=>`<button class="wtab ${w===currentWeek?'active':''}" onclick="setWeek(${w},this)">Wk ${w}</button>`).join('');
+    [1,2,3,4,5,6,7,8].map(w=>{
+      const isActualWeek = w === getCurrentWeekFromDate();
+      return `<button class="wtab ${w===currentWeek?'active':''}" onclick="setWeek(${w},this)">Wk ${w}${isActualWeek?'<span class="today-dot" style="margin-left:3px;"></span>':''}</button>`;
+    }).join('');
 }
 
 function renderScheduleStrip(){
   const el = document.getElementById('scheduleStrip');
-  el.innerHTML = DAYS.map(d=>{
+  // Nepal week starts Sunday — reorder strip: Sun, Mon, Tue, Wed, Thu, Fri, Sat
+  const sunFirst = ['sun','mon','tue','wed','thu','fri','sat']
+    .map(id => DAYS.find(d => d.id === id)).filter(Boolean);
+  el.innerHTML = sunFirst.map(d=>{
+    const isToday = d.id === todayDayId;
     if(d.isRest){
-      return `<div class="ss-day rest-day">
-        <div class="ss-weekday">${d.weekday.slice(0,3)}</div>
+      return `<div class="ss-day rest-day${isToday?' today':''}">
+        <div class="ss-weekday">${d.weekday.slice(0,3)}${isToday?'<span class="today-dot"></span>':''}</div>
         <div class="ss-type" style="color:var(--muted)">${d.type}</div>
         <div class="ss-rest-label">😴 Rest</div>
       </div>`;
@@ -649,8 +697,8 @@ function renderScheduleStrip(){
     const checks = getLocalCb(currentWeek, d.id, numEx);
     const done = checks.filter(Boolean).length;
     const pct = Math.round(done/numEx*100);
-    return `<div class="ss-day ${pct===100?'complete':''}" onclick="scrollToDay('${d.id}')">
-      <div class="ss-weekday">${d.weekday.slice(0,3)}</div>
+    return `<div class="ss-day ${pct===100?'complete':''}${isToday?' today':''}" onclick="scrollToDay('${d.id}')">
+      <div class="ss-weekday">${d.weekday.slice(0,3)}${isToday?'<span class="today-dot"></span>':''}</div>
       <div class="ss-type">${d.type}</div>
       <div class="ss-bar-bg"><div class="ss-bar" style="width:${pct}%"></div></div>
       <div class="ss-pct">${done}/${numEx}</div>
@@ -662,7 +710,10 @@ function pillCls(type){ return type==='s'?'pill-s':type==='ab'?'':''; }
 
 function renderDays(){
   const el = document.getElementById('dayList');
-  el.innerHTML = DAYS.map(day=>{
+  // Nepal week starts Sunday
+  const sunFirst = ['sun','mon','tue','wed','thu','fri','sat']
+    .map(id => DAYS.find(d => d.id === id)).filter(Boolean);
+  el.innerHTML = sunFirst.map(day=>{
     if(day.isRest) return renderRestCard(day);
     return renderTrainingCard(day);
   }).join('');
@@ -670,11 +721,12 @@ function renderDays(){
 
 function renderRestCard(day){
   const isOpen = openCards.has(day.id);
-  return `<div class="day-card rest-card ${isOpen?'open':''}" id="daycard_${day.id}">
+  const isToday = day.id === todayDayId;
+  return `<div class="day-card rest-card ${isOpen?'open':''}" id="daycard_${day.id}" style="${isToday?'border-color:rgba(244,201,122,.35)':''}">
     <div class="day-hd" onclick="toggleDay('${day.id}')">
       <div class="day-ring">😴</div>
       <div class="day-info">
-        <div class="day-weekday">${day.weekday} · ${day.type}</div>
+        <div class="day-weekday">${day.weekday} · ${day.type}${isToday?' <span style="color:var(--accent2);font-size:8px;letter-spacing:.1em;">· TODAY</span>':''}</div>
         <div class="day-name">${day.name}</div>
         <div class="day-focus">${day.focus}</div>
       </div>
@@ -761,11 +813,13 @@ function renderTrainingCard(day){
 
   const exOpts = day.exercises.map(e=>`<option value="${esc(e.name)}">${esc(e.name)}</option>`).join('');
 
-  return `<div class="day-card ${complete?'complete':''} ${isOpen?'open':''}" id="daycard_${day.id}">
+  const isToday = day.id === todayDayId;
+
+  return `<div class="day-card ${complete?'complete':''} ${isOpen?'open':''}" id="daycard_${day.id}" style="${isToday&&!complete?'border-color:rgba(244,201,122,.35)':''}">
     <div class="day-hd" onclick="toggleDay('${day.id}')">
       <div class="day-ring">${complete?'✓':'○'}</div>
       <div class="day-info">
-        <div class="day-weekday">${day.weekday} · ${day.type}</div>
+        <div class="day-weekday">${day.weekday} · ${day.type}${isToday?' <span style="color:var(--accent2);font-size:8px;letter-spacing:.1em;">· TODAY</span>':''}</div>
         <div class="day-name">${day.name}</div>
         <div class="day-focus">${day.focus}</div>
       </div>
@@ -1007,6 +1061,23 @@ function formatTime(iso){
 }
 
 renderAll();
+// Auto-open today's workout card
+openCards.add(todayDayId);
+const todayCard = document.getElementById('daycard_'+todayDayId);
+if(todayCard){
+  todayCard.classList.add('open');
+  setTimeout(()=>{ todayCard.scrollIntoView({behavior:'smooth', block:'start'}); }, 400);
+}
+// Inject today's date label next to week tabs
+(function(){
+  const todayLabel = document.createElement('div');
+  todayLabel.style.cssText = 'font-family:Space Mono,monospace;font-size:9px;letter-spacing:.12em;color:var(--accent2);text-transform:uppercase;display:flex;align-items:center;gap:5px;';
+  const today = new Date();
+  const opts = {weekday:'short', month:'short', day:'numeric'};
+  todayLabel.innerHTML = '📅 <span>' + today.toLocaleDateString(undefined, opts).toUpperCase() + ' &middot; WK ' + currentWeek + '</span>';
+  const wn = document.querySelector('.wn-hd');
+  if(wn) wn.appendChild(todayLabel);
+})();
 </script>
 </body>
 </html>
