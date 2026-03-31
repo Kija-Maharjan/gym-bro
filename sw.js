@@ -1,0 +1,90 @@
+// ─── SW.JS — Service Worker (Offline Support) ────────────────────────────────
+// Caches all static assets on first visit.
+// App works fully offline after that (except AI chat which needs internet).
+
+const CACHE_NAME = 'gymbro-v1';
+
+// All files to cache for offline use
+const ASSETS = [
+  '/',
+  '/index.html',
+  '/gym-ai.html',
+  '/learning.html',
+  '/css/base.css',
+  '/css/index.css',
+  '/css/gym-ai.css',
+  '/css/learning.css',
+  '/js/data.js',
+  '/js/storage.js',
+  '/js/nav.js',
+  '/js/index.js',
+  '/js/gym-ai.js',
+  '/js/learning.js',
+  '/manifest.json',
+];
+
+// ── INSTALL: cache all assets ──
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(ASSETS))
+      .then(() => self.skipWaiting())
+  );
+});
+
+// ── ACTIVATE: clean up old caches ──
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(
+        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+      )
+    ).then(() => self.clients.claim())
+  );
+});
+
+// ── FETCH: serve from cache, fall back to network ──
+self.addEventListener('fetch', event => {
+  // Don't cache API calls — those need the network
+  if (event.request.url.includes('/api/')) {
+    return; // pass through to network
+  }
+
+  // For Google Fonts — cache them too
+  if (event.request.url.includes('fonts.googleapis.com') ||
+      event.request.url.includes('fonts.gstatic.com')) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then(cache =>
+        cache.match(event.request).then(cached => {
+          if (cached) return cached;
+          return fetch(event.request).then(response => {
+            cache.put(event.request, response.clone());
+            return response;
+          });
+        })
+      )
+    );
+    return;
+  }
+
+  // For everything else: cache-first strategy
+  event.respondWith(
+    caches.match(event.request).then(cached => {
+      if (cached) return cached;
+      return fetch(event.request).then(response => {
+        // Cache successful GET responses
+        if (response.ok && event.request.method === 'GET') {
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, response.clone());
+          });
+        }
+        return response;
+      }).catch(() => {
+        // If both cache and network fail, return offline page for HTML requests
+        if (event.request.headers.get('accept')?.includes('text/html')) {
+          return caches.match('/index.html');
+        }
+      });
+    })
+  );
+});

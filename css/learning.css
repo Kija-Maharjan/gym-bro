@@ -1,0 +1,129 @@
+/* ═══════════════════════════════════════════════
+   LEARNING.CSS — Dev Roadmap Page
+   Additional variables for phase colors
+   ═══════════════════════════════════════════════ */
+
+:root {
+  --green: #34d399; --green-bg: rgba(6,78,59,0.2); --green-border: rgba(52,211,153,0.2);
+  --yellow: #fbbf24; --yellow-bg: rgba(69,26,3,0.2); --yellow-border: rgba(251,191,36,0.2);
+  --blue: #60a5fa; --blue-bg: rgba(12,26,78,0.2); --blue-border: rgba(96,165,250,0.2);
+  --purple: #c084fc; --purple-bg: rgba(46,16,101,0.2); --purple-border: rgba(192,132,252,0.2);
+}
+
+/* ── HERO ── */
+.hero { padding: 56px 48px 44px; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 50% 60% at 80% 50%, rgba(184,150,12,0.05), transparent 70%); pointer-events: none; }
+.hero-tag { font-size: 8px; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 18px; opacity: 0; animation: fadeUp 0.8s 0.2s forwards; }
+.hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(48px, 10vw, 88px); font-weight: 300; color: var(--cream); line-height: 0.92; letter-spacing: -1px; margin-bottom: 16px; opacity: 0; animation: fadeUp 0.8s 0.4s forwards; }
+.hero-title em { font-style: italic; color: var(--gold); }
+.hero-sub { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-dim); max-width: 520px; line-height: 2; opacity: 0; animation: fadeUp 0.8s 0.6s forwards; }
+
+/* ── MAIN ── */
+.main-wrap { max-width: 920px; margin: 0 auto; padding: 0 48px 80px; }
+
+/* ── SECTION HEADER ── */
+.sec-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; padding-top: 48px; }
+.sec-num { font-family: 'Cormorant Garamond', serif; font-size: 12px; color: var(--gold); letter-spacing: 2px; }
+.sec-line { width: 40px; height: 1px; background: var(--gold); opacity: 0.5; }
+.sec-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: var(--cream); letter-spacing: -0.3px; }
+.sec-title em { font-style: italic; color: var(--gold); }
+
+/* ── PROGRESS ── */
+.progress-wrap { background: var(--dark2); padding: 20px 24px; margin-bottom: 4px; border-left: 2px solid rgba(184,150,12,0.3); }
+.progress-wrap h3 { font-size: 7px; letter-spacing: 4px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px; font-weight: 500; }
+.progress-bar { height: 1px; background: rgba(255,255,255,0.06); overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); transition: width 0.5s ease; width: 0%; }
+.progress-text { font-size: 9px; color: var(--text-dim); margin-top: 8px; text-align: right; letter-spacing: 1px; text-transform: uppercase; }
+
+/* ── TIP ── */
+.tip-block { background: var(--dark2); border-left: 2px solid rgba(179,157,219,0.4); padding: 14px 18px; margin-bottom: 4px; font-size: 12px; color: var(--text); line-height: 1.8; }
+.tip-block strong { color: var(--a-col); font-weight: 600; }
+.tip-block code { font-family: 'Montserrat', monospace; font-size: 10px; background: rgba(255,255,255,0.05); padding: 1px 5px; color: var(--b-col); letter-spacing: 0.5px; }
+
+/* ── PHASES ── */
+.phase { margin-bottom: 2px; overflow: hidden; background: var(--dark2); }
+.phase-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 22px; cursor: pointer; user-select: none;
+  transition: background 0.2s; -webkit-tap-highlight-color: transparent;
+  border-left: 2px solid transparent;
+}
+.phase-header:hover { background: var(--dark3); }
+.phase.green  .phase-header { border-color: rgba(52,211,153,0.4); }
+.phase.yellow .phase-header { border-color: rgba(251,191,36,0.4); }
+.phase.blue   .phase-header { border-color: rgba(96,165,250,0.4); }
+.phase.purple .phase-header { border-color: rgba(192,132,252,0.4); }
+.phase-emoji { font-size: 1.2rem; flex-shrink: 0; }
+.phase-title { flex: 1; min-width: 0; }
+.phase-title h2 { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--cream); font-weight: 400; }
+.phase-title p { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); margin-top: 3px; font-weight: 400; }
+.phase-badge { font-size: 7px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; padding: 4px 12px; border: 1px solid; white-space: nowrap; flex-shrink: 0; }
+.phase.green  .phase-badge { background: var(--green-bg);  color: var(--green);  border-color: var(--green-border); }
+.phase.yellow .phase-badge { background: var(--yellow-bg); color: var(--yellow); border-color: var(--yellow-border); }
+.phase.blue   .phase-badge { background: var(--blue-bg);   color: var(--blue);   border-color: var(--blue-border); }
+.phase.purple .phase-badge { background: var(--purple-bg); color: var(--purple); border-color: var(--purple-border); }
+.phase-toggle { color: var(--text-dim); font-size: 10px; transition: transform 0.3s; flex-shrink: 0; }
+.phase.open .phase-toggle { transform: rotate(180deg); }
+.phase-body { display: none; padding: 0 22px 18px; border-top: 1px solid rgba(184,150,12,0.05); }
+.phase.open .phase-body { display: block; }
+
+/* ── SECTIONS INSIDE PHASE ── */
+.section { margin-top: 18px; margin-bottom: 4px; }
+.section-title { font-size: 7px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(184,150,12,0.08); font-weight: 500; }
+
+/* ── TASKS ── */
+.task {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 11px 12px; margin-bottom: 2px;
+  cursor: pointer; transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  background: var(--dark3);
+  border-left: 2px solid transparent;
+}
+.task:hover { background: var(--dark4); border-color: rgba(184,150,12,0.3); }
+.task.done { opacity: 0.38; }
+.task.done .task-name { text-decoration: line-through; }
+.checkbox { width: 18px; height: 18px; border: 1px solid rgba(184,150,12,0.3); flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.task.done .checkbox { background: rgba(129,199,132,0.15); border-color: rgba(129,199,132,0.5); }
+.checkmark { color: var(--done); font-size: 10px; font-weight: 600; display: none; }
+.task.done .checkmark { display: block; }
+.task-info { flex: 1; min-width: 0; }
+.task-name { font-size: 12px; color: var(--cream); font-weight: 400; line-height: 1.4; }
+.task-desc { font-size: 10px; color: var(--text-dim); margin-top: 3px; line-height: 1.6; letter-spacing: 0.3px; }
+.task-tag { font-size: 7px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; padding: 3px 10px; border: 1px solid; margin-left: auto; flex-shrink: 0; align-self: center; }
+.tag-free    { background: var(--green-bg);  color: var(--green);  border-color: var(--green-border); }
+.tag-tool    { background: var(--blue-bg);   color: var(--blue);   border-color: var(--blue-border); }
+.tag-concept { background: var(--purple-bg); color: var(--purple); border-color: var(--purple-border); }
+
+/* ── PAGE NOTE ── */
+.page-note { text-align: center; color: var(--text-dim); font-size: 9px; margin-top: 40px; padding-top: 24px; border-top: 1px solid rgba(184,150,12,0.08); letter-spacing: 2px; text-transform: uppercase; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .hero { padding: 44px 28px 36px; }
+  .main-wrap { padding: 0 28px 60px; }
+}
+
+@media (max-width: 767px) {
+  .hero { padding: 40px 20px 32px; }
+  .main-wrap { padding: 0 16px 48px; }
+  .hero-title { font-size: clamp(40px, 12vw, 64px); }
+  .sec-title { font-size: 24px; }
+  .phase-header { padding: 14px 16px; gap: 10px; }
+  .phase-badge { display: none; } /* hide badge on very small to avoid overflow */
+  .phase-body { padding: 0 16px 14px; }
+  .task { padding: 10px 10px; }
+}
+
+@media (max-width: 360px) {
+  .task-tag { display: none; } /* hide tags on tiny screens */
+}
+
+/* ── PRINT ── */
+@media print {
+  body { background: white; color: black; }
+  .phase-body { display: block !important; }
+  .phase-toggle { display: none; }
+  .phase-header { border-left-color: #ccc !important; }
+  .cursor, .cursor-ring { display: none; }
+}

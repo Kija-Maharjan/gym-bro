@@ -1,0 +1,7 @@
+{
+  "name": "gym-bro",
+  "version": "2.0.0",
+  "description": "Calisthenics Bros — Training tracker with AI coach, progression system, offline PWA",
+  "private": true,
+  "engines": { "node": "18.x" }
+}

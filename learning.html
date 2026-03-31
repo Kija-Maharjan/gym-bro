@@ -3,152 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#b8960c">
+<meta name="description" content="Full-Stack Learning Roadmap — Next.js, Tailwind, Prisma, Clerk, Vercel">
 <title>Learning Roadmap — Gym Bro</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-:root {
-  --gold: #b8960c; --gold-light: #d4a017; --gold-dim: rgba(184,150,12,0.12); --gold-border: rgba(184,150,12,0.25);
-  --dark: #111010; --dark2: #1a1a1a; --dark3: #222; --dark4: #2a2a2a;
-  --cream: #f5f0ea; --text: #c8c4bc; --text-dim: rgba(200,196,188,0.5); --text-dimmer: rgba(200,196,188,0.3);
-  --done: #81c784; --done-bg: rgba(30,80,30,0.22);
-  --green: #34d399; --green-bg: rgba(6,78,59,0.2); --green-border: rgba(52,211,153,0.2);
-  --yellow: #fbbf24; --yellow-bg: rgba(69,26,3,0.2); --yellow-border: rgba(251,191,36,0.2);
-  --blue: #60a5fa; --blue-bg: rgba(12,26,78,0.2); --blue-border: rgba(96,165,250,0.2);
-  --purple: #c084fc; --purple-bg: rgba(46,16,101,0.2); --purple-border: rgba(192,132,252,0.2);
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--dark);color:var(--text);font-family:'Montserrat',sans-serif;font-weight:300;overflow-x:hidden;cursor:none;min-height:100vh}
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:0.4}
-.cursor{width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transition:transform 0.1s ease;transform:translate(-50%,-50%)}
-.cursor-ring{width:32px;height:32px;border:1px solid rgba(184,150,12,0.5);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:all 0.15s ease;transform:translate(-50%,-50%)}
-@media(hover:none){body{cursor:auto}.cursor,.cursor-ring{display:none}}
-
-/* NAV */
-nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:linear-gradient(180deg,rgba(17,16,16,0.97),rgba(17,16,16,0.92));backdrop-filter:blur(12px);border-bottom:1px solid rgba(184,150,12,0.08)}
-.nav-logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--cream);letter-spacing:1px;text-decoration:none}
-.nav-logo span{color:var(--gold)}
-.nav-links{display:flex;gap:0;list-style:none}
-.nav-links li a{display:flex;align-items:center;gap:5px;padding:10px 14px;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-dim);text-decoration:none;border-bottom:1px solid transparent;transition:all 0.3s;font-weight:400}
-.nav-links li a:hover{color:var(--gold);border-bottom-color:rgba(184,150,12,0.4)}
-.nav-links li a.active{color:var(--gold);border-bottom-color:var(--gold)}
-.nav-badge{font-size:7px;letter-spacing:1px;padding:2px 6px;background:rgba(184,150,12,0.12);color:var(--gold);border:1px solid var(--gold-border)}
-.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;z-index:200}
-.hamburger span{display:block;width:24px;height:1.5px;background:var(--cream);transition:all 0.3s}
-.hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
-.hamburger.open span:nth-child(2){opacity:0}
-.hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
-
-/* HERO */
-.hero{padding:56px 48px 44px;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 80% 50%,rgba(184,150,12,0.05),transparent 70%);pointer-events:none}
-.hero-tag{font-size:8px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;opacity:0;animation:fadeUp 0.8s 0.2s forwards}
-.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(48px,10vw,88px);font-weight:300;color:var(--cream);line-height:0.92;letter-spacing:-1px;margin-bottom:16px;opacity:0;animation:fadeUp 0.8s 0.4s forwards}
-.hero-title em{font-style:italic;color:var(--gold)}
-.hero-sub{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-dim);max-width:520px;line-height:2;opacity:0;animation:fadeUp 0.8s 0.6s forwards}
-
-/* MAIN */
-.main-wrap{max-width:920px;margin:0 auto;padding:0 48px 80px}
-
-/* SECTION HEADER */
-.sec-header{display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-top:48px}
-.sec-num{font-family:'Cormorant Garamond',serif;font-size:12px;color:var(--gold);letter-spacing:2px}
-.sec-line{width:40px;height:1px;background:var(--gold);opacity:0.5}
-.sec-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--cream);letter-spacing:-0.3px}
-.sec-title em{font-style:italic;color:var(--gold)}
-
-/* PROGRESS */
-.progress-wrap{background:var(--dark2);padding:20px 24px;margin-bottom:4px;border-left:2px solid rgba(184,150,12,0.3)}
-.progress-wrap h3{font-size:7px;letter-spacing:4px;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;font-weight:500}
-.progress-bar{height:1px;background:rgba(255,255,255,0.06);overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));transition:width 0.5s ease;width:0%}
-.progress-text{font-size:9px;color:var(--text-dim);margin-top:8px;text-align:right;letter-spacing:1px;text-transform:uppercase}
-
-/* TIP */
-.tip-block{background:var(--dark2);border-left:2px solid rgba(179,157,219,0.4);padding:14px 18px;margin-bottom:4px;font-size:12px;color:var(--text);line-height:1.8}
-.tip-block strong{color:var(--a-col,#b39ddb);font-weight:600}
-.tip-block code{font-family:'Montserrat',monospace;font-size:10px;background:rgba(255,255,255,0.05);padding:1px 5px;color:var(--b-col,#80cbc4);letter-spacing:0.5px}
-
-/* PHASES */
-.phase{margin-bottom:2px;overflow:hidden;background:var(--dark2)}
-.phase-header{display:flex;align-items:center;gap:14px;padding:18px 22px;cursor:pointer;user-select:none;transition:background 0.2s;-webkit-tap-highlight-color:transparent;border-left:2px solid transparent}
-.phase-header:hover{background:var(--dark3)}
-.phase.green .phase-header{border-color:rgba(52,211,153,0.4)}
-.phase.yellow .phase-header{border-color:rgba(251,191,36,0.4)}
-.phase.blue .phase-header{border-color:rgba(96,165,250,0.4)}
-.phase.purple .phase-header{border-color:rgba(192,132,252,0.4)}
-.phase-emoji{font-size:1.2rem;flex-shrink:0}
-.phase-title{flex:1}
-.phase-title h2{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--cream);font-weight:400}
-.phase-title p{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-top:3px;font-weight:400}
-.phase-badge{font-size:7px;letter-spacing:2px;text-transform:uppercase;font-weight:700;padding:4px 12px;border:1px solid;white-space:nowrap}
-.phase.green .phase-badge{background:var(--green-bg);color:var(--green);border-color:var(--green-border)}
-.phase.yellow .phase-badge{background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-border)}
-.phase.blue .phase-badge{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-border)}
-.phase.purple .phase-badge{background:var(--purple-bg);color:var(--purple);border-color:var(--purple-border)}
-.phase-toggle{color:var(--text-dim);font-size:10px;transition:transform 0.3s;flex-shrink:0}
-.phase.open .phase-toggle{transform:rotate(180deg)}
-.phase-body{display:none;padding:0 22px 18px;border-top:1px solid rgba(184,150,12,0.05)}
-.phase.open .phase-body{display:block}
-
-/* SECTION INSIDE PHASE */
-.section{margin-top:18px;margin-bottom:4px}
-.section-title{font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(184,150,12,0.08);font-weight:500}
-
-/* TASKS */
-.task{display:flex;align-items:flex-start;gap:12px;padding:11px 12px;margin-bottom:2px;cursor:pointer;transition:background 0.15s;-webkit-tap-highlight-color:transparent;background:var(--dark3);border-left:2px solid transparent}
-.task:hover{background:var(--dark4);border-color:rgba(184,150,12,0.3)}
-.task.done{opacity:0.38}
-.task.done .task-name{text-decoration:line-through}
-.checkbox{width:18px;height:18px;border:1px solid rgba(184,150,12,0.3);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
-.task.done .checkbox{background:rgba(129,199,132,0.15);border-color:rgba(129,199,132,0.5)}
-.checkmark{color:var(--done);font-size:10px;font-weight:600;display:none}
-.task.done .checkmark{display:block}
-.task-info{flex:1}
-.task-name{font-size:12px;color:var(--cream);font-weight:400;line-height:1.4}
-.task-desc{font-size:10px;color:var(--text-dim);margin-top:3px;line-height:1.6;letter-spacing:0.3px}
-.task-tag{font-size:7px;letter-spacing:2px;text-transform:uppercase;font-weight:700;padding:3px 10px;border:1px solid;margin-left:auto;flex-shrink:0;align-self:center}
-.tag-free{background:var(--green-bg);color:var(--green);border-color:var(--green-border)}
-.tag-tool{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-border)}
-.tag-concept{background:var(--purple-bg);color:var(--purple);border-color:var(--purple-border)}
-
-/* PAGE NOTE */
-.page-note{text-align:center;color:var(--text-dim);font-size:9px;margin-top:40px;padding-top:24px;border-top:1px solid rgba(184,150,12,0.08);letter-spacing:2px;text-transform:uppercase}
-
-/* FOOTER */
-footer{background:var(--dark);border-top:1px solid rgba(184,150,12,0.08);padding:28px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.footer-logo{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--cream)}
-.footer-logo span{color:var(--gold)}
-.footer-copy{font-size:8px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase}
-
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-
-@media(max-width:1024px){nav{padding:14px 28px}.hero{padding:44px 28px 36px}.main-wrap{padding:0 28px 60px}footer{padding:20px 28px}}
-@media(max-width:767px){
-  nav{padding:14px 20px}
-  .nav-links{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(17,16,16,0.98);flex-direction:column;list-style:none;align-items:center;justify-content:center;gap:28px;z-index:150}
-  .nav-links.open{display:flex}
-  .nav-links li a{font-size:12px;letter-spacing:4px;padding:10px 20px}
-  .hamburger{display:flex;position:relative;z-index:200}
-  .hero{padding:40px 20px 32px}
-  .main-wrap{padding:0 16px 48px}
-  .hero-title{font-size:clamp(40px,12vw,64px)}
-  .sec-title{font-size:24px}
-  .phase-header{padding:14px 16px}
-  .phase-body{padding:0 16px 14px}
-  .task{padding:10px 10px}
-  footer{padding:18px 20px;flex-direction:column;text-align:center}
-}
-@media print{
-  body{background:white;color:black}
-  .phase-body{display:block!important}
-  .phase-toggle{display:none}
-  .phase-header{border-left-color:#ccc!important}
-  .cursor,.cursor-ring{display:none}
-}
-</style>
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/learning.css">
 </head>
 <body>
+
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
@@ -159,7 +22,9 @@ footer{background:var(--dark);border-top:1px solid rgba(184,150,12,0.08);padding
     <li><a href="gym-ai.html">🤖 <span>AI Coach</span> <span class="nav-badge">NEW</span></a></li>
     <li><a href="learning.html" class="active">📚 <span>Learning</span></a></li>
   </ul>
-  <button class="hamburger" id="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <div class="hero">
@@ -169,6 +34,7 @@ footer{background:var(--dark);border-top:1px solid rgba(184,150,12,0.08);padding
 </div>
 
 <div class="main-wrap">
+
   <div class="sec-header" style="padding-top:0">
     <span class="sec-num">01</span>
     <div class="sec-line"></div>
@@ -205,23 +71,23 @@ footer{background:var(--dark);border-top:1px solid rgba(184,150,12,0.08);padding
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Install Node.js (v18+)</div><div class="task-desc">Download from nodejs.org — required for everything</div></div><span class="task-tag tag-tool">Tool</span></div>
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Install VS Code or Cursor</div><div class="task-desc">Cursor = VS Code + AI built-in, best for vibe coding</div></div><span class="task-tag tag-tool">Tool</span></div>
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Install Git</div><div class="task-desc">git-scm.com — needed for GitHub + Vercel deploy</div></div><span class="task-tag tag-tool">Tool</span></div>
-        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Run: npx create-next-app@latest my-app</div><div class="task-desc">Creates your first Next.js project. Choose TypeScript: No, Tailwind: Yes, App Router: Yes</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Run: npx create-next-app@latest my-app</div><div class="task-desc">Creates your first Next.js project. TypeScript: No, Tailwind: Yes, App Router: Yes</div></div><span class="task-tag tag-free">Free</span></div>
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Run: npm run dev — see it in browser</div><div class="task-desc">Go to localhost:3000 and see your app running locally</div></div><span class="task-tag tag-free">Free</span></div>
       </div>
       <div class="section">
         <div class="section-title">📄 Next.js Basics (Days 2–5)</div>
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Understand the /app folder structure</div><div class="task-desc">page.jsx = a page, layout.jsx = shared wrapper, folder name = URL route</div></div><span class="task-tag tag-concept">Concept</span></div>
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Create 3 pages: /, /about, /contact</div><div class="task-desc">Make a folder for each, add a page.jsx inside</div></div><span class="task-tag tag-free">Free</span></div>
-        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Learn React components (functions that return HTML)</div><div class="task-desc">const MyCard = () => return &lt;div&gt;...&lt;/div&gt;</div></div><span class="task-tag tag-concept">Concept</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Learn React components (functions that return HTML)</div><div class="task-desc">const MyCard = () =&gt; return &lt;div&gt;...&lt;/div&gt;</div></div><span class="task-tag tag-concept">Concept</span></div>
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Learn useState — make a counter button</div><div class="task-desc">import { useState } from 'react' — track changing values</div></div><span class="task-tag tag-concept">Concept</span></div>
-        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Build a simple navbar component and reuse it</div><div class="task-desc">Put it in /components/Navbar.jsx and import on every page</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Build a navbar component and reuse it</div><div class="task-desc">Put it in /components/Navbar.jsx and import on every page</div></div><span class="task-tag tag-free">Free</span></div>
       </div>
       <div class="section">
         <div class="section-title">🎨 Tailwind CSS (Days 4–7)</div>
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Learn the core idea: classes = styles</div><div class="task-desc">text-xl = font size, font-bold = bold, bg-blue-500 = background color</div></div><span class="task-tag tag-concept">Concept</span></div>
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Learn flex and grid layout classes</div><div class="task-desc">flex, items-center, justify-between, grid, grid-cols-3, gap-4</div></div><span class="task-tag tag-concept">Concept</span></div>
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Learn responsive classes: sm: md: lg:</div><div class="task-desc">md:text-2xl = only applies on medium screens and up</div></div><span class="task-tag tag-concept">Concept</span></div>
-        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Rebuild your HTML project homepage in Tailwind</div><div class="task-desc">Take your old HTML design and recreate it with Tailwind classes</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Rebuild your homepage in Tailwind</div><div class="task-desc">Take your old HTML design and recreate it with Tailwind classes</div></div><span class="task-tag tag-free">Free</span></div>
       </div>
     </div>
   </div>
@@ -241,7 +107,7 @@ footer{background:var(--dark);border-top:1px solid rgba(184,150,12,0.08);padding
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Install Prisma: npm install prisma @prisma/client</div><div class="task-desc">Then run: npx prisma init</div></div><span class="task-tag tag-tool">Tool</span></div>
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Write your first schema in prisma/schema.prisma</div><div class="task-desc">Define a model (like a User or Post) with fields</div></div><span class="task-tag tag-concept">Concept</span></div>
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Run: npx prisma db push</div><div class="task-desc">This sends your schema to Neon and creates the tables</div></div><span class="task-tag tag-free">Free</span></div>
-        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Use Prisma Studio to see your data visually</div><div class="task-desc">Run: npx prisma studio — opens visual DB editor at localhost:5555</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Use Prisma Studio to see your data visually</div><div class="task-desc">Run: npx prisma studio — visual DB editor at localhost:5555</div></div><span class="task-tag tag-free">Free</span></div>
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Write a query: prisma.user.findMany()</div><div class="task-desc">Learn create, findMany, findUnique, update, delete</div></div><span class="task-tag tag-concept">Concept</span></div>
       </div>
       <div class="section">
@@ -263,7 +129,7 @@ footer{background:var(--dark);border-top:1px solid rgba(184,150,12,0.08);padding
       <div class="section">
         <div class="section-title">🧩 UI Components with shadcn/ui</div>
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Install shadcn: npx shadcn@latest init</div><div class="task-desc">Follow the setup wizard — choose your theme color</div></div><span class="task-tag tag-tool">Tool</span></div>
-        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Add a Button component: npx shadcn@latest add button</div><div class="task-desc">Import and use: &lt;Button&gt;Click me&lt;/Button&gt;</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Add a Button: npx shadcn@latest add button</div><div class="task-desc">Import and use: &lt;Button&gt;Click me&lt;/Button&gt;</div></div><span class="task-tag tag-free">Free</span></div>
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Add Card, Input, Dialog, Table components</div><div class="task-desc">These cover 80% of all UI you'll ever need</div></div><span class="task-tag tag-free">Free</span></div>
       </div>
     </div>
@@ -287,7 +153,7 @@ footer{background:var(--dark);border-top:1px solid rgba(184,150,12,0.08);padding
       <div class="section">
         <div class="section-title">📁 File Uploads with Uploadthing</div>
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Create free account at uploadthing.com</div><div class="task-desc">2GB free storage, built specifically for Next.js</div></div><span class="task-tag tag-free">Free</span></div>
-        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Install and configure Uploadthing in your app</div><div class="task-desc">npm install uploadthing @uploadthing/react</div></div><span class="task-tag tag-tool">Tool</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Install: npm install uploadthing @uploadthing/react</div><div class="task-desc">Configured for Next.js App Router out of the box</div></div><span class="task-tag tag-tool">Tool</span></div>
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Build a profile picture upload feature</div><div class="task-desc">Use their UploadButton component — drag and drop in minutes</div></div><span class="task-tag tag-free">Free</span></div>
       </div>
       <div class="section">
@@ -312,7 +178,7 @@ footer{background:var(--dark);border-top:1px solid rgba(184,150,12,0.08);padding
       <div class="section">
         <div class="section-title">🤖 Add AI with Vercel AI SDK</div>
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Install: npm install ai @anthropic-ai/sdk</div><div class="task-desc">Vercel AI SDK makes streaming AI responses easy</div></div><span class="task-tag tag-tool">Tool</span></div>
-        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Get a free Claude API key from console.anthropic.com</div><div class="task-desc">Free credits to start — enough to build and test</div></div><span class="task-tag tag-free">Free</span></div>
+        <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Get a Claude API key from console.anthropic.com</div><div class="task-desc">Free credits to start — enough to build and test</div></div><span class="task-tag tag-free">Free</span></div>
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Build a simple AI chat page in your app</div><div class="task-desc">useChat() hook + a text input = AI chatbot in 20 lines</div></div><span class="task-tag tag-free">Free</span></div>
         <div class="task" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="task-info"><div class="task-name">Use v0.dev to generate UI by describing it</div><div class="task-desc">v0.dev — type what you want, get Next.js + shadcn code instantly</div></div><span class="task-tag tag-free">Free</span></div>
       </div>
@@ -320,45 +186,20 @@ footer{background:var(--dark);border-top:1px solid rgba(184,150,12,0.08);padding
   </div>
 
   <div class="page-note">🖨️ Print this page to use offline &nbsp;·&nbsp; Progress saves in your browser &nbsp;·&nbsp; Built for vibe coders</div>
-</div>
+
+</div><!-- end .main-wrap -->
 
 <footer>
   <div class="footer-logo">Gym<span>Bro</span></div>
-  <div class="footer-copy">Learning Roadmap · Progress saves in browser</div>
+  <div class="footer-copy">Learning Roadmap · Progress saves in browser · Works offline</div>
 </footer>
 
+<script src="/js/learning.js"></script>
+<script src="/js/nav.js"></script>
 <script>
-function togglePhase(id){document.getElementById(id).classList.toggle('open')}
-function toggle(el){el.classList.toggle('done');saveProgress();updateProgress()}
-function updateProgress(){
-  const all=document.querySelectorAll('.task'),done=document.querySelectorAll('.task.done');
-  const pct=all.length?Math.round((done.length/all.length)*100):0;
-  document.getElementById('progressFill').style.width=pct+'%';
-  document.getElementById('progressText').textContent=done.length+' / '+all.length+' tasks completed ('+pct+'%)';
-}
-function saveProgress(){const state=Array.from(document.querySelectorAll('.task')).map(t=>t.classList.contains('done'));localStorage.setItem('gymbro_roadmap_v2',JSON.stringify(state))}
-function loadProgress(){
-  const saved=localStorage.getItem('gymbro_roadmap_v2');if(!saved) return;
-  const state=JSON.parse(saved),tasks=document.querySelectorAll('.task');
-  state.forEach((done,i)=>{if(done&&tasks[i]) tasks[i].classList.add('done')});updateProgress();
-}
-loadProgress();updateProgress();
-
-// scroll animations
-const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)'}})},{threshold:0.08});
-document.querySelectorAll('.phase').forEach((el,i)=>{el.style.opacity='0';el.style.transform='translateY(24px)';el.style.transition=`opacity 0.6s ${i*0.15}s ease,transform 0.6s ${i*0.15}s ease`;observer.observe(el)});
-
-// custom cursor
-const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px'});
-function animRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)}
-animRing();
-
-// hamburger
-const hb=document.getElementById('hamburger'),nl=document.getElementById('navLinks');
-hb.addEventListener('click',()=>{hb.classList.toggle('open');nl.classList.toggle('open');document.body.style.overflow=nl.classList.contains('open')?'hidden':''});
-document.querySelectorAll('#navLinks a').forEach(a=>{a.addEventListener('click',()=>{hb.classList.remove('open');nl.classList.remove('open');document.body.style.overflow=''})});
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }
 </script>
 </body>
 </html>
