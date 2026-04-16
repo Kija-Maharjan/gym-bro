@@ -212,6 +212,14 @@ async function sendMessage() {
       }),
     });
 
+    if (!response.ok) {
+      const text = await response.text();
+      typingEl.remove();
+      appendMessage('ai', `⚠ API error (${response.status}): <code>${text.slice(0, 200)}...</code><br><br>Deploy to Vercel to enable AI chat.`);
+      isLoading = false;
+      document.getElementById('sendBtn').disabled = false;
+      return;
+    }
     const data = await response.json();
     typingEl.remove();
 

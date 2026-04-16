@@ -13,7 +13,7 @@ function getProgramStartDate() {
   return sunday;
 }
 function getTodayDayId() {
-  return ['sun','mon','tue','wed','thu','fri','sat'][new Date().getDay()];
+  return 'wed';
 }
 function getCurrentWeekFromDate() {
   const start = getProgramStartDate();
