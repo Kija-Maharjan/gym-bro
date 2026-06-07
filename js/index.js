@@ -431,7 +431,8 @@ function setWeek(w, btn) {
   currentWeek = w;
   document.querySelectorAll('.wtab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
-  renderAll();
+renderAll();
+if (window.injectExerciseAnimations) setTimeout(window.injectExerciseAnimations, 100);
 }
 function renderAll() {
   renderWeekTabs();
@@ -442,7 +443,6 @@ function renderAll() {
 
 // ── INIT ──
 renderAll();
-if (window.injectExerciseAnimations) setTimeout(window.injectExerciseAnimations, 100);
 
 // Auto-open today's card and scroll to it
 openCards.add(todayDayId);
@@ -457,7 +457,7 @@ if (todayCard) {
   const label = document.createElement('div');
   label.style.cssText = 'font-size:8px;letter-spacing:2.5px;color:var(--gold);text-transform:uppercase;display:flex;align-items:center;gap:6px;padding-top:4px;';
   const today = new Date();
-  label.innerHTML = '✦ <span>' + today.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }).toUpperCase() + ' · WK ' + currentWeek + '</span>';
+  label.innerHTML = '✦ <span>' + (typeof getNepaliDateShort === 'function' ? getNepaliDateShort(today) : today.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase()) + ' · WK ' + currentWeek + '</span>';
   const wn = document.querySelector('.wn-hd');
   if (wn) wn.appendChild(label);
 })();

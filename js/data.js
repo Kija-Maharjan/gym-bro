@@ -180,6 +180,17 @@ const DAYS = [
         ],
       },
       {
+        name: 'Cable overhead triceps extension',
+        note: 'Elbows stay beside ears — face away from cable, full stretch at top',
+        type: 'ab',
+        image: '🔝',
+        levels: [
+          { a: '2×8 light cable',    b: '2×10 moderate',     label: 'L1 — Learn it' },
+          { a: '3×8',                b: '3×10',              label: 'L2 — Volume'   },
+          { a: '3×10 controlled',    b: '3×8 heavy',         label: 'L3 — Strength' },
+        ],
+      },
+      {
         name: 'Dips',
         note: '2×max — go to 90° elbow bend',
         type: 's',
