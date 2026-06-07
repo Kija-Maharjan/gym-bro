@@ -113,7 +113,6 @@ function renderRestCard(d) {
 
 function renderTrainingCard(d) {
   const checks  = getLocalCb(currentWeek, d.id, d.exercises.length);
-  const notes   = getLocalNotes(currentWeek, d.id);
   const comments = getLocalComments(currentWeek, d.id);
   const done     = checks.filter(Boolean).length;
   const n        = d.exercises.length;
@@ -185,24 +184,8 @@ function renderTrainingCard(d) {
           <button class="btn-comment" onclick="addComment('${d.id}')">Post</button>
         </div>
       </div>
-      <div class="notes-sec">
-        <div class="ns-divider"></div>
-        <div class="ns-title">Session Notes</div>
-        <div class="notes-duo">
-          <div class="nb a"><div class="nb-hd">71 kg — A</div>
-            <textarea class="nb-ta" id="noteA_${d.id}" placeholder="How it felt, PRs, pain points..." onchange="autoSaveNotes('${d.id}')">${esc(notes.noteA)}</textarea></div>
-          <div class="nb b"><div class="nb-hd">100 kg — B</div>
-            <textarea class="nb-ta" id="noteB_${d.id}" placeholder="How it felt, shoulder check-in..." onchange="autoSaveNotes('${d.id}')">${esc(notes.noteB)}</textarea></div>
-        </div>
-        <div class="ss-box">
-          <div class="ss-hd">Session Summary</div>
-          <textarea class="ss-ta" id="sum_${d.id}" placeholder="Overall notes..." onchange="autoSaveNotes('${d.id}')">${esc(notes.summary)}</textarea>
-        </div>
-      </div>
       <div class="day-actions">
         <button class="btn-act btn-reset" onclick="resetDay('${d.id}',${n})">↺ Reset</button>
-        <button class="btn-act btn-save"  onclick="manualSave('${d.id}')">✓ Save</button>
-        <div class="saved-msg" id="savedmsg_${d.id}">✓ Saved</div>
       </div>
     </div>
   </div>`;
@@ -425,17 +408,6 @@ function deleteComment(dayId, cmtId) {
   }
 }
 
-function autoSaveNotes(dayId) {
-  const a = document.getElementById('noteA_' + dayId)?.value || '';
-  const b = document.getElementById('noteB_' + dayId)?.value || '';
-  const s = document.getElementById('sum_'   + dayId)?.value || '';
-  saveLocalNotes(currentWeek, dayId, a, b, s);
-}
-function manualSave(dayId) {
-  autoSaveNotes(dayId);
-  const msg = document.getElementById('savedmsg_' + dayId);
-  if (msg) { msg.classList.add('show'); setTimeout(() => msg.classList.remove('show'), 2000); }
-}
 function resetDay(dayId, n) {
   if (!confirm('Reset checkboxes for this day? Notes + comments stay.')) return;
   saveLocalCb(currentWeek, dayId, Array(n).fill(false));

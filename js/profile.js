@@ -36,7 +36,18 @@ async function handleAuth() {
     document.getElementById('authError').textContent = result.error;
     return;
   }
+  if (currentTab === 'register') {
+    showRegToast(document.getElementById('authUsername').value.trim());
+  }
   renderProfile();
+}
+
+function showRegToast(username) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:9997;background:var(--done-bg, rgba(30,80,30,0.95));border:1px solid rgba(129,199,132,0.4);color:var(--done, #81c784);padding:14px 28px;font-family:Montserrat,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;animation:fadeUp .3s ease;box-shadow:0 8px 30px rgba(0,0,0,0.5);border-radius:8px;text-align:center;';
+  t.innerHTML = '✓ Welcome, <strong>' + username + '</strong>! Registration successful.';
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
 }
 
 function handleLogout() {
