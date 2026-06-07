@@ -20,6 +20,9 @@ const ASSETS = [
   '/js/index.js',
   '/js/gym-ai.js',
   '/js/learning.js',
+  '/js/nepali-date.js',
+  '/exercise-animations.js',
+  '/exercise-animations.css',
   '/manifest.json',
 ];
 
@@ -72,10 +75,10 @@ self.addEventListener('fetch', event => {
     caches.match(event.request).then(cached => {
       if (cached) return cached;
       return fetch(event.request).then(response => {
-        // Cache successful GET responses
         if (response.ok && event.request.method === 'GET') {
+          const cloned = response.clone();
           caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, response.clone());
+            cache.put(event.request, cloned);
           });
         }
         return response;
