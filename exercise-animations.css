@@ -1,0 +1,30 @@
+/* ─── EXERCISE-ANIMATIONS.CSS ──────────────────────────────────────────────── */
+/* Styles for animated SVG stick figures in exercise rows.                      */
+/* Import this in base.css or add <link> to each HTML page.                    */
+
+.ex-anim-wrap {
+  flex-shrink: 0;
+  width: 64px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(184, 150, 12, 0.05);
+  border: 1px solid rgba(184, 150, 12, 0.12);
+  border-radius: 8px;
+  margin-right: 10px;
+  overflow: hidden;
+}
+
+.ex-anim {
+  width: 56px;
+  height: 64px;
+  display: block;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .ex-anim * {
+    animation: none !important;
+  }
+}

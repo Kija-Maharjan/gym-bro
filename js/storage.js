@@ -67,6 +67,16 @@ function recalcProgression(currentWeek, dayId, exIdx) {
   return false;
 }
 
+// ── WARM-UP STATE ──
+// Key: cbros_warmup_w{week}_{dayId} = array of booleans
+function saveLocalWarmup(week, id, checks) {
+  localStorage.setItem(lsKey(week, id, 'warmup'), JSON.stringify(checks));
+}
+function getLocalWarmup(week, id, numItems) {
+  const raw = localStorage.getItem(lsKey(week, id, 'warmup'));
+  return raw ? JSON.parse(raw) : Array(numItems).fill(false);
+}
+
 // ── UTILS ──
 function esc(s) {
   return String(s)

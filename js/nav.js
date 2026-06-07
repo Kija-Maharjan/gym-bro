@@ -48,7 +48,7 @@
   animRing();
 
   // Cursor scale effect on interactive elements
-  document.querySelectorAll('a, button, .day-card, .rc, .task, .phase-header, .day-sel-item').forEach(el => {
+  document.querySelectorAll('a, button, .day-card, .rc, .task, .phase-header, .day-sel-item, .skill-card, .ss-item, .wu-item, .wu-header').forEach(el => {
     el.addEventListener('mouseenter', () => {
       cursor.style.transform = 'translate(-50%,-50%) scale(2)';
       ring.style.transform   = 'translate(-50%,-50%) scale(1.5)';
