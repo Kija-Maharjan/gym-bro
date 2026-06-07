@@ -21,8 +21,13 @@ const ASSETS = [
   '/js/gym-ai.js',
   '/js/learning.js',
   '/js/nepali-date.js',
+  '/js/auth.js',
+  '/js/profile.js',
+  '/js/supabase.js',
   '/exercise-animations.js',
   '/exercise-animations.css',
+  '/profile.html',
+  '/css/profile.css',
   '/manifest.json',
 ];
 
@@ -49,7 +54,8 @@ self.addEventListener('activate', event => {
 // ── FETCH: serve from cache, fall back to network ──
 self.addEventListener('fetch', event => {
   // Don't cache API calls — those need the network
-  if (event.request.url.includes('/api/')) {
+  if (event.request.url.includes('/api/') ||
+      event.request.url.includes('supabase.co')) {
     return; // pass through to network
   }
 

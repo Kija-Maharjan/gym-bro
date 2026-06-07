@@ -7,6 +7,11 @@ function lsKey(week, id, type) {
 
 function saveLocalCb(week, id, checks) {
   localStorage.setItem(lsKey(week, id, 'cb'), JSON.stringify(checks));
+  if (navigator.onLine && typeof syncPush === 'function') {
+    checks.forEach((checked, exIdx) => {
+      syncPush('workout_checks', { week, day_id: id, ex_idx: exIdx, checked }, 'user_id,week,day_id,ex_idx');
+    });
+  }
 }
 function getLocalCb(week, id, numEx) {
   const raw = localStorage.getItem(lsKey(week, id, 'cb'));
@@ -15,6 +20,9 @@ function getLocalCb(week, id, numEx) {
 
 function saveLocalNotes(week, id, noteA, noteB, summary) {
   localStorage.setItem(lsKey(week, id, 'notes'), JSON.stringify({ noteA, noteB, summary }));
+  if (navigator.onLine && typeof syncPush === 'function') {
+    syncPush('notes', { week, day_id: id, note_a: noteA, note_b: noteB, summary }, 'user_id,week,day_id');
+  }
 }
 function getLocalNotes(week, id) {
   const raw = localStorage.getItem(lsKey(week, id, 'notes'));
@@ -23,6 +31,16 @@ function getLocalNotes(week, id) {
 
 function saveLocalComments(week, id, comments) {
   localStorage.setItem(lsKey(week, id, 'cmt'), JSON.stringify(comments));
+  if (navigator.onLine && typeof syncPush === 'function') {
+    const session = typeof getSession === 'function' ? getSession() : null;
+    comments.forEach(c => {
+      syncPush('comments', {
+        id: c.id, week, day_id: id, body: c.body,
+        ex_name: c.ex_name || '', avatar: c.avatar || '💪', username: c.username || session?.username || '',
+        created_at: c.created_at || new Date().toISOString()
+      }, 'user_id,id');
+    });
+  }
 }
 function getLocalComments(week, id) {
   const raw = localStorage.getItem(lsKey(week, id, 'cmt'));
@@ -38,6 +56,9 @@ function getProgState(dayId, exIdx) {
 }
 function saveProgState(dayId, exIdx, state) {
   localStorage.setItem(`cbros_prog_${dayId}_${exIdx}`, JSON.stringify(state));
+  if (navigator.onLine && typeof syncPush === 'function') {
+    syncPush('progression', { day_id: dayId, ex_idx: exIdx, streak: state.streak, level: state.level }, 'user_id,day_id,ex_idx');
+  }
 }
 
 // Recalculate streak for a given exercise across the last 3 weeks.
@@ -71,6 +92,11 @@ function recalcProgression(currentWeek, dayId, exIdx) {
 // Key: cbros_warmup_w{week}_{dayId} = array of booleans
 function saveLocalWarmup(week, id, checks) {
   localStorage.setItem(lsKey(week, id, 'warmup'), JSON.stringify(checks));
+  if (navigator.onLine && typeof syncPush === 'function') {
+    checks.forEach((checked, itemIdx) => {
+      syncPush('warmup_checks', { week, day_id: id, item_idx: itemIdx, checked }, 'user_id,week,day_id,item_idx');
+    });
+  }
 }
 function getLocalWarmup(week, id, numItems) {
   const raw = localStorage.getItem(lsKey(week, id, 'warmup'));

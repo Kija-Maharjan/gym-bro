@@ -459,15 +459,26 @@
 .ci-text { font-size: 13px; color: var(--text); line-height: 1.6; }
 .ci-del { margin-left: auto; background: transparent; border: none; color: var(--text-dim); cursor: pointer; font-size: 14px; padding: 4px 8px; transition: color 0.15s; touch-action: manipulation; border-radius: 4px; }
 .ci-del:hover { color: var(--gold); background: rgba(255,255,255,0.05); }
-.no-comments { font-size: 12px; color: var(--text-dim); font-style: italic; padding: 10px 0; letter-spacing: 0.5px; }
+.ci-avatar-sm { font-size: 18px; line-height: 1; flex-shrink: 0; }
+
+.cm-user {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; background: var(--dark3);
+  border: 1px solid var(--gold-border); border-radius: 6px;
+  flex: 1; min-width: 140px;
+}
+.cm-user-avatar { font-size: 20px; line-height: 1; }
+.cm-user-name { font-size: 10px; color: var(--text-dim); letter-spacing: 0.5px; }
+.cm-user-name strong { color: var(--cream); font-weight: 500; }
+
 .add-comment { display: flex; gap: 6px; margin-bottom: 6px; flex-wrap: wrap; }
-.cm-who-sel, .cm-ex-sel {
+.cm-ex-sel {
   background: var(--dark3); border: 1px solid rgba(184,150,12,0.15);
   color: var(--text); font-family: 'Montserrat', sans-serif;
   font-size: 11px; padding: 10px 12px; outline: none; cursor: pointer;
   flex: 1; min-width: 120px; letter-spacing: 0.5px; border-radius: 6px;
 }
-.cm-who-sel:focus, .cm-ex-sel:focus { border-color: rgba(128,203,196,0.4); }
+.cm-ex-sel:focus { border-color: var(--gold); }
 .add-comment-row2 { display: flex; gap: 6px; margin-bottom: 16px; }
 .cm-input {
   flex: 1; background: var(--dark3); border: 1px solid rgba(184,150,12,0.15);

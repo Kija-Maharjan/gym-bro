@@ -13,7 +13,8 @@ function getProgramStartDate() {
   return sunday;
 }
 function getTodayDayId() {
-  return 'wed';
+  const dayIds = ['sun','mon','tue','wed','thu','fri','sat'];
+  return dayIds[new Date().getDay()];
 }
 function getCurrentWeekFromDate() {
   const start = getProgramStartDate();
@@ -124,15 +125,22 @@ function renderTrainingCard(d) {
 
   const cmtHtml = comments.length === 0
     ? '<div class="no-comments">No comments yet — be first</div>'
-    : comments.map(c => `<div class="comment-item">
-        <div class="ci-header">
-          <span class="ci-who ${c.athlete === 'A' ? 'a' : 'b'}">${c.athlete === 'A' ? '71kg — A' : '100kg — B'}</span>
-          ${c.ex_name ? `<span class="ci-ex">on: ${c.ex_name}</span>` : ''}
-          <span class="ci-time">${formatTime(c.created_at)}</span>
-          <button class="ci-del" onclick="deleteComment('${d.id}',${JSON.stringify(c.id)})">✕</button>
-        </div>
-        <div class="ci-text">${esc(c.body)}</div>
-      </div>`).join('');
+    : comments.map(c => {
+        const isOld = !!c.athlete;
+        const avatar = c.avatar || (c.athlete === 'A' ? '🏋️' : '💪');
+        const name = c.username || (c.athlete === 'A' ? '71kg — A' : '100kg — B');
+        const cls = isOld ? (c.athlete === 'A' ? 'a' : 'b') : '';
+        return `<div class="comment-item">
+          <div class="ci-header">
+            <span class="ci-avatar-sm">${avatar}</span>
+            <span class="ci-who ${cls}">${esc(name)}</span>
+            ${c.ex_name ? `<span class="ci-ex">on: ${esc(c.ex_name)}</span>` : ''}
+            <span class="ci-time">${formatTime(c.created_at)}</span>
+            <button class="ci-del" onclick="deleteComment('${d.id}',${JSON.stringify(c.id)})">✕</button>
+          </div>
+          <div class="ci-text">${esc(c.body)}</div>
+        </div>`;
+      }).join('');
 
   const exOpts = d.exercises.map(e => `<option value="${esc(e.name)}">${esc(e.name)}</option>`).join('');
 
@@ -164,10 +172,10 @@ function renderTrainingCard(d) {
         <div class="cs-title">Comments</div>
         <div class="comment-list" id="cmtlist_${d.id}">${cmtHtml}</div>
         <div class="add-comment">
-          <select class="cm-who-sel" id="cmwho_${d.id}">
-            <option value="A">71 kg — A</option>
-            <option value="B">100 kg — B</option>
-          </select>
+          <div class="cm-user" id="cmuser_${d.id}">
+            <span class="cm-user-avatar" id="cmavatar_${d.id}">👤</span>
+            <span class="cm-user-name" id="cmuname_${d.id}">Sign in to comment</span>
+          </div>
           <select class="cm-ex-sel" id="cmex_${d.id}">
             <option value="">All exercises</option>${exOpts}
           </select>
@@ -358,13 +366,18 @@ function showToast(msg) {
   setTimeout(() => t.remove(), 3500);
 }
 
+function getCommentUser() {
+  const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+  return user || { id: 'anon', username: 'Anonymous', avatar: '👤' };
+}
+
 function addComment(dayId) {
-  const athlete = document.getElementById('cmwho_' + dayId).value;
+  const user = getCommentUser();
   const exName  = document.getElementById('cmex_'  + dayId).value;
   const body    = document.getElementById('cminput_'+ dayId).value.trim();
   if (!body) return;
   document.getElementById('cminput_' + dayId).value = '';
-  const newC = { id: Date.now(), athlete, ex_name: exName, body, created_at: new Date().toISOString() };
+  const newC = { id: Date.now(), userId: user.id, username: user.username, avatar: user.avatar, ex_name: exName, body, created_at: new Date().toISOString() };
   const existing = getLocalComments(currentWeek, dayId);
   existing.push(newC);
   saveLocalComments(currentWeek, dayId, existing);
@@ -375,8 +388,9 @@ function addComment(dayId) {
     const div = document.createElement('div');
     div.className = 'comment-item';
     div.innerHTML = `<div class="ci-header">
-      <span class="ci-who ${athlete === 'A' ? 'a' : 'b'}">${athlete === 'A' ? '71kg — A' : '100kg — B'}</span>
-      ${exName ? `<span class="ci-ex">on: ${exName}</span>` : ''}
+      <span class="ci-avatar-sm">${user.avatar}</span>
+      <span class="ci-who">${esc(user.username)}</span>
+      ${exName ? `<span class="ci-ex">on: ${esc(exName)}</span>` : ''}
       <span class="ci-time">just now</span>
       <button class="ci-del" onclick="deleteComment('${dayId}',${newC.id})">✕</button>
     </div><div class="ci-text">${esc(body)}</div>`;
@@ -392,15 +406,22 @@ function deleteComment(dayId, cmtId) {
   if (list) {
     list.innerHTML = filtered.length === 0
       ? '<div class="no-comments">No comments yet — be first</div>'
-      : filtered.map(c => `<div class="comment-item">
-          <div class="ci-header">
-            <span class="ci-who ${c.athlete === 'A' ? 'a' : 'b'}">${c.athlete === 'A' ? '71kg — A' : '100kg — B'}</span>
-            ${c.ex_name ? `<span class="ci-ex">on: ${c.ex_name}</span>` : ''}
-            <span class="ci-time">${formatTime(c.created_at)}</span>
-            <button class="ci-del" onclick="deleteComment('${dayId}',${JSON.stringify(c.id)})">✕</button>
-          </div>
-          <div class="ci-text">${esc(c.body)}</div>
-        </div>`).join('');
+      : filtered.map(c => {
+          const isOld = !!c.athlete;
+          const avatar = c.avatar || (c.athlete === 'A' ? '🏋️' : '💪');
+          const name = c.username || (c.athlete === 'A' ? '71kg — A' : '100kg — B');
+          const cls = isOld ? (c.athlete === 'A' ? 'a' : 'b') : '';
+          return `<div class="comment-item">
+            <div class="ci-header">
+              <span class="ci-avatar-sm">${avatar}</span>
+              <span class="ci-who ${cls}">${esc(name)}</span>
+              ${c.ex_name ? `<span class="ci-ex">on: ${esc(c.ex_name)}</span>` : ''}
+              <span class="ci-time">${formatTime(c.created_at)}</span>
+              <button class="ci-del" onclick="deleteComment('${dayId}',${JSON.stringify(c.id)})">✕</button>
+            </div>
+            <div class="ci-text">${esc(c.body)}</div>
+          </div>`;
+        }).join('');
   }
 }
 
@@ -431,14 +452,30 @@ function setWeek(w, btn) {
   currentWeek = w;
   document.querySelectorAll('.wtab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
-renderAll();
-if (window.injectExerciseAnimations) setTimeout(window.injectExerciseAnimations, 100);
+  renderAll();
+  if (window.injectExerciseAnimations) setTimeout(window.injectExerciseAnimations, 100);
 }
 function renderAll() {
   renderWeekTabs();
   renderScheduleStrip();
   renderDays();
   checkAnyUnlocks();
+  refreshCommentUsers();
+}
+
+function refreshCommentUsers() {
+  const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+  document.querySelectorAll('.cm-user').forEach(el => {
+    const avatar = el.querySelector('.cm-user-avatar');
+    const name = el.querySelector('.cm-user-name');
+    if (user) {
+      if (avatar) avatar.textContent = user.avatar;
+      if (name) name.innerHTML = `Commenting as <strong>${esc(user.username)}</strong>`;
+    } else {
+      if (avatar) avatar.textContent = '👤';
+      if (name) name.innerHTML = '<a href="/profile.html" style="color:var(--gold);text-decoration:none">Sign in to comment</a>';
+    }
+  });
 }
 
 // ── INIT ──

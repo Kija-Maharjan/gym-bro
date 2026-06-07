@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#b8960c">
+<meta name="description" content="Gym Bro — User Profile & Stats">
+<title>Profile — Gym Bro</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/profile.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">Gym<span>Bro</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">🏋️ <span>Tracker</span></a></li>
+    <li><a href="gym-ai.html">🤖 <span>AI Coach</span> <span class="nav-badge">NEW</span></a></li>
+    <li><a href="learning.html">📚 <span>Skills</span></a></li>
+    <li><a href="profile.html" class="active">👤 <span>Profile</span></a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="profile-page" id="profilePage">
+  <div class="auth-section" id="authSection">
+    <div class="auth-card">
+      <div class="auth-title">Gym<span>Bro</span></div>
+      <div class="auth-sub">Sign in to track your progress</div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Sign In</button>
+        <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Register</button>
+      </div>
+      <div class="auth-form" id="authForm">
+        <input class="auth-input" id="authEmail" type="email" placeholder="Email" autocomplete="email">
+        <div id="authNameField" style="display:none">
+          <input class="auth-input" id="authUsername" type="text" placeholder="Display name" autocomplete="username">
+        </div>
+        <input class="auth-input" id="authPassword" type="password" placeholder="Password" autocomplete="current-password">
+        <div class="auth-error" id="authError"></div>
+        <button class="auth-btn" id="authBtn" onclick="handleAuth()">Sign In</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-section" id="profileSection" style="display:none">
+    <div class="prof-header">
+      <div class="prof-avatar" id="profAvatar">💪</div>
+      <div class="prof-info">
+        <div class="prof-name" id="profName">Username</div>
+        <div class="prof-joined" id="profJoined">Member since —</div>
+      </div>
+      <button class="prof-logout" onclick="handleLogout()">Sign Out</button>
+    </div>
+
+    <div class="sec-header" style="padding-top:0">
+      <span class="sec-num">01</span>
+      <div class="sec-line"></div>
+      <h2 class="sec-title">Stats <em>Overview</em></h2>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num" id="statExercises">0</div>
+        <div class="stat-label">Exercises Done</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statStreaks">0</div>
+        <div class="stat-label">Active Streaks</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statLevelUps">0</div>
+        <div class="stat-label">Level Ups</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statComments">0</div>
+        <div class="stat-label">Comments</div>
+      </div>
+    </div>
+
+    <div class="sec-header">
+      <span class="sec-num">02</span>
+      <div class="sec-line"></div>
+      <h2 class="sec-title">Streaks & <em>Progress</em></h2>
+    </div>
+
+    <div class="progress-list" id="progressList">
+      <div class="pl-empty">Complete exercises to see your streaks here.</div>
+    </div>
+
+    <div class="sec-header">
+      <span class="sec-num">03</span>
+      <div class="sec-line"></div>
+      <h2 class="sec-title">Recent <em>Comments</em></h2>
+    </div>
+
+    <div class="recent-comments" id="recentComments">
+      <div class="pl-empty">No comments yet.</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">Gym<span>Bro</span></div>
+  <div class="footer-copy">Profile & Stats · Progress saves locally</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/js/data.js"></script>
+<script src="/js/storage.js"></script>
+<script src="/js/supabase.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/profile.js"></script>
+<script src="/js/nav.js"></script>
+<script src="/js/nav.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }
+</script>
+</body>
+</html>
