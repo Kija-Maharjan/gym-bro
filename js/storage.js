@@ -1,8 +1,19 @@
 // ─── STORAGE.JS — localStorage helpers shared by index.js and gym-ai.js ──────
 
+function getStoragePrefix() {
+  try {
+    const s = typeof getSession === 'function' ? getSession() : null;
+    return s && s.userId ? `u_${s.userId}_` : 'g_';
+  } catch { return 'g_'; }
+}
+
+function prefixedKey(base) {
+  return getStoragePrefix() + base;
+}
+
 // Key format: cbros_{type}_w{week}_{dayId}
 function lsKey(week, id, type) {
-  return `cbros_${type}_w${week}_${id}`;
+  return prefixedKey(`cbros_${type}_w${week}_${id}`);
 }
 
 function saveLocalCb(week, id, checks) {
@@ -50,12 +61,15 @@ function getLocalComments(week, id) {
 // ── PROGRESSION STATE ──
 // Tracks streak (consecutive weeks completed) and current level per exercise
 // Key: cbros_prog_{dayId}_{exIdx}
+function progKey(dayId, exIdx) {
+  return prefixedKey(`cbros_prog_${dayId}_${exIdx}`);
+}
 function getProgState(dayId, exIdx) {
-  const raw = localStorage.getItem(`cbros_prog_${dayId}_${exIdx}`);
+  const raw = localStorage.getItem(progKey(dayId, exIdx));
   return raw ? JSON.parse(raw) : { streak: 0, level: 0 };
 }
 function saveProgState(dayId, exIdx, state) {
-  localStorage.setItem(`cbros_prog_${dayId}_${exIdx}`, JSON.stringify(state));
+  localStorage.setItem(progKey(dayId, exIdx), JSON.stringify(state));
   if (navigator.onLine && typeof syncPush === 'function') {
     syncPush('progression', { day_id: dayId, ex_idx: exIdx, streak: state.streak, level: state.level }, 'user_id,day_id,ex_idx');
   }

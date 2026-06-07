@@ -2,14 +2,17 @@
 // Depends on: data.js, storage.js, nav.js (loaded before this in HTML)
 
 // ── DATE HELPERS (Nepal: week starts Sunday) ──
+function startDateKey() {
+  return (typeof prefixedKey === 'function' ? prefixedKey('') : '') + 'cbros_start_date';
+}
 function getProgramStartDate() {
-  const stored = localStorage.getItem('cbros_start_date');
+  const stored = localStorage.getItem(startDateKey());
   if (stored) return new Date(stored);
   const now = new Date();
   const sunday = new Date(now);
   sunday.setHours(0, 0, 0, 0);
   sunday.setDate(now.getDate() - now.getDay());
-  localStorage.setItem('cbros_start_date', sunday.toISOString());
+  localStorage.setItem(startDateKey(), sunday.toISOString());
   return sunday;
 }
 function getTodayDayId() {

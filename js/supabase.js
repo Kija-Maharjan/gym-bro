@@ -105,7 +105,7 @@ async function pullAllData() {
 
   if (skillData) {
     skillData.forEach(s => {
-      const key = `gymbro_calisthenics_skills`;
+      const key = (typeof prefixedKey === 'function' ? prefixedKey('') : '') + 'gymbro_calisthenics_skills';
       const existing = JSON.parse(localStorage.getItem(key) || '{}');
       if (!existing[s.skill_key]) existing[s.skill_key] = [];
       existing[s.skill_key][s.step_idx] = s.checked;
@@ -115,7 +115,7 @@ async function pullAllData() {
 
   if (noteData) {
     noteData.forEach(n => {
-      const key = `cbros_notes_w${n.week}_${n.day_id}`;
+      const key = typeof lsKey === 'function' ? lsKey(n.week, n.day_id, 'notes') : `cbros_notes_w${n.week}_${n.day_id}`;
       localStorage.setItem(key, JSON.stringify({ noteA: n.note_a || '', noteB: n.note_b || '', summary: n.summary || '' }));
     });
   }

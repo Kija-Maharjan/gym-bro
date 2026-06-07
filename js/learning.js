@@ -98,15 +98,17 @@ const SKILLS = [
   },
 ];
 
-const STORAGE_KEY = 'gymbro_calisthenics_skills';
+function skillsKey() {
+  return (typeof prefixedKey === 'function' ? prefixedKey('') : '') + 'gymbro_calisthenics_skills';
+}
 
 function getProgress() {
-  const saved = localStorage.getItem(STORAGE_KEY);
+  const saved = localStorage.getItem(skillsKey());
   return saved ? JSON.parse(saved) : {};
 }
 
 function saveProgress(progress) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  localStorage.setItem(skillsKey(), JSON.stringify(progress));
 }
 
 function getSkillProgress(skillId) {
