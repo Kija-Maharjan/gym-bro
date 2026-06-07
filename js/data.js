@@ -20,6 +20,81 @@
 
 const DAYS = [
   // ─────────────────────────────────────────────
+  //  SUNDAY — FULL BODY CONDITIONING
+  // ─────────────────────────────────────────────
+  {
+    id: 'sun',
+    weekday: 'Sunday',
+    type: 'Full Body Conditioning',
+    isRest: false,
+    name: 'Full Body Flow',
+    focus: 'Endurance · Control · Mental Toughness',
+    tip: 'Mindset day. AMRAP is not a race — stay composed when it burns. B: swap pull-ups for Australian rows. A: keep moving even if pace slows.',
+    exercises: [
+      {
+        name: 'Jump rope / jog warm-up',
+        note: '3 min easy — heart rate up, nothing more',
+        type: 's',
+        levels: [
+          { a: '3 min jog',               b: '3 min low-impact jog',        label: 'L1 — Easy'    },
+          { a: '4 min + 20 jumping jacks', b: '4 min + 20 jacks',           label: 'L2 — Active'  },
+          { a: '5 min + 10 burpees',       b: '5 min + 10 step burpees',    label: 'L3 — Intense' },
+        ],
+      },
+      {
+        name: 'Push + squat superset',
+        note: '10 push-ups then 10 squats immediately = 1 round',
+        type: 'ab',
+        levels: [
+          { a: '3 rounds — 60s rest',     b: '3 rounds — 50s rest',         label: 'L1 — Base'         },
+          { a: '3 rounds — 45s rest',     b: '3 rounds — 40s rest',         label: 'L2 — Shorter rest' },
+          { a: '4 rounds — 30s rest',     b: '4 rounds — 25s rest',         label: 'L3 — Density'      },
+        ],
+      },
+      {
+        name: 'Row + lunge superset',
+        note: '8 rows then 8 lunges/side = 1 round',
+        type: 'ab',
+        levels: [
+          { a: '3 rounds',                b: '3 rounds',                    label: 'L1 — Volume' },
+          { a: '3 rounds faster',         b: '3 rounds faster',             label: 'L2 — Pace'   },
+          { a: '4 rounds max pace',       b: '4 rounds max pace',           label: 'L3 — HIIT'   },
+        ],
+      },
+      {
+        name: 'Burpees (modified for B)',
+        note: 'B: step back to protect shoulder — still brutal',
+        type: 'ab',
+        levels: [
+          { a: '3×5 full',                b: '3×6 step-back',               label: 'L1 — Start'    },
+          { a: '3×8 full',                b: '3×10 step-back',              label: 'L2 — More'     },
+          { a: '3×10 + clap',             b: '3×12 step-back fast',         label: 'L3 — Explosive'},
+        ],
+      },
+      {
+        name: 'AMRAP finisher (8 min)',
+        note: 'A: 5 push + 10 squat + 15s plank / B: 8 rows + 10 squat + 15s hollow',
+        type: 'ab',
+        levels: [
+          { a: '8 min — track rounds',    b: '8 min — track rounds',        label: 'L1 — Establish' },
+          { a: '9 min — beat last score', b: '9 min — beat last score',     label: 'L2 — Progress'  },
+          { a: '10 min — beat best',      b: '10 min — beat best',          label: 'L3 — Peak'      },
+        ],
+      },
+      {
+        name: 'Cool-down stretch',
+        note: "Child's pose, pigeon, chest opener — 40 sec each",
+        type: 's',
+        levels: [
+          { a: '5 min',                   b: '5 min',                       label: 'L1 — Basic'    },
+          { a: '8 min + hip flexors',     b: '8 min + pendulum swings',     label: 'L2 — Full'     },
+          { a: '10 min full protocol',    b: '10 min + shoulder rehab',     label: 'L3 — Recovery' },
+        ],
+      },
+    ],
+  },
+];
+  // ─────────────────────────────────────────────
   //  MONDAY — PUSH DAY
   // ─────────────────────────────────────────────
   {
@@ -351,78 +426,3 @@ const DAYS = [
     ],
   },
 
-  // ─────────────────────────────────────────────
-  //  SUNDAY — FULL BODY CONDITIONING
-  // ─────────────────────────────────────────────
-  {
-    id: 'sun',
-    weekday: 'Sunday',
-    type: 'Full Body Conditioning',
-    isRest: false,
-    name: 'Full Body Flow',
-    focus: 'Endurance · Control · Mental Toughness',
-    tip: 'Mindset day. AMRAP is not a race — stay composed when it burns. B: swap pull-ups for Australian rows. A: keep moving even if pace slows.',
-    exercises: [
-      {
-        name: 'Jump rope / jog warm-up',
-        note: '3 min easy — heart rate up, nothing more',
-        type: 's',
-        levels: [
-          { a: '3 min jog',               b: '3 min low-impact jog',        label: 'L1 — Easy'    },
-          { a: '4 min + 20 jumping jacks', b: '4 min + 20 jacks',           label: 'L2 — Active'  },
-          { a: '5 min + 10 burpees',       b: '5 min + 10 step burpees',    label: 'L3 — Intense' },
-        ],
-      },
-      {
-        name: 'Push + squat superset',
-        note: '10 push-ups then 10 squats immediately = 1 round',
-        type: 'ab',
-        levels: [
-          { a: '3 rounds — 60s rest',     b: '3 rounds — 50s rest',         label: 'L1 — Base'         },
-          { a: '3 rounds — 45s rest',     b: '3 rounds — 40s rest',         label: 'L2 — Shorter rest' },
-          { a: '4 rounds — 30s rest',     b: '4 rounds — 25s rest',         label: 'L3 — Density'      },
-        ],
-      },
-      {
-        name: 'Row + lunge superset',
-        note: '8 rows then 8 lunges/side = 1 round',
-        type: 'ab',
-        levels: [
-          { a: '3 rounds',                b: '3 rounds',                    label: 'L1 — Volume' },
-          { a: '3 rounds faster',         b: '3 rounds faster',             label: 'L2 — Pace'   },
-          { a: '4 rounds max pace',       b: '4 rounds max pace',           label: 'L3 — HIIT'   },
-        ],
-      },
-      {
-        name: 'Burpees (modified for B)',
-        note: 'B: step back to protect shoulder — still brutal',
-        type: 'ab',
-        levels: [
-          { a: '3×5 full',                b: '3×6 step-back',               label: 'L1 — Start'    },
-          { a: '3×8 full',                b: '3×10 step-back',              label: 'L2 — More'     },
-          { a: '3×10 + clap',             b: '3×12 step-back fast',         label: 'L3 — Explosive'},
-        ],
-      },
-      {
-        name: 'AMRAP finisher (8 min)',
-        note: 'A: 5 push + 10 squat + 15s plank / B: 8 rows + 10 squat + 15s hollow',
-        type: 'ab',
-        levels: [
-          { a: '8 min — track rounds',    b: '8 min — track rounds',        label: 'L1 — Establish' },
-          { a: '9 min — beat last score', b: '9 min — beat last score',     label: 'L2 — Progress'  },
-          { a: '10 min — beat best',      b: '10 min — beat best',          label: 'L3 — Peak'      },
-        ],
-      },
-      {
-        name: 'Cool-down stretch',
-        note: "Child's pose, pigeon, chest opener — 40 sec each",
-        type: 's',
-        levels: [
-          { a: '5 min',                   b: '5 min',                       label: 'L1 — Basic'    },
-          { a: '8 min + hip flexors',     b: '8 min + pendulum swings',     label: 'L2 — Full'     },
-          { a: '10 min full protocol',    b: '10 min + shoulder rehab',     label: 'L3 — Recovery' },
-        ],
-      },
-    ],
-  },
-];
