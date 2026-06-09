@@ -17,7 +17,12 @@ async function registerUser(email, password, username) {
     const { error: profileError } = await sb.from('profiles').upsert({
       id: data.user.id, username, avatar: getAvatar(username)
     });
-    if (profileError) console.log('Profile create error:', profileError.message);
+    if (profileError) {
+      if (profileError.message?.includes('duplicate key') || profileError.code === '23505') {
+        return { error: 'Username "' + username + '" is already taken. Pick another.' };
+      }
+      console.log('Profile create error:', profileError.message);
+    }
     setLocalSession(data.session || data.user);
     setTimeout(pullAllData, 500);
     return { user: { id: data.user.id, username, avatar: getAvatar(username) } };
@@ -33,7 +38,7 @@ async function loginUser(email, password) {
     const { data, error } = await sb.auth.signInWithPassword({ email, password });
     if (error) return { error: error.message };
     setLocalSession(data.session);
-    const { data: profile } = await sb.from('profiles').select('username,avatar').eq('id', data.user.id).single();
+    const { data: profile } = await sb.from('profiles').select('username,avatar').eq('id', data.user.id).maybeSingle();
     const username = profile?.username || data.user.email;
     const avatar = profile?.avatar || getAvatar(username);
     setTimeout(pullAllData, 500);
@@ -44,12 +49,14 @@ async function loginUser(email, password) {
 }
 
 function setLocalSession(session) {
-  if (session?.user) {
+  // Accept both Supabase AuthSession (session.user) and raw user object (user)
+  const u = session?.user || session;
+  if (u?.id) {
     const info = {
-      userId: session.user.id,
-      email: session.user.email,
-      username: session.user.user_metadata?.username || session.user.email,
-      avatar: session.user.user_metadata?.avatar || getAvatar(session.user.email || ''),
+      userId: u.id,
+      email: u.email || '',
+      username: u.user_metadata?.username || u.username || u.email || '',
+      avatar: u.user_metadata?.avatar || getAvatar(u.email || u.username || ''),
       loggedInAt: new Date().toISOString()
     };
     localStorage.setItem('gymbro_session', JSON.stringify(info));
