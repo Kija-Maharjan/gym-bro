@@ -177,19 +177,24 @@ footer {
 @media (max-width: 767px) {
   nav { padding: 14px 20px; }
 
-  /* Full-screen mobile menu */
+  /* Full-screen mobile menu with frosted backdrop */
   .nav-links {
     display: none;
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(17,16,16,0.98);
+    background: rgba(17,16,16,0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     flex-direction: column; list-style: none;
     align-items: center; justify-content: center;
     gap: 28px; z-index: 150;
   }
   .nav-links.open { display: flex; }
   .nav-links li a {
-    font-size: 12px; letter-spacing: 4px; padding: 10px 20px;
+    font-size: 13px; letter-spacing: 4px; padding: 12px 24px;
+    color: var(--cream);
   }
+  .nav-links li a:hover,
+  .nav-links li a.active { color: var(--gold); }
   .hamburger { display: flex; position: relative; z-index: 200; }
   footer { padding: 20px 16px; flex-direction: column; text-align: center; gap: 10px; }
 }
