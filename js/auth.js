@@ -81,7 +81,10 @@ function isLoggedIn() {
   const sb = getSupabase();
   if (!sb) return;
   const { data: { session } } = await sb.auth.getSession();
-  if (session) setLocalSession(session);
+  if (session) {
+    setLocalSession(session);
+    setTimeout(pullAllData, 500);
+  }
   sb.auth.onAuthStateChange((event, session) => {
     if (event === 'SIGNED_IN' && session) {
       setLocalSession(session);

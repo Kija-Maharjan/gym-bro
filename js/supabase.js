@@ -13,15 +13,20 @@ function getSupabase() {
   return sbClient;
 }
 
-function isOnline() {
-  return navigator.onLine && !!getSupabase()?.auth?.getSession()?.data?.session;
+async function isOnline() {
+  if (!navigator.onLine) return false;
+  const sb = getSupabase();
+  if (!sb) return false;
+  const { data: { session } } = await sb.auth.getSession();
+  return !!session;
 }
 
 async function syncPush(table, data, conflictCols) {
   try {
     const sb = getSupabase();
     if (!sb || !navigator.onLine) return;
-    const user = sb.auth.getSession().data.session?.user;
+    const { data: { session } } = await sb.auth.getSession();
+    const user = session?.user;
     if (!user) return;
     const payload = Array.isArray(data) ? data.map(d => ({ ...d, user_id: user.id })) : [{ ...data, user_id: user.id }];
     await sb.from(table).upsert(payload, { onConflict: conflictCols, ignoreDuplicates: false });
@@ -34,7 +39,8 @@ async function syncPull(table, cols, order) {
   try {
     const sb = getSupabase();
     if (!sb || !navigator.onLine) return null;
-    const user = sb.auth.getSession().data.session?.user;
+    const { data: { session } } = await sb.auth.getSession();
+    const user = session?.user;
     if (!user) return null;
     let q = sb.from(table).select(cols).eq('user_id', user.id);
     if (order) q = q.order(order);
@@ -119,4 +125,7 @@ async function pullAllData() {
       localStorage.setItem(key, JSON.stringify({ noteA: n.note_a || '', noteB: n.note_b || '', summary: n.summary || '' }));
     });
   }
+
+  // Re-render the tracker page so pulled data shows up immediately
+  if (typeof renderAll === 'function') setTimeout(renderAll, 0);
 }
