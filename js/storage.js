@@ -1,4 +1,4 @@
-// ─── STORAGE.JS — localStorage helpers shared by index.js and gym-ai.js ──────
+// ─── STORAGE.JS — localStorage helpers shared across pages ──────
 
 function getStoragePrefix() {
   try {

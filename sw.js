@@ -1,6 +1,6 @@
 // ─── SW.JS — Service Worker (Offline Support) ────────────────────────────────
 // Caches all static assets on first visit.
-// App works fully offline after that (except AI chat which needs internet).
+// App works fully offline after that.
 
 const CACHE_NAME = 'gymbro-v2';
 
@@ -8,17 +8,14 @@ const CACHE_NAME = 'gymbro-v2';
 const ASSETS = [
   '/',
   '/index.html',
-  '/gym-ai.html',
   '/learning.html',
   '/css/base.css',
   '/css/index.css',
-  '/css/gym-ai.css',
   '/css/learning.css',
   '/js/data.js',
   '/js/storage.js',
   '/js/nav.js',
   '/js/index.js',
-  '/js/gym-ai.js',
   '/js/learning.js',
   '/js/nepali-date.js',
   '/js/auth.js',
