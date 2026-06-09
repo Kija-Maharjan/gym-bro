@@ -140,6 +140,27 @@
 .ci-time { font-size: 8px; color: var(--text-dim); letter-spacing: 1px; margin-left: auto; }
 .ci-body { font-size: 12px; color: var(--text); line-height: 1.5; }
 
+/* ── SYNC BAR ── */
+.sync-bar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 24px; margin-bottom: 28px;
+  background: var(--dark2); border: 1px solid var(--gold-border);
+  border-radius: 8px;
+}
+.sync-btn {
+  padding: 8px 16px; background: var(--gold); border: none;
+  border-radius: 6px; color: var(--dark);
+  font-family: 'Montserrat', sans-serif; font-size: 8px;
+  font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+  cursor: pointer; transition: opacity 0.3s; white-space: nowrap;
+}
+.sync-btn:hover { opacity: 0.85; }
+.sync-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.sync-status {
+  font-size: 9px; letter-spacing: 1px; color: var(--done);
+  flex: 1; text-align: right;
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 600px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr); }

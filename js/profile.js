@@ -156,6 +156,66 @@ function renderProfile() {
   }
 }
 
+// ── FORCE SYNC: push all local data to Supabase ──
+async function forceSyncAll() {
+  const btn = document.querySelector('.sync-btn');
+  const status = document.getElementById('syncStatus');
+  if (!btn || !status) return;
+  btn.disabled = true;
+  btn.textContent = '⏳ Syncing...';
+  status.textContent = '';
+
+  const session = getSession();
+  if (!session) { status.textContent = 'Not logged in'; btn.disabled = false; btn.textContent = '⬆ Sync Now'; return; }
+
+  let total = 0;
+
+  for (const day of DAYS) {
+    if (day.isRest) continue;
+    for (let w = 1; w <= 8; w++) {
+      // Exercises
+      const checks = getLocalCb(w, day.id, day.exercises.length);
+      for (let i = 0; i < checks.length; i++) {
+        await syncPush('workout_checks', { week: w, day_id: day.id, ex_idx: i, checked: checks[i] }, 'user_id,week,day_id,ex_idx');
+        total++;
+      }
+
+      // Warmups
+      const wu = WARMUPS[day.id];
+      if (wu) {
+        const wuChecks = getLocalWarmup(w, day.id, wu.items.length);
+        for (let i = 0; i < wuChecks.length; i++) {
+          await syncPush('warmup_checks', { week: w, day_id: day.id, item_idx: i, checked: wuChecks[i] }, 'user_id,week,day_id,item_idx');
+          total++;
+        }
+      }
+
+      // Comments
+      const cmts = getLocalComments(w, day.id);
+      for (const c of cmts) {
+        await syncPush('comments', {
+          id: c.id, week: w, day_id: day.id, body: c.body,
+          ex_name: c.ex_name || '', avatar: c.avatar || '💪', username: c.username || session.username || '',
+          created_at: c.created_at || new Date().toISOString()
+        }, 'user_id,id');
+        total++;
+      }
+    }
+
+    // Progression state
+    for (let i = 0; i < day.exercises.length; i++) {
+      const ps = getProgState(day.id, i);
+      await syncPush('progression', { day_id: day.id, ex_idx: i, streak: ps.streak, level: ps.level }, 'user_id,day_id,ex_idx');
+      total++;
+    }
+  }
+
+  btn.disabled = false;
+  btn.textContent = '⬆ Sync Now';
+  status.textContent = `✓ Synced ${total} items`;
+  setTimeout(() => { if (status.textContent.startsWith('✓')) status.textContent = ''; }, 4000);
+}
+
 (function init() {
   if (isLoggedIn()) renderProfile();
 })();
