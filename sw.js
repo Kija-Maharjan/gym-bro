@@ -2,7 +2,7 @@
 // Caches all static assets on first visit.
 // App works fully offline after that (except AI chat which needs internet).
 
-const CACHE_NAME = 'gymbro-v1';
+const CACHE_NAME = 'gymbro-v2';
 
 // All files to cache for offline use
 const ASSETS = [
