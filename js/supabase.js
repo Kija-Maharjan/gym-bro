@@ -35,14 +35,15 @@ async function syncPush(table, data, conflictCols) {
   }
 }
 
-async function syncPull(table, cols, order) {
+async function syncPull(table, cols, order, filterByUser = true) {
   try {
     const sb = getSupabase();
     if (!sb || !navigator.onLine) return null;
     const { data: { session } } = await sb.auth.getSession();
     const user = session?.user;
     if (!user) return null;
-    let q = sb.from(table).select(cols).eq('user_id', user.id);
+    let q = sb.from(table).select(cols);
+    if (filterByUser) q = q.eq('user_id', user.id);
     if (order) q = q.order(order);
     const { data, error } = await q;
     if (error) throw error;
@@ -58,7 +59,7 @@ async function pullAllData() {
     syncPull('workout_checks', 'week,day_id,ex_idx,checked'),
     syncPull('warmup_checks', 'week,day_id,item_idx,checked'),
     syncPull('progression', 'day_id,ex_idx,streak,level'),
-    syncPull('comments', 'id,week,day_id,body,ex_name,avatar,username,created_at'),
+    syncPull('comments', 'id,week,day_id,body,ex_name,avatar,username,created_at', 'created_at', false),
     syncPull('skills', 'skill_key,step_idx,checked'),
     syncPull('notes', 'week,day_id,note_a,note_b,summary'),
   ]);

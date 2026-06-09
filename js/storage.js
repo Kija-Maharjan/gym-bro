@@ -45,6 +45,8 @@ function saveLocalComments(week, id, comments) {
   if (navigator.onLine && typeof syncPush === 'function') {
     const session = typeof getSession === 'function' ? getSession() : null;
     comments.forEach(c => {
+      // Only push own comments — don't re-upload other users' comments
+      if (c.userId && session && c.userId !== session.userId) return;
       syncPush('comments', {
         id: c.id, week, day_id: id, body: c.body,
         ex_name: c.ex_name || '', avatar: c.avatar || '💪', username: c.username || session?.username || '',
