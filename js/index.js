@@ -388,6 +388,10 @@ function addComment(dayId) {
 function deleteComment(dayId, cmtId) {
   const filtered = getLocalComments(currentWeek, dayId).filter(c => c.id !== cmtId);
   saveLocalComments(currentWeek, dayId, filtered);
+  if (navigator.onLine && typeof syncDelete === 'function') {
+    const session = typeof getSession === 'function' ? getSession() : null;
+    if (session) syncDelete('comments', 'id', cmtId);
+  }
   const list = document.getElementById('cmtlist_' + dayId);
   if (list) {
     list.innerHTML = filtered.length === 0

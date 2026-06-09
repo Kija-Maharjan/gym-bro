@@ -116,6 +116,33 @@ nav {
   border-radius: 3px;
 }
 
+/* Nav user status */
+.nav-user {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 9px; letter-spacing: 1.5px;
+  color: var(--text-dim); flex-shrink: 0;
+  margin-left: auto; padding: 0 14px;
+}
+.nav-user .nu-avatar { font-size: 16px; }
+.nav-user .nu-name { color: var(--gold); }
+.nav-user .nu-signin {
+  color: var(--text-dim); text-decoration: none;
+  padding: 6px 12px; border: 1px solid var(--gold-border);
+  border-radius: 4px; transition: all 0.3s;
+  font-size: 8px; letter-spacing: 2px; text-transform: uppercase;
+}
+.nav-user .nu-signin:hover { color: var(--gold); border-color: var(--gold); }
+.nav-user .nu-sync {
+  font-size: 7px; letter-spacing: 1px;
+  padding: 2px 6px; border-radius: 3px;
+}
+.nav-user .nu-sync.online { color: var(--done); }
+.nav-user .nu-sync.offline { color: var(--text-dim); }
+
+@media (max-width: 767px) {
+  .nav-user { display: none; }
+}
+
 /* Hamburger */
 .hamburger {
   display: none; flex-direction: column; gap: 5px;

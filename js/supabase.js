@@ -35,6 +35,19 @@ async function syncPush(table, data, conflictCols) {
   }
 }
 
+async function syncDelete(table, matchCol, matchVal) {
+  try {
+    const sb = getSupabase();
+    if (!sb || !navigator.onLine) return;
+    const { data: { session } } = await sb.auth.getSession();
+    const user = session?.user;
+    if (!user) return;
+    await sb.from(table).delete().eq(matchCol, matchVal).eq('user_id', user.id);
+  } catch (e) {
+    console.log('syncDelete error:', table, e.message);
+  }
+}
+
 async function syncPull(table, cols, order, filterByUser = true) {
   try {
     const sb = getSupabase();

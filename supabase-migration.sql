@@ -41,11 +41,13 @@ CREATE TABLE IF NOT EXISTS comments (
   ex_name TEXT DEFAULT '',
   avatar TEXT DEFAULT '💪',
   username TEXT DEFAULT '',
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(user_id, id)
 );
 ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "comments_select_all" ON comments FOR SELECT USING (true);
 CREATE POLICY "comments_insert_own" ON comments FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "comments_update_own" ON comments FOR UPDATE USING (auth.uid() = user_id);
 CREATE POLICY "comments_delete_own" ON comments FOR DELETE USING (auth.uid() = user_id);
 
 -- 4. WARMUP CHECKS

@@ -62,6 +62,32 @@
   });
 })();
 
+// ── NAV USER STATUS ──
+(function initNavUser() {
+  const nu = document.getElementById('navUser');
+  if (!nu) return;
+
+  function updateNavUser() {
+    const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+    const online = navigator.onLine;
+    const syncLabel = `<span class="nu-sync ${online ? 'online' : 'offline'}">${online ? '● online' : '○ offline'}</span>`;
+
+    if (user) {
+      nu.innerHTML = `<span class="nu-avatar">${user.avatar || '👤'}</span>
+        <span class="nu-name">${user.username || ''}</span>
+        ${syncLabel}`;
+    } else {
+      nu.innerHTML = `<a href="/profile.html" class="nu-signin">Sign in</a> ${syncLabel}`;
+    }
+  }
+
+  updateNavUser();
+  window.addEventListener('online', updateNavUser);
+  window.addEventListener('offline', updateNavUser);
+  // Re-check after auth changes (poll-friendly)
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) updateNavUser(); });
+})();
+
 // ── SCROLL REVEAL ──
 (function initScrollReveal() {
   const observer = new IntersectionObserver(entries => {
