@@ -161,10 +161,186 @@
   flex: 1; text-align: right;
 }
 
+/* ── FORGOT PASSWORD ── */
+.auth-forgot {
+  text-align: right; margin-top: -6px;
+}
+.auth-forgot a {
+  font-size: 9px; letter-spacing: 1px; color: var(--text-dim);
+  text-decoration: none; transition: color 0.3s;
+}
+.auth-forgot a:hover { color: var(--gold); }
+
+/* ── VERIFICATION NOTICE ── */
+.auth-verify {
+  font-size: 10px; color: var(--gold); letter-spacing: 0.5px;
+  padding: 8px 12px; background: var(--gold-dim);
+  border: 1px solid var(--gold-border); border-radius: 6px;
+  line-height: 1.5;
+}
+.auth-verify.success {
+  background: var(--dark2);
+  border-color: var(--gold-border);
+  padding: 28px 24px;
+  text-align: center;
+}
+.auth-verify.success .av-icon {
+  font-size: 42px; margin-bottom: 12px;
+}
+.auth-verify.success .av-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; color: var(--cream); margin-bottom: 8px;
+}
+.auth-verify.success .av-text {
+  font-size: 11px; color: var(--text); margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+.auth-verify.success .av-note {
+  font-size: 10px; color: var(--text-dim); margin-top: 12px;
+  line-height: 1.5;
+}
+.auth-verify.success .av-spam {
+  font-size: 9px; color: var(--gold); margin-top: 8px;
+  letter-spacing: 0.5px;
+}
+
+/* ── PROFILE NAME EDIT ── */
+.prof-name-row {
+  display: flex; align-items: center; gap: 8px;
+}
+.prof-edit-btn {
+  background: none; border: none; cursor: pointer;
+  font-size: 14px; color: var(--text-dim); padding: 2px;
+  transition: color 0.3s; line-height: 1;
+}
+.prof-edit-btn:hover { color: var(--gold); }
+.prof-name-edit {
+  display: flex; align-items: center; gap: 6px; margin-top: 4px;
+}
+.prof-save-btn {
+  padding: 6px 12px; background: var(--gold); border: none;
+  border-radius: 4px; color: var(--dark);
+  font-family: 'Montserrat', sans-serif; font-size: 8px;
+  font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+  cursor: pointer; transition: opacity 0.3s; white-space: nowrap;
+}
+.prof-save-btn:hover { opacity: 0.85; }
+.prof-save-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.prof-cancel-btn {
+  padding: 6px 12px; background: none; border: 1px solid rgba(200,196,188,0.2);
+  border-radius: 4px; color: var(--text-dim);
+  font-family: 'Montserrat', sans-serif; font-size: 8px;
+  letter-spacing: 1.5px; cursor: pointer; transition: all 0.3s;
+}
+.prof-cancel-btn:hover { border-color: var(--text-dim); color: var(--text); }
+
+/* ── AVATAR CLICKABLE ── */
+.prof-avatar {
+  cursor: pointer; transition: transform 0.3s, box-shadow 0.3s;
+}
+.prof-avatar:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(184,150,12,0.3);
+}
+
+/* ── SYNC PROGRESS BAR ── */
+.sync-progress-bar {
+  flex: 1; height: 4px; background: var(--dark4);
+  border-radius: 2px; overflow: hidden;
+}
+.sync-progress-fill {
+  height: 100%; background: var(--gold);
+  border-radius: 2px; transition: width 0.3s ease;
+}
+
+/* ── ACCOUNT SETTINGS ── */
+.account-settings {
+  margin-bottom: 28px;
+}
+.delete-btn {
+  padding: 12px 20px; background: none;
+  border: 1px solid rgba(229,115,115,0.3); border-radius: 8px;
+  color: #e57373; font-family: 'Montserrat', sans-serif;
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  cursor: pointer; transition: all 0.3s; width: 100%;
+}
+.delete-btn:hover {
+  background: rgba(229,115,115,0.1);
+  border-color: #e57373;
+}
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 9998;
+  background: rgba(0,0,0,0.7);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px; animation: fadeIn 0.2s ease;
+}
+.modal-box {
+  background: var(--dark2); border: 1px solid var(--gold-border);
+  border-radius: 12px; padding: 32px; max-width: 400px;
+  width: 100%; text-align: center;
+}
+.modal-icon { font-size: 36px; margin-bottom: 12px; }
+.modal-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; color: var(--cream); margin-bottom: 8px;
+}
+.modal-text { font-size: 11px; color: var(--text-dim); line-height: 1.6; margin-bottom: 24px; }
+.modal-actions { display: flex; gap: 10px; justify-content: center; }
+.modal-cancel {
+  padding: 10px 20px; background: none; border: 1px solid rgba(200,196,188,0.2);
+  border-radius: 6px; color: var(--text-dim);
+  font-family: 'Montserrat', sans-serif; font-size: 9px;
+  letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
+  transition: all 0.3s;
+}
+.modal-cancel:hover { border-color: var(--text-dim); color: var(--text); }
+.modal-confirm {
+  padding: 10px 20px; background: #e57373; border: none;
+  border-radius: 6px; color: white; font-family: 'Montserrat', sans-serif;
+  font-size: 9px; font-weight: 600; letter-spacing: 2px;
+  text-transform: uppercase; cursor: pointer; transition: opacity 0.3s;
+}
+.modal-confirm:hover { opacity: 0.85; }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ── MIGRATION NOTICE ── */
+.migration-notice {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 20px; margin-bottom: 28px;
+  background: var(--gold-dim); border: 1px solid var(--gold-border);
+  border-radius: 8px;
+}
+.migration-icon { font-size: 24px; flex-shrink: 0; }
+.migration-text {
+  font-size: 10px; color: var(--text); letter-spacing: 0.5px; line-height: 1.5;
+}
+.migration-text strong { color: var(--gold); }
+.migration-btn {
+  display: inline-block; margin-left: 8px; padding: 4px 12px;
+  background: var(--gold); border: none; border-radius: 4px;
+  color: var(--dark); font-family: 'Montserrat', sans-serif;
+  font-size: 8px; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; cursor: pointer; transition: opacity 0.3s;
+}
+.migration-btn:hover { opacity: 0.85; }
+.migration-dismiss {
+  display: inline-block; margin-left: 4px; padding: 4px 10px;
+  background: none; border: 1px solid rgba(200,196,188,0.2);
+  border-radius: 4px; color: var(--text-dim);
+  font-family: 'Montserrat', sans-serif; font-size: 8px;
+  letter-spacing: 1px; cursor: pointer;
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 600px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .auth-card { padding: 28px 20px; }
   .profile-section { padding: 24px 16px; }
   .prof-header { flex-wrap: wrap; }
+  .auth-forgot { text-align: center; }
 }

@@ -21,6 +21,9 @@ async function isOnline() {
   return !!session;
 }
 
+let syncQueue = [];
+let syncTimer = null;
+
 async function syncPush(table, data, conflictCols) {
   try {
     const sb = getSupabase();
@@ -34,6 +37,173 @@ async function syncPush(table, data, conflictCols) {
     console.log('syncPush error:', table, e.message);
   }
 }
+
+async function syncPushBatch(table, items, conflictCols) {
+  if (!items || items.length === 0) return;
+  try {
+    const sb = getSupabase();
+    if (!sb || !navigator.onLine) return;
+    const { data: { session } } = await sb.auth.getSession();
+    const user = session?.user;
+    if (!user) return;
+    const payload = items.map(d => ({ ...d, user_id: user.id }));
+    // Batch in chunks of 50 to avoid payload size limits
+    const chunkSize = 50;
+    for (let i = 0; i < payload.length; i += chunkSize) {
+      const chunk = payload.slice(i, i + chunkSize);
+      await sb.from(table).upsert(chunk, { onConflict: conflictCols, ignoreDuplicates: false });
+    }
+  } catch (e) {
+    console.log('syncPushBatch error:', table, e.message);
+  }
+}
+
+function debouncedSync(table, data, conflictCols) {
+  syncQueue.push({ table, data, conflictCols });
+  if (syncTimer) clearTimeout(syncTimer);
+  syncTimer = setTimeout(async () => {
+    const batch = syncQueue.splice(0);
+    syncTimer = null;
+    // Group by table
+    const groups = {};
+    batch.forEach(item => {
+      if (!groups[item.table]) groups[item.table] = { items: [], conflictCols: item.conflictCols };
+      groups[item.table].items.push(item.data);
+    });
+    for (const [tableName, group] of Object.entries(groups)) {
+      await syncPushBatch(tableName, group.items, group.conflictCols);
+    }
+  }, 300);
+}
+
+async function syncAllToServer(onProgress) {
+  const session = getSession();
+  if (!session) return { error: 'Not logged in' };
+
+  let total = 0;
+  let synced = 0;
+
+  // Count total items first
+  DAYS.forEach(day => {
+    if (day.isRest) return;
+    for (let w = 1; w <= 8; w++) {
+      const checks = getLocalCb(w, day.id, day.exercises.length);
+      total += checks.length;
+      const wu = WARMUPS[day.id];
+      if (wu) {
+        const wuChecks = getLocalWarmup(w, day.id, wu.items.length);
+        total += wuChecks.length;
+      }
+      const cmts = getLocalComments(w, day.id);
+      total += cmts.length;
+    }
+    total += day.exercises.length; // progression entries
+  });
+
+  if (total === 0) { total = 1; }
+
+  // Sync workout_checks in batch
+  for (const day of DAYS) {
+    if (day.isRest) continue;
+    for (let w = 1; w <= 8; w++) {
+      const checks = getLocalCb(w, day.id, day.exercises.length);
+      const items = checks.map((checked, i) => ({ week: w, day_id: day.id, ex_idx: i, checked }));
+      await syncPushBatch('workout_checks', items, 'user_id,week,day_id,ex_idx');
+      synced += items.length;
+      if (onProgress) onProgress(synced, total);
+    }
+  }
+
+  // Sync warmup_checks in batch
+  for (const day of DAYS) {
+    if (day.isRest) continue;
+    for (let w = 1; w <= 8; w++) {
+      const wu = WARMUPS[day.id];
+      if (!wu) continue;
+      const wuChecks = getLocalWarmup(w, day.id, wu.items.length);
+      const items = wuChecks.map((checked, i) => ({ week: w, day_id: day.id, item_idx: i, checked }));
+      await syncPushBatch('warmup_checks', items, 'user_id,week,day_id,item_idx');
+      synced += items.length;
+      if (onProgress) onProgress(synced, total);
+    }
+  }
+
+  // Sync progression in batch
+  const progItems = [];
+  DAYS.forEach(day => {
+    if (day.isRest) return;
+    day.exercises.forEach((_, i) => {
+      const ps = getProgState(day.id, i);
+      progItems.push({ day_id: day.id, ex_idx: i, streak: ps.streak, level: ps.level });
+    });
+  });
+  await syncPushBatch('progression', progItems, 'user_id,day_id,ex_idx');
+  synced += progItems.length;
+  if (onProgress) onProgress(synced, total);
+
+  // Sync comments in batch
+  for (const day of DAYS) {
+    if (day.isRest) continue;
+    for (let w = 1; w <= 8; w++) {
+      const cmts = getLocalComments(w, day.id);
+      const items = cmts.filter(c => !c.userId || (session && c.userId === session.userId))
+        .map(c => ({
+          id: c.id, week: w, day_id: day.id, body: c.body,
+          ex_name: c.ex_name || '', avatar: c.avatar || '💪',
+          username: c.username || session.username || '',
+          created_at: c.created_at || new Date().toISOString()
+        }));
+      await syncPushBatch('comments', items, 'user_id,id');
+      synced += items.length;
+      if (onProgress) onProgress(synced, total);
+    }
+  }
+
+  // Sync skills in batch
+  const skillKey = prefixedKey('gymbro_calisthenics_skills');
+  const skillsRaw = localStorage.getItem(skillKey);
+  if (skillsRaw) {
+    const skillsData = JSON.parse(skillsRaw);
+    const skillItems = [];
+    Object.entries(skillsData).forEach(([skillKey, steps]) => {
+      steps.forEach((checked, stepIdx) => {
+        if (checked !== undefined) {
+          skillItems.push({ skill_key: skillKey, step_idx: stepIdx, checked });
+        }
+      });
+    });
+    await syncPushBatch('skills', skillItems, 'user_id,skill_key,step_idx');
+    synced += skillItems.length;
+    if (onProgress) onProgress(synced, total);
+  }
+
+  // Sync notes in batch
+  const noteItems = [];
+  DAYS.forEach(day => {
+    if (day.isRest) return;
+    for (let w = 1; w <= 8; w++) {
+      const notes = getLocalNotes(w, day.id);
+      if (notes.noteA || notes.noteB || notes.summary) {
+        noteItems.push({ week: w, day_id: day.id, note_a: notes.noteA, note_b: notes.noteB, summary: notes.summary });
+      }
+    }
+  });
+  await syncPushBatch('notes', noteItems, 'user_id,week,day_id');
+  synced += noteItems.length;
+  if (onProgress) onProgress(synced, total);
+
+  return { synced, total };
+}
+
+// Auto-sync when coming back online
+window.addEventListener('online', () => {
+  const session = getSession();
+  if (session && typeof DAYS !== 'undefined') {
+    setTimeout(() => {
+      syncAllToServer();
+    }, 1000);
+  }
+});
 
 async function syncDelete(table, matchCol, matchVal) {
   try {

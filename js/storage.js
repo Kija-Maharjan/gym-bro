@@ -18,9 +18,9 @@ function lsKey(week, id, type) {
 
 function saveLocalCb(week, id, checks) {
   localStorage.setItem(lsKey(week, id, 'cb'), JSON.stringify(checks));
-  if (navigator.onLine && typeof syncPush === 'function') {
+  if (navigator.onLine && typeof debouncedSync === 'function') {
     checks.forEach((checked, exIdx) => {
-      syncPush('workout_checks', { week, day_id: id, ex_idx: exIdx, checked }, 'user_id,week,day_id,ex_idx');
+      debouncedSync('workout_checks', { week, day_id: id, ex_idx: exIdx, checked }, 'user_id,week,day_id,ex_idx');
     });
   }
 }
@@ -31,8 +31,8 @@ function getLocalCb(week, id, numEx) {
 
 function saveLocalNotes(week, id, noteA, noteB, summary) {
   localStorage.setItem(lsKey(week, id, 'notes'), JSON.stringify({ noteA, noteB, summary }));
-  if (navigator.onLine && typeof syncPush === 'function') {
-    syncPush('notes', { week, day_id: id, note_a: noteA, note_b: noteB, summary }, 'user_id,week,day_id');
+  if (navigator.onLine && typeof debouncedSync === 'function') {
+    debouncedSync('notes', { week, day_id: id, note_a: noteA, note_b: noteB, summary }, 'user_id,week,day_id');
   }
 }
 function getLocalNotes(week, id) {
@@ -42,12 +42,12 @@ function getLocalNotes(week, id) {
 
 function saveLocalComments(week, id, comments) {
   localStorage.setItem(lsKey(week, id, 'cmt'), JSON.stringify(comments));
-  if (navigator.onLine && typeof syncPush === 'function') {
+  if (navigator.onLine && typeof debouncedSync === 'function') {
     const session = typeof getSession === 'function' ? getSession() : null;
     comments.forEach(c => {
       // Only push own comments — don't re-upload other users' comments
       if (c.userId && session && c.userId !== session.userId) return;
-      syncPush('comments', {
+      debouncedSync('comments', {
         id: c.id, week, day_id: id, body: c.body,
         ex_name: c.ex_name || '', avatar: c.avatar || '💪', username: c.username || session?.username || '',
         created_at: c.created_at || new Date().toISOString()
@@ -72,8 +72,8 @@ function getProgState(dayId, exIdx) {
 }
 function saveProgState(dayId, exIdx, state) {
   localStorage.setItem(progKey(dayId, exIdx), JSON.stringify(state));
-  if (navigator.onLine && typeof syncPush === 'function') {
-    syncPush('progression', { day_id: dayId, ex_idx: exIdx, streak: state.streak, level: state.level }, 'user_id,day_id,ex_idx');
+  if (navigator.onLine && typeof debouncedSync === 'function') {
+    debouncedSync('progression', { day_id: dayId, ex_idx: exIdx, streak: state.streak, level: state.level }, 'user_id,day_id,ex_idx');
   }
 }
 
@@ -108,9 +108,9 @@ function recalcProgression(currentWeek, dayId, exIdx) {
 // Key: cbros_warmup_w{week}_{dayId} = array of booleans
 function saveLocalWarmup(week, id, checks) {
   localStorage.setItem(lsKey(week, id, 'warmup'), JSON.stringify(checks));
-  if (navigator.onLine && typeof syncPush === 'function') {
+  if (navigator.onLine && typeof debouncedSync === 'function') {
     checks.forEach((checked, itemIdx) => {
-      syncPush('warmup_checks', { week, day_id: id, item_idx: itemIdx, checked }, 'user_id,week,day_id,item_idx');
+      debouncedSync('warmup_checks', { week, day_id: id, item_idx: itemIdx, checked }, 'user_id,week,day_id,item_idx');
     });
   }
 }

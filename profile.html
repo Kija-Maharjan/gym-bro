@@ -33,17 +33,28 @@
     <div class="auth-card">
       <div class="auth-title">Gym<span>Bro</span></div>
       <div class="auth-sub">Sign in to track your progress</div>
-      <div class="auth-tabs">
+      <div class="auth-tabs" id="authTabs">
         <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Sign In</button>
         <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Register</button>
       </div>
+      <noscript>
+        <div style="padding:16px;text-align:center;color:#e57373;font-size:10px;letter-spacing:1px">
+          JavaScript required for sign in. Please enable it.
+        </div>
+      </noscript>
       <div class="auth-form" id="authForm">
         <input class="auth-input" id="authEmail" type="email" placeholder="Email" autocomplete="email">
         <div id="authNameField" style="display:none">
           <input class="auth-input" id="authUsername" type="text" placeholder="Display name" autocomplete="username">
         </div>
         <input class="auth-input" id="authPassword" type="password" placeholder="Password" autocomplete="current-password">
+        <div class="auth-forgot" id="authForgot">
+          <a href="#" onclick="handleForgotPassword(event)" id="forgotLink">Forgot password?</a>
+        </div>
         <div class="auth-error" id="authError"></div>
+        <div class="auth-verify" id="authVerify" style="display:none">
+          <span>⚠️</span> Please check your email to verify your account before signing in.
+        </div>
         <button class="auth-btn" id="authBtn" onclick="handleAuth()">Sign In</button>
       </div>
     </div>
@@ -51,16 +62,37 @@
 
   <div class="profile-section" id="profileSection" style="display:none">
     <div class="prof-header">
-      <div class="prof-avatar" id="profAvatar">💪</div>
+      <div class="prof-avatar" id="profAvatar" onclick="handleAvatarChange()" title="Click to change avatar">💪</div>
       <div class="prof-info">
-        <div class="prof-name" id="profName">Username</div>
+        <div class="prof-name-row">
+          <span class="prof-name" id="profName">Username</span>
+          <button class="prof-edit-btn" id="editNameBtn" onclick="handleEditName()" title="Edit username">✎</button>
+        </div>
+        <div class="prof-name-edit" id="nameEditField" style="display:none">
+          <input class="auth-input" id="editUsername" type="text" placeholder="New display name" style="padding:6px 10px;font-size:12px">
+          <button class="prof-save-btn" onclick="handleSaveName()">Save</button>
+          <button class="prof-cancel-btn" onclick="handleCancelEditName()">Cancel</button>
+        </div>
         <div class="prof-joined" id="profJoined">Member since —</div>
       </div>
       <button class="prof-logout" onclick="handleLogout()">Sign Out</button>
     </div>
     <div class="sync-bar" id="syncBar">
-      <button class="sync-btn" onclick="forceSyncAll()">⬆ Sync Now</button>
+      <button class="sync-btn" onclick="handleSync()">⬆ Sync Now</button>
+      <div class="sync-progress-bar" id="syncProgressBar" style="display:none">
+        <div class="sync-progress-fill" id="syncProgressFill"></div>
+      </div>
       <span class="sync-status" id="syncStatus"></span>
+    </div>
+
+    <!-- Guest migration notice -->
+    <div class="migration-notice" id="migrationNotice" style="display:none">
+      <div class="migration-icon">📦</div>
+      <div class="migration-text">
+        <strong>Guest data found!</strong> We found workout data from before you signed in.
+        <button class="migration-btn" onclick="handleMigrateGuestData()">Import my data</button>
+        <button class="migration-dismiss" onclick="dismissMigration()">Dismiss</button>
+      </div>
     </div>
 
     <div class="sec-header" style="padding-top:0">
@@ -106,6 +138,29 @@
 
     <div class="recent-comments" id="recentComments">
       <div class="pl-empty">No comments yet.</div>
+    </div>
+
+    <div class="sec-header">
+      <span class="sec-num">04</span>
+      <div class="sec-line"></div>
+      <h2 class="sec-title">Account <em>Settings</em></h2>
+    </div>
+
+    <div class="account-settings">
+      <button class="delete-btn" onclick="handleDeleteAccount()">🗑 Delete Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation modal -->
+<div class="modal-overlay" id="confirmModal" style="display:none" onclick="cancelModal()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-icon" id="modalIcon">⚠️</div>
+    <div class="modal-title" id="modalTitle">Are you sure?</div>
+    <div class="modal-text" id="modalText">This action cannot be undone.</div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="cancelModal()">Cancel</button>
+      <button class="modal-confirm" id="modalConfirmBtn" onclick="confirmModal()">Confirm</button>
     </div>
   </div>
 </div>

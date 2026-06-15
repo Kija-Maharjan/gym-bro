@@ -113,3 +113,16 @@ ALTER TABLE notes ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "notes_select_own" ON notes FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "notes_insert_own" ON notes FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "notes_update_own" ON notes FOR UPDATE USING (auth.uid() = user_id);
+
+-- 8. DELETE USER FUNCTION (for account self-deletion)
+-- Run this in Supabase SQL editor after creating the tables above
+CREATE OR REPLACE FUNCTION delete_user()
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  DELETE FROM auth.users WHERE id = auth.uid();
+END;
+$$;

@@ -2,7 +2,7 @@
 // Caches all static assets on first visit.
 // App works fully offline after that.
 
-const CACHE_NAME = 'gymbro-v2';
+const CACHE_NAME = 'gymbro-v3';
 
 // All files to cache for offline use
 const ASSETS = [
@@ -52,7 +52,8 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   // Don't cache API calls — those need the network
   if (event.request.url.includes('/api/') ||
-      event.request.url.includes('supabase.co')) {
+      event.request.url.includes('supabase.co') ||
+      event.request.url.includes('jsdelivr.net')) {
     return; // pass through to network
   }
 
