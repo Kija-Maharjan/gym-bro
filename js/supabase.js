@@ -25,6 +25,7 @@ let syncQueue = [];
 let syncTimer = null;
 
 async function syncPush(table, data, conflictCols) {
+  if (!data) return;
   try {
     const sb = getSupabase();
     if (!sb || !navigator.onLine) return;
@@ -212,10 +213,15 @@ async function syncCurrentWeek(week) {
     const { data: { session } } = await sb.auth.getSession();
     const user = session?.user;
     if (!user) return;
-    await sb.from('profiles').upsert(
-      { id: user.id, current_week: week },
-      { onConflict: 'id' }
-    );
+    const { data: existing } = await sb.from('profiles')
+      .select('current_week').eq('id', user.id).maybeSingle();
+    if (existing) {
+      if (existing.current_week !== week) {
+        await sb.from('profiles').update({ current_week: week }).eq('id', user.id);
+      }
+    } else {
+      await sb.from('profiles').insert({ id: user.id, current_week: week });
+    }
   } catch (e) {
     console.log('syncCurrentWeek error:', e.message);
   }
@@ -247,7 +253,11 @@ async function syncDelete(table, matchCol, matchVal) {
     const { data: { session } } = await sb.auth.getSession();
     const user = session?.user;
     if (!user) return;
-    await sb.from(table).delete().eq(matchCol, matchVal).eq('user_id', user.id);
+    const { data: existing } = await sb.from(table)
+      .select('id').eq(matchCol, matchVal).eq('user_id', user.id).maybeSingle();
+    if (existing) {
+      await sb.from(table).delete().eq(matchCol, matchVal).eq('user_id', user.id);
+    }
   } catch (e) {
     console.log('syncDelete error:', table, e.message);
   }
