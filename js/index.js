@@ -361,7 +361,7 @@ function toggleCheck(dayId, exIdx) {
 
 function showToast(msg) {
   const t = document.createElement('div');
-  t.style.cssText = 'position:fixed;bottom:28px;right:28px;z-index:9997;background:#1a1a1a;border:1px solid rgba(184,150,12,0.4);color:#b8960c;padding:12px 20px;font-family:Montserrat,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;animation:fadeUp .3s ease;box-shadow:0 8px 30px rgba(0,0,0,0.5);';
+  t.style.cssText = 'position:fixed;bottom:28px;right:28px;z-index:9997;background:#1a1a1a;border:1px solid rgba(209,185,180,0.4);color:#D1B9B4;padding:12px 20px;font-family:Montserrat,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;animation:fadeUp .3s ease;box-shadow:0 8px 30px rgba(0,0,0,0.5);';
   t.textContent = msg;
   document.body.appendChild(t);
   setTimeout(() => t.remove(), 3500);

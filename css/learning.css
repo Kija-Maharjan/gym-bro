@@ -10,7 +10,7 @@
 }
 .hero::before {
   content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse 50% 60% at 80% 50%, rgba(184,150,12,0.05), transparent 70%);
+  background: radial-gradient(ellipse 50% 60% at 80% 50%, rgba(209,185,180,0.05), transparent 70%);
   pointer-events: none;
 }
 .hero-tag {
@@ -56,7 +56,7 @@
   background: var(--dark2);
   padding: 20px 24px;
   margin-bottom: 4px;
-  border-left: 2px solid rgba(184,150,12,0.3);
+  border-left: 2px solid rgba(209,185,180,0.3);
   border-radius: 0 8px 8px 0;
 }
 .op-header {
@@ -90,7 +90,7 @@
 /* ── TIP ── */
 .tip-block {
   background: var(--dark2);
-  border-left: 2px solid rgba(184,150,12,0.4);
+  border-left: 2px solid rgba(209,185,180,0.4);
   padding: 14px 18px;
   margin-bottom: 4px;
   font-size: 12px; color: var(--text); line-height: 1.8;
@@ -121,12 +121,12 @@
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 .skill-card:hover {
-  border-color: rgba(184,150,12,0.2);
+  border-color: rgba(209,185,180,0.2);
   box-shadow: 0 4px 24px rgba(0,0,0,0.2);
 }
 .skill-card.complete {
-  border-color: rgba(184,150,12,0.3);
-  box-shadow: 0 0 24px rgba(184,150,12,0.06);
+  border-color: rgba(209,185,180,0.3);
+  box-shadow: 0 0 24px rgba(209,185,180,0.06);
 }
 
 .sc-header {
@@ -137,8 +137,8 @@
   width: 40px; height: 40px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   font-size: 22px;
-  background: rgba(184,150,12,0.06);
-  border: 1px solid rgba(184,150,12,0.15);
+  background: rgba(209,185,180,0.06);
+  border: 1px solid rgba(209,185,180,0.15);
   border-radius: 8px;
 }
 .sc-info { flex: 1; min-width: 0; }
@@ -204,8 +204,8 @@
   user-select: none;
 }
 .ss-item.unlocked:hover {
-  background: rgba(184,150,12,0.04);
-  border-color: rgba(184,150,12,0.25);
+  background: rgba(209,185,180,0.04);
+  border-color: rgba(209,185,180,0.25);
 }
 .ss-item.locked {
   cursor: not-allowed;
@@ -221,14 +221,14 @@
 .ss-cb {
   width: 18px; height: 18px; flex-shrink: 0;
   margin-top: 1px;
-  border: 1.5px solid rgba(184,150,12,0.3);
+  border: 1.5px solid rgba(209,185,180,0.3);
   display: flex; align-items: center; justify-content: center;
   transition: all 0.2s;
   border-radius: 4px;
 }
 .ss-item.unlocked:hover .ss-cb {
   border-color: var(--gold);
-  background: rgba(184,150,12,0.08);
+  background: rgba(209,185,180,0.08);
 }
 .ss-item.done .ss-cb {
   background: rgba(129,199,132,0.12);
@@ -263,9 +263,9 @@
 .sc-complete-label {
   font-size: 7px; letter-spacing: 3px; text-transform: uppercase;
   color: var(--gold); font-weight: 600;
-  background: rgba(184,150,12,0.08);
+  background: rgba(209,185,180,0.08);
   padding: 4px 12px;
-  border: 1px solid rgba(184,150,12,0.2);
+  border: 1px solid rgba(209,185,180,0.2);
   border-radius: 4px;
 }
 
@@ -274,7 +274,7 @@
   text-align: center; color: var(--text-dim);
   font-size: 9px; margin-top: 40px;
   padding-top: 24px;
-  border-top: 1px solid rgba(184,150,12,0.08);
+  border-top: 1px solid rgba(209,185,180,0.08);
   letter-spacing: 2px; text-transform: uppercase;
 }
 

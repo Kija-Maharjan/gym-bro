@@ -52,12 +52,12 @@
     el.addEventListener('mouseenter', () => {
       cursor.style.transform = 'translate(-50%,-50%) scale(2)';
       ring.style.transform   = 'translate(-50%,-50%) scale(1.5)';
-      ring.style.borderColor = 'rgba(184,150,12,0.8)';
+      ring.style.borderColor = 'rgba(209,185,180,0.8)';
     });
     el.addEventListener('mouseleave', () => {
       cursor.style.transform = 'translate(-50%,-50%) scale(1)';
       ring.style.transform   = 'translate(-50%,-50%) scale(1)';
-      ring.style.borderColor = 'rgba(184,150,12,0.5)';
+      ring.style.borderColor = 'rgba(209,185,180,0.5)';
     });
   });
 })();

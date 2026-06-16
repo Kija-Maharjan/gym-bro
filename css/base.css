@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════
-   BASE.CSS — Gym Bro Design System
-   Luxury dark gold · Cormorant + Montserrat
+   BASE.CSS — Calisthenics Tracker Design System
+   · Cormorant + Montserrat
    Shared across ALL pages
    ═══════════════════════════════════════════════ */
 
@@ -9,22 +9,22 @@
 
 /* ── DESIGN TOKENS ── */
 :root {
-  --gold: #b8960c;
-  --gold-light: #d4a017;
-  --gold-dim: rgba(184,150,12,0.12);
-  --gold-border: rgba(184,150,12,0.25);
-  --dark: #111010;
-  --dark2: #1a1a1a;
-  --dark3: #222;
-  --dark4: #2a2a2a;
-  --cream: #f5f0ea;
-  --text: #c8c4bc;
-  --text-dim: rgba(200,196,188,0.5);
-  --text-dimmer: rgba(200,196,188,0.3);
-  --done: #81c784;
-  --done-bg: rgba(30,80,30,0.22);
-  --done-border: rgba(129,199,132,0.25);
-  --unlock: #f4c97a;
+  --gold: #D1B9B4;
+  --gold-light: #DFD1C9;
+  --gold-dim: rgba(209,185,180,0.12);
+  --gold-border: rgba(209,185,180,0.25);
+  --dark: #1C1A19;
+  --dark2: #444444;
+  --dark3: #555;
+  --dark4: #716D64;
+  --cream: #FAF8F6;
+  --text: #DFD1C9;
+  --text-dim: rgba(223,209,201,0.5);
+  --text-dimmer: rgba(223,209,201,0.3);
+  --done: #9B997B;
+  --done-bg: rgba(155,153,123,0.22);
+  --done-border: rgba(155,153,123,0.25);
+  --unlock: #DFD1C9;
 }
 
 /* ── RESET ── */
@@ -61,7 +61,7 @@ body::before {
 }
 .cursor-ring {
   width: 32px; height: 32px;
-  border: 1px solid rgba(184,150,12,0.5);
+  border: 1px solid rgba(209,185,180,0.5);
   border-radius: 50%;
   position: fixed; pointer-events: none;
   z-index: 9998;
@@ -78,9 +78,9 @@ nav {
   position: sticky; top: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
   padding: 16px 48px;
-  background: linear-gradient(180deg, rgba(17,16,16,0.97), rgba(17,16,16,0.92));
+  background: linear-gradient(180deg, rgba(28,26,25,0.97), rgba(28,26,25,0.92));
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(184,150,12,0.08);
+  border-bottom: 1px solid rgba(209,185,180,0.08);
 }
 .nav-logo {
   font-family: 'Cormorant Garamond', serif;
@@ -101,11 +101,11 @@ nav {
   border-bottom: 1px solid transparent;
   transition: all 0.3s; font-weight: 400;
 }
-.nav-links li a:hover { color: var(--gold); border-bottom-color: rgba(184,150,12,0.4); }
+.nav-links li a:hover { color: var(--gold); border-bottom-color: rgba(209,185,180,0.4); }
 .nav-links li a.active { color: var(--gold); border-bottom-color: var(--gold); }
 .nav-badge {
   font-size: 7px; letter-spacing: 1px; padding: 2px 6px;
-  background: rgba(184,150,12,0.12); color: var(--gold);
+  background: rgba(209,185,180,0.12); color: var(--gold);
   border: 1px solid var(--gold-border);
   border-radius: 3px;
 }
@@ -154,7 +154,7 @@ nav {
 /* ── FOOTER ── */
 footer {
   background: var(--dark);
-  border-top: 1px solid rgba(184,150,12,0.1);
+  border-top: 1px solid rgba(209,185,180,0.1);
   padding: 28px 48px;
   display: flex; align-items: center; justify-content: space-between;
   flex-wrap: wrap; gap: 12px;
@@ -177,7 +177,7 @@ footer {
   max-width: 100%; overflow: hidden; text-overflow: ellipsis;
   border-radius: 4px;
 }
-.pill-s { background: rgba(184,150,12,0.08); color: var(--gold); border-color: var(--gold-border); }
+.pill-s { background: rgba(209,185,180,0.08); color: var(--gold); border-color: var(--gold-border); }
 
 /* ── ANIMATIONS ── */
 @keyframes fadeUp {
@@ -200,7 +200,7 @@ footer {
   .nav-links {
     display: none;
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(17,16,16,0.93);
+    background: rgba(28,26,25,0.93);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     flex-direction: column; list-style: none;
@@ -211,12 +211,12 @@ footer {
   .nav-links li a {
     font-size: 13px; letter-spacing: 4px; padding: 14px 28px;
     color: var(--cream);
-    border-bottom: 1px solid rgba(184,150,12,0.06);
+    border-bottom: 1px solid rgba(209,185,180,0.06);
     min-width: 220px; text-align: center;
   }
   .nav-links li:last-child a { border-bottom: none; }
   .nav-links li a:hover,
-  .nav-links li a.active { color: var(--gold); background: rgba(184,150,12,0.06); }
+  .nav-links li a.active { color: var(--gold); background: rgba(209,185,180,0.06); }
   .hamburger { display: flex; position: relative; z-index: 200; }
   footer { padding: 20px 16px; flex-direction: column; text-align: center; gap: 10px; }
 }
