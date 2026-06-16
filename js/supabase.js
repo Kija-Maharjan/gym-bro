@@ -62,19 +62,41 @@ async function syncPushBatch(table, items, conflictCols) {
 function debouncedSync(table, data, conflictCols) {
   syncQueue.push({ table, data, conflictCols });
   if (syncTimer) clearTimeout(syncTimer);
-  syncTimer = setTimeout(async () => {
-    const batch = syncQueue.splice(0);
-    syncTimer = null;
-    // Group by table
-    const groups = {};
-    batch.forEach(item => {
-      if (!groups[item.table]) groups[item.table] = { items: [], conflictCols: item.conflictCols };
-      groups[item.table].items.push(item.data);
-    });
-    for (const [tableName, group] of Object.entries(groups)) {
-      await syncPushBatch(tableName, group.items, group.conflictCols);
+  syncTimer = setTimeout(flushSyncQueue, 300);
+}
+
+async function flushSyncQueue() {
+  const batch = syncQueue.splice(0);
+  syncTimer = null;
+  if (batch.length === 0) return;
+  const groups = {};
+  batch.forEach(item => {
+    if (!groups[item.table]) groups[item.table] = { items: [], conflictCols: item.conflictCols };
+    groups[item.table].items.push(item.data);
+  });
+  for (const [tableName, group] of Object.entries(groups)) {
+    await syncPushBatch(tableName, group.items, group.conflictCols);
+  }
+}
+
+// Flush pending syncs when leaving the page, pull fresh data on return
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      // Flush any pending sync queue immediately
+      if (syncTimer) {
+        clearTimeout(syncTimer);
+        syncTimer = null;
+      }
+      flushSyncQueue();
+    } else {
+      // Tab became visible — pull latest from server
+      const session = getSession();
+      if (session && typeof pullAllData === 'function') {
+        pullAllData();
+      }
     }
-  }, 300);
+  });
 }
 
 async function syncAllToServer(onProgress) {

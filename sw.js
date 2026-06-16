@@ -1,34 +1,28 @@
-// ─── SW.JS — Service Worker (Offline Support) ────────────────────────────────
-// Caches all static assets on first visit.
-// App works fully offline after that.
+const CACHE_NAME = 'gymbro-v4';
 
-const CACHE_NAME = 'gymbro-v3';
-
-// All files to cache for offline use
 const ASSETS = [
   '/',
   '/index.html',
   '/learning.html',
+  '/profile.html',
+  '/manifest.json',
   '/css/base.css',
   '/css/index.css',
   '/css/learning.css',
+  '/css/profile.css',
   '/js/data.js',
   '/js/storage.js',
+  '/js/supabase.js',
+  '/js/auth.js',
   '/js/nav.js',
   '/js/index.js',
   '/js/learning.js',
-  '/js/nepali-date.js',
-  '/js/auth.js',
   '/js/profile.js',
-  '/js/supabase.js',
+  '/js/nepali-date.js',
   '/exercise-animations.js',
   '/exercise-animations.css',
-  '/profile.html',
-  '/css/profile.css',
-  '/manifest.json',
 ];
 
-// ── INSTALL: cache all assets ──
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -37,7 +31,6 @@ self.addEventListener('install', event => {
   );
 });
 
-// ── ACTIVATE: clean up old caches ──
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -48,18 +41,19 @@ self.addEventListener('activate', event => {
   );
 });
 
-// ── FETCH: serve from cache, fall back to network ──
 self.addEventListener('fetch', event => {
-  // Don't cache API calls — those need the network
-  if (event.request.url.includes('/api/') ||
-      event.request.url.includes('supabase.co') ||
-      event.request.url.includes('jsdelivr.net')) {
-    return; // pass through to network
+  const url = new URL(event.request.url);
+
+  // Never cache API or CDN calls
+  if (url.pathname.includes('/api/') ||
+      url.hostname.includes('supabase.co') ||
+      url.hostname.includes('jsdelivr.net')) {
+    return;
   }
 
-  // For Google Fonts — cache them too
-  if (event.request.url.includes('fonts.googleapis.com') ||
-      event.request.url.includes('fonts.gstatic.com')) {
+  // Google Fonts: cache-first (rarely change)
+  if (url.hostname.includes('fonts.googleapis.com') ||
+      url.hostname.includes('fonts.gstatic.com')) {
     event.respondWith(
       caches.open(CACHE_NAME).then(cache =>
         cache.match(event.request).then(cached => {
@@ -74,24 +68,28 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // For everything else: cache-first strategy
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
-        if (response.ok && event.request.method === 'GET') {
-          const cloned = response.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, cloned);
-          });
-        }
+  // HTML: network-first (always show latest page, fall back to cache)
+  if (event.request.headers.get('accept')?.includes('text/html')) {
+    event.respondWith(
+      fetch(event.request).then(response => {
+        const cloned = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, cloned));
         return response;
-      }).catch(() => {
-        // If both cache and network fail, return offline page for HTML requests
-        if (event.request.headers.get('accept')?.includes('text/html')) {
-          return caches.match('/index.html');
-        }
-      });
-    })
+      }).catch(() => caches.match(event.request).then(cached => cached || caches.match('/index.html')))
+    );
+    return;
+  }
+
+  // JS/CSS/assets: stale-while-revalidate (instant offline, updates in background)
+  event.respondWith(
+    caches.open(CACHE_NAME).then(cache =>
+      cache.match(event.request).then(cached => {
+        const fetchPromise = fetch(event.request).then(response => {
+          if (response.ok) cache.put(event.request, response.clone());
+          return response;
+        }).catch(() => cached);
+        return cached || fetchPromise;
+      })
+    )
   );
 });
