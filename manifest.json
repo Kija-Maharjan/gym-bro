@@ -1,7 +1,7 @@
 {
   "name": "Gym Bro — Training Tracker",
   "short_name": "GymBro",
-  "description": "Calisthenics training tracker for two brothers. Track workouts, comments, progressions offline.",
+  "description": "Training tracker for calisthenics and strength. Track workouts, comments, progressions offline.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#111010",
