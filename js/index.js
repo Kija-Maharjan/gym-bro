@@ -24,8 +24,31 @@ function getCurrentWeekFromDate() {
   const now = new Date(); now.setHours(0, 0, 0, 0);
   return Math.max(1, Math.min(8, Math.floor((now - start) / 86400000 / 7) + 1));
 }
+function currentWeekKey() {
+  return (typeof prefixedKey === 'function' ? prefixedKey('') : '') + 'cbros_current_week';
+}
+function getSavedWeek() {
+  const raw = localStorage.getItem(currentWeekKey());
+  if (raw) {
+    const w = parseInt(raw, 10);
+    if (w >= 1 && w <= 8) return w;
+  }
+  return 1;
+}
+function saveCurrentWeek(w) {
+  localStorage.setItem(currentWeekKey(), String(w));
+}
 
-let currentWeek = getCurrentWeekFromDate();
+// Day counting: 6 training days per week (Sun-Fri), Sat is rest
+function trainingDayIdx(dayId) {
+  return { sun:1, mon:2, tue:3, wed:4, thu:5, fri:6 }[dayId] || 0;
+}
+function globalDayNum(week, dayId) {
+  const i = trainingDayIdx(dayId);
+  return i ? (week - 1) * 6 + i : 0;
+}
+
+let currentWeek = getSavedWeek();
 const todayDayId = getTodayDayId();
 const openCards = new Set();
 const openWarmups = new Set();
@@ -122,6 +145,7 @@ function renderTrainingCard(d) {
   const complete = done === n;
   const isOpen   = openCards.has(d.id);
   const isToday  = d.id === todayDayId;
+  const dayNum   = globalDayNum(currentWeek, d.id);
 
   const exRows = d.exercises.map((ex, i) => renderExRow(d, i, checks[i])).join('');
 
@@ -150,7 +174,7 @@ function renderTrainingCard(d) {
     <div class="day-hd" onclick="toggleDay('${d.id}')">
       <div class="day-ring">${complete ? '✓' : '○'}</div>
       <div class="day-info">
-        <div class="day-weekday">${d.weekday} · ${d.type}${isToday ? ' · <span style="color:var(--gold);font-size:7px;letter-spacing:2px;">TODAY</span>' : ''}</div>
+        <div class="day-weekday">${d.weekday} · ${d.type}${dayNum ? ` · Day ${dayNum}` : ''}${isToday ? ' · <span style="color:var(--gold);font-size:7px;letter-spacing:2px;">TODAY</span>' : ''}</div>
         <div class="day-name">${d.name}</div>
         <div class="day-focus">${d.focus}</div>
       </div>
@@ -429,6 +453,7 @@ function resetDay(dayId, n) {
 }
 function setWeek(w, btn) {
   currentWeek = w;
+  saveCurrentWeek(w);
   document.querySelectorAll('.wtab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
   renderAll();
@@ -473,7 +498,11 @@ if (todayCard) {
   const label = document.createElement('div');
   label.style.cssText = 'font-size:8px;letter-spacing:2.5px;color:var(--gold);text-transform:uppercase;display:flex;align-items:center;gap:6px;padding-top:4px;';
   const today = new Date();
-  label.innerHTML = '✦ <span>' + (typeof getNepaliDateShort === 'function' ? getNepaliDateShort(today) : today.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase()) + ' · WK ' + currentWeek + '</span>';
+  const dateStr = typeof getNepaliDateShort === 'function' ? getNepaliDateShort(today) : today.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
+  const realWeek = getCurrentWeekFromDate();
+  const dayNum = globalDayNum(realWeek, todayDayId);
+  const dayLabel = dayNum ? `Day ${dayNum} of 48 · Wk ${realWeek}` : `Rest Day · Wk ${realWeek}`;
+  label.innerHTML = `✦ <span>${dateStr}</span> · <span>${dayLabel}</span>`;
   const wn = document.querySelector('.wn-hd');
   if (wn) wn.appendChild(label);
 })();
