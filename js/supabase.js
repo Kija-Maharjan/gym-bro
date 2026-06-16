@@ -2,16 +2,54 @@ const SUPABASE_URL = 'https://xlerblhqlhkinzquygcm.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsZXJibGhxbGhraW56cXV5Z2NtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjI2OTQsImV4cCI6MjA4NzU5ODY5NH0.09KN1u3EaAzCvvgD0tutDCIRTWD4nHM0H3ZunPbVMe0';
 
 let sbClient = null;
+let supabaseLoadAttempted = false;
 
 function getSupabase() {
   if (sbClient) return sbClient;
   if (typeof supabase !== 'undefined') {
-    sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: { persistSession: true, autoRefreshToken: true }
-    });
+    try {
+      sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: { persistSession: true, autoRefreshToken: true }
+      });
+    } catch (e) {
+      console.warn('getSupabase: createClient failed', e);
+    }
   }
   return sbClient;
 }
+
+// Diagnostic helper
+(function diag() {
+  const info = {
+    userAgent: navigator.userAgent,
+    online: navigator.onLine,
+    supabaseSdk: typeof supabase,
+    cookiesEnabled: navigator.cookieEnabled,
+    localStorage: (() => { try { localStorage.setItem('_diag','1'); localStorage.removeItem('_diag'); return true; } catch { return false; } })(),
+  };
+  console.log('GYMBRO DIAG:', JSON.stringify(info, null, 2));
+  window.__gymbroDiag = info;
+})();
+
+// Check Supabase SDK availability
+(function checkSupabaseBlocked() {
+  supabaseLoadAttempted = true;
+  if (typeof supabase === 'undefined') {
+    console.warn('Supabase SDK not loaded — trying fallback CDN...');
+    // Try loading from unpkg as fallback
+    const s = document.createElement('script');
+    s.src = 'https://unpkg.com/@supabase/supabase-js@2/umd/supabase.min.js';
+    s.onload = () => { console.log('Supabase SDK loaded via unpkg fallback'); };
+    s.onerror = () => {
+      console.warn('Supabase SDK failed to load from both jsdelivr and unpkg');
+      // After both CDNs fail, show a banner — but only if user tries to use auth
+      // For offline-first usage, this is not critical
+    };
+    document.head.appendChild(s);
+  } else {
+    console.log('Supabase SDK loaded');
+  }
+})();
 
 async function isOnline() {
   if (!navigator.onLine) return false;
