@@ -205,6 +205,41 @@ window.addEventListener('online', () => {
   }
 });
 
+async function syncCurrentWeek(week) {
+  try {
+    const sb = getSupabase();
+    if (!sb || !navigator.onLine) return;
+    const { data: { session } } = await sb.auth.getSession();
+    const user = session?.user;
+    if (!user) return;
+    await sb.from('profiles').upsert(
+      { id: user.id, current_week: week },
+      { onConflict: 'id' }
+    );
+  } catch (e) {
+    console.log('syncCurrentWeek error:', e.message);
+  }
+}
+
+async function fetchCurrentWeek() {
+  try {
+    const sb = getSupabase();
+    if (!sb || !navigator.onLine) return null;
+    const { data: { session } } = await sb.auth.getSession();
+    const user = session?.user;
+    if (!user) return null;
+    const { data, error } = await sb.from('profiles')
+      .select('current_week')
+      .eq('id', user.id)
+      .maybeSingle();
+    if (error) throw error;
+    return data?.current_week || null;
+  } catch (e) {
+    console.log('fetchCurrentWeek error:', e.message);
+    return null;
+  }
+}
+
 async function syncDelete(table, matchCol, matchVal) {
   try {
     const sb = getSupabase();

@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   username TEXT UNIQUE NOT NULL,
   avatar TEXT NOT NULL DEFAULT '💪',
+  current_week INTEGER DEFAULT 1,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
@@ -126,3 +127,6 @@ BEGIN
   DELETE FROM auth.users WHERE id = auth.uid();
 END;
 $$;
+
+-- 9. Add current_week column to profiles for existing deployments
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS current_week INTEGER DEFAULT 1;

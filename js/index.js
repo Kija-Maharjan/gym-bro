@@ -454,6 +454,7 @@ function resetDay(dayId, n) {
 function setWeek(w, btn) {
   currentWeek = w;
   saveCurrentWeek(w);
+  if (typeof syncCurrentWeek === 'function') syncCurrentWeek(w);
   document.querySelectorAll('.wtab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
   renderAll();
@@ -505,4 +506,22 @@ if (todayCard) {
   label.innerHTML = `✦ <span>${dateStr}</span> · <span>${dayLabel}</span>`;
   const wn = document.querySelector('.wn-hd');
   if (wn) wn.appendChild(label);
+})();
+
+// Load week from server for logged-in users (overrides local if different)
+(async function loadServerWeek() {
+  if (typeof fetchCurrentWeek !== 'function' || typeof getSession !== 'function') return;
+  const session = getSession();
+  if (!session) return;
+  try {
+    const serverWeek = await fetchCurrentWeek();
+    if (serverWeek && serverWeek >= 1 && serverWeek <= 8 && serverWeek !== currentWeek) {
+      currentWeek = serverWeek;
+      saveCurrentWeek(serverWeek);
+      renderAll();
+      openCards.add(todayDayId);
+      const tc = document.getElementById('daycard_' + todayDayId);
+      if (tc) { tc.classList.add('open'); tc.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    }
+  } catch {}
 })();
