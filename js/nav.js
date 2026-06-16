@@ -10,7 +10,6 @@
   hb.addEventListener('click', () => {
     hb.classList.toggle('open');
     nl.classList.toggle('open');
-    document.body.style.overflow = nl.classList.contains('open') ? 'hidden' : '';
   });
 
   // Close menu when any nav link is clicked
@@ -18,7 +17,6 @@
     a.addEventListener('click', () => {
       hb.classList.remove('open');
       nl.classList.remove('open');
-      document.body.style.overflow = '';
     });
   });
 })();
