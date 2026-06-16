@@ -43,6 +43,35 @@
   color: var(--text); outline: none; transition: border 0.3s;
 }
 .auth-input:focus { border-color: var(--gold); }
+
+.auth-pw-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.auth-pw-wrap .auth-input {
+  width: 100%;
+  padding-right: 44px;
+}
+.auth-pw-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  transition: color 0.2s, background 0.2s;
+  line-height: 0;
+}
+.auth-pw-toggle:hover { color: var(--gold); background: rgba(209,185,180,0.08); }
+
 .auth-btn {
   padding: 12px; background: var(--gold); border: none;
   border-radius: 6px; color: var(--dark); font-family: 'Montserrat', sans-serif;

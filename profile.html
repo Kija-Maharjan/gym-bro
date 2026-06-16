@@ -80,7 +80,12 @@
         <div id="authNameField" style="display:none">
           <input class="auth-input" id="authUsername" type="text" placeholder="Display name" autocomplete="username">
         </div>
-        <input class="auth-input" id="authPassword" type="password" placeholder="Password" autocomplete="current-password">
+        <div class="auth-pw-wrap">
+          <input class="auth-input" id="authPassword" type="password" placeholder="Password" autocomplete="current-password">
+          <button class="auth-pw-toggle" id="pwToggle" type="button" aria-label="Toggle password visibility" onclick="togglePassword()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
         <div class="auth-forgot" id="authForgot">
           <a href="#" onclick="handleForgotPassword(event)" id="forgotLink">Forgot password?</a>
         </div>
