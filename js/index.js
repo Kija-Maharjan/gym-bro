@@ -149,20 +149,28 @@ function renderTrainingCard(d) {
 
   const exRows = d.exercises.map((ex, i) => renderExRow(d, i, checks[i])).join('');
 
+  const session = typeof getSession === 'function' ? getSession() : null;
+  const currentUserId = session?.userId || null;
+
   const cmtHtml = comments.length === 0
     ? '<div class="no-comments">No comments yet — be first</div>'
     : comments.map(c => {
         const avatar = c.avatar || '💬';
         const name = c.username || 'Unknown';
-        return `<div class="comment-item">
+        const ownerId = c.userId || c.user_id;
+        const isOwn = currentUserId && ownerId && currentUserId === ownerId;
+        return `<div class="comment-item" id="cmitem_${d.id}_${c.id}">
           <div class="ci-header">
             <span class="ci-avatar-sm">${avatar}</span>
             <span class="ci-who">${esc(name)}</span>
             ${c.ex_name ? `<span class="ci-ex">on: ${esc(c.ex_name)}</span>` : ''}
             <span class="ci-time">${formatTime(c.created_at)}</span>
-            <button class="ci-del" onclick="deleteComment('${d.id}',${JSON.stringify(c.id)})">✕</button>
+            ${isOwn ? `<span class="ci-actions">
+              <button class="ci-edit" onclick="editComment('${d.id}',${JSON.stringify(c.id)})">✎</button>
+              <button class="ci-del" onclick="deleteComment('${d.id}',${JSON.stringify(c.id)})">✕</button>
+            </span>` : ''}
           </div>
-          <div class="ci-text">${esc(c.body)}</div>
+          <div class="ci-text" id="cmitem_body_${d.id}_${c.id}">${esc(c.body)}</div>
         </div>`;
       }).join('');
 
@@ -382,50 +390,89 @@ function addComment(dayId) {
   const existing = getLocalComments(currentWeek, dayId);
   existing.push(newC);
   saveLocalComments(currentWeek, dayId, existing);
+  rerenderCommentList(dayId, existing);
   const list = document.getElementById('cmtlist_' + dayId);
-  if (list) {
-    const noMsg = list.querySelector('.no-comments');
-    if (noMsg) noMsg.remove();
-    const div = document.createElement('div');
-    div.className = 'comment-item';
-    div.innerHTML = `<div class="ci-header">
-      <span class="ci-avatar-sm">${user.avatar}</span>
-      <span class="ci-who">${esc(user.username)}</span>
-      ${exName ? `<span class="ci-ex">on: ${esc(exName)}</span>` : ''}
-      <span class="ci-time">just now</span>
-      <button class="ci-del" onclick="deleteComment('${dayId}',${newC.id})">✕</button>
-    </div><div class="ci-text">${esc(body)}</div>`;
-    list.appendChild(div);
-    list.scrollTop = list.scrollHeight;
-  }
+  if (list) list.scrollTop = list.scrollHeight;
 }
 
 function deleteComment(dayId, cmtId) {
-  const filtered = getLocalComments(currentWeek, dayId).filter(c => c.id !== cmtId);
+  const session = typeof getSession === 'function' ? getSession() : null;
+  const currentUserId = session?.userId || null;
+  const all = getLocalComments(currentWeek, dayId);
+  const c = all.find(c => c.id === cmtId);
+  if (!c) return;
+  const ownerId = c.userId || c.user_id;
+  if (currentUserId && ownerId && currentUserId !== ownerId) return;
+  const filtered = all.filter(c => c.id !== cmtId);
   saveLocalComments(currentWeek, dayId, filtered);
   if (navigator.onLine && typeof syncDelete === 'function') {
-    const session = typeof getSession === 'function' ? getSession() : null;
     if (session) syncDelete('comments', 'id', cmtId);
   }
+  rerenderCommentList(dayId, filtered);
+}
+
+function editComment(dayId, cmtId) {
+  const all = getLocalComments(currentWeek, dayId);
+  const c = all.find(c => c.id === cmtId);
+  if (!c) return;
+  const bodyEl = document.getElementById(`cmitem_body_${dayId}_${cmtId}`);
+  if (!bodyEl) return;
+  bodyEl.innerHTML = `<div class="ci-edit-wrap">
+    <textarea class="ci-edit-input" id="ciedit_${dayId}_${cmtId}">${esc(c.body)}</textarea>
+    <div class="ci-edit-actions">
+      <button class="ci-save" onclick="saveEditComment('${dayId}',${JSON.stringify(cmtId)})">Save</button>
+      <button class="ci-cancel" onclick="cancelEditComment('${dayId}',${JSON.stringify(cmtId)})">Cancel</button>
+    </div>
+  </div>`;
+}
+
+function saveEditComment(dayId, cmtId) {
+  const input = document.getElementById(`ciedit_${dayId}_${cmtId}`);
+  if (!input) return;
+  const newBody = input.value.trim();
+  if (!newBody) return;
+  const all = getLocalComments(currentWeek, dayId);
+  const c = all.find(c => c.id === cmtId);
+  if (!c) return;
+  c.body = newBody;
+  c.edited_at = new Date().toISOString();
+  saveLocalComments(currentWeek, dayId, all);
+  const bodyEl = document.getElementById(`cmitem_body_${dayId}_${cmtId}`);
+  if (bodyEl) bodyEl.innerHTML = esc(newBody);
+}
+
+function cancelEditComment(dayId, cmtId) {
+  const all = getLocalComments(currentWeek, dayId);
+  const c = all.find(c => c.id === cmtId);
+  if (!c) return;
+  const bodyEl = document.getElementById(`cmitem_body_${dayId}_${cmtId}`);
+  if (bodyEl) bodyEl.innerHTML = esc(c.body);
+}
+
+function rerenderCommentList(dayId, comments) {
+  const session = typeof getSession === 'function' ? getSession() : null;
+  const currentUserId = session?.userId || null;
   const list = document.getElementById('cmtlist_' + dayId);
-  if (list) {
-    list.innerHTML = filtered.length === 0
-      ? '<div class="no-comments">No comments yet — be first</div>'
-      : filtered.map(c => {
-          const avatar = c.avatar || '💬';
-          const name = c.username || 'Unknown';
-          return `<div class="comment-item">
-            <div class="ci-header">
-              <span class="ci-avatar-sm">${avatar}</span>
-              <span class="ci-who">${esc(name)}</span>
-              ${c.ex_name ? `<span class="ci-ex">on: ${esc(c.ex_name)}</span>` : ''}
-              <span class="ci-time">${formatTime(c.created_at)}</span>
+  if (!list) return;
+  list.innerHTML = comments.length === 0
+    ? '<div class="no-comments">No comments yet — be first</div>'
+    : comments.map(c => {
+        const ownerId = c.userId || c.user_id;
+        const isOwn = currentUserId && ownerId && currentUserId === ownerId;
+        return `<div class="comment-item" id="cmitem_${dayId}_${c.id}">
+          <div class="ci-header">
+            <span class="ci-avatar-sm">${c.avatar || '💬'}</span>
+            <span class="ci-who">${esc(c.username || 'Unknown')}</span>
+            ${c.ex_name ? `<span class="ci-ex">on: ${esc(c.ex_name)}</span>` : ''}
+            <span class="ci-time">${formatTime(c.created_at)}</span>
+            ${isOwn ? `<span class="ci-actions">
+              <button class="ci-edit" onclick="editComment('${dayId}',${JSON.stringify(c.id)})">✎</button>
               <button class="ci-del" onclick="deleteComment('${dayId}',${JSON.stringify(c.id)})">✕</button>
-            </div>
-            <div class="ci-text">${esc(c.body)}</div>
-          </div>`;
-        }).join('');
-  }
+            </span>` : ''}
+          </div>
+          <div class="ci-text" id="cmitem_body_${dayId}_${c.id}">${esc(c.body)}</div>
+        </div>`;
+      }).join('');
 }
 
 function resetDay(dayId, n) {

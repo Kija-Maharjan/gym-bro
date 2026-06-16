@@ -277,7 +277,7 @@ async function pullAllData() {
     syncPull('workout_checks', 'week,day_id,ex_idx,checked'),
     syncPull('warmup_checks', 'week,day_id,item_idx,checked'),
     syncPull('progression', 'day_id,ex_idx,streak,level'),
-    syncPull('comments', 'id,week,day_id,body,ex_name,avatar,username,created_at', 'created_at', false),
+    syncPull('comments', 'id,user_id,week,day_id,body,ex_name,avatar,username,created_at', 'created_at', false),
     syncPull('skills', 'skill_key,step_idx,checked'),
     syncPull('notes', 'week,day_id,note_a,note_b,summary'),
   ]);
@@ -320,7 +320,7 @@ async function pullAllData() {
     cmts.forEach(c => {
       const key = `w${c.week}_${c.day_id}`;
       if (!cmtGrouped[key]) cmtGrouped[key] = [];
-      cmtGrouped[key].push(c);
+      cmtGrouped[key].push({ ...c, userId: c.user_id });
     });
     Object.entries(cmtGrouped).forEach(([key, arr]) => {
       const [_, w, dayId] = key.match(/w(\d+)_(.+)/);
