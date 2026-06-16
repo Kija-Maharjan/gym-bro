@@ -1,24 +1,40 @@
 // ─── NAV.JS — Shared across all pages ────────────────────────────────────────
-// Handles: hamburger menu, custom cursor animation, scroll-reveal
+// Handles: drawer hamburger menu, nav scroll effect, custom cursor, scroll-reveal
 
-// ── HAMBURGER MENU ──
+// ── DRAWER TOGGLE ──
 (function initNav() {
-  const hb = document.getElementById('hamburger');
-  const nl = document.getElementById('navLinks');
-  if (!hb || !nl) return;
+  const burger = document.getElementById('burger');
+  const drawer = document.getElementById('drawer');
+  if (!burger || !drawer) return;
 
-  hb.addEventListener('click', () => {
-    hb.classList.toggle('open');
-    nl.classList.toggle('open');
+  burger.addEventListener('click', () => {
+    const isOpen = drawer.classList.toggle('open');
+    burger.classList.toggle('open', isOpen);
+    burger.setAttribute('aria-expanded', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
   });
 
-  // Close menu when any nav link is clicked
-  nl.querySelectorAll('a').forEach(a => {
+  // Close drawer when any nav/drawer link is clicked
+  drawer.querySelectorAll('a').forEach(a => {
     a.addEventListener('click', () => {
-      hb.classList.remove('open');
-      nl.classList.remove('open');
+      drawer.classList.remove('open');
+      burger.classList.remove('open');
+      burger.setAttribute('aria-expanded', false);
+      document.body.style.overflow = '';
     });
   });
+})();
+
+// ── SCROLL: darken nav ──
+(function initNavScroll() {
+  const nav = document.getElementById('nav');
+  if (!nav) return;
+  window.addEventListener('scroll', () => {
+    nav.style.background =
+      window.scrollY > 10
+        ? 'rgba(28,26,25,0.96)'
+        : 'rgba(28,26,25,0.82)';
+  }, { passive: true });
 })();
 
 // ── CUSTOM CURSOR (desktop only) ──
@@ -60,29 +76,41 @@
   });
 })();
 
-// ── NAV USER STATUS ──
+// ── NAV USER STATUS (desktop + drawer) ──
 (function initNavUser() {
   const nu = document.getElementById('navUser');
-  if (!nu) return;
+  const du = document.getElementById('drawerUser');
 
   function updateNavUser() {
     const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
     const online = navigator.onLine;
     const syncLabel = `<span class="nu-sync ${online ? 'online' : 'offline'}">${online ? '● online' : '○ offline'}</span>`;
 
-    if (user) {
-      nu.innerHTML = `<span class="nu-avatar">${user.avatar || '👤'}</span>
-        <span class="nu-name">${user.username || ''}</span>
-        ${syncLabel}`;
-    } else {
-      nu.innerHTML = `<a href="/profile.html" class="nu-signin">Sign in</a> ${syncLabel}`;
+    if (nu) {
+      if (user) {
+        nu.innerHTML = `<span class="nu-avatar">${user.avatar || '👤'}</span>
+          <span class="nu-name">${user.username || ''}</span>
+          ${syncLabel}`;
+      } else {
+        nu.innerHTML = `<a href="/profile.html" class="nu-signin">Sign in</a> ${syncLabel}`;
+      }
+    }
+
+    if (du) {
+      if (user) {
+        du.innerHTML = `<div class="du-authed">
+          <span class="du-avatar">${user.avatar || '👤'}</span>
+          <span class="du-name">${user.username || ''}</span>
+        </div>`;
+      } else {
+        du.innerHTML = `<a href="/profile.html" class="du-signin">Sign in</a>`;
+      }
     }
   }
 
   updateNavUser();
   window.addEventListener('online', updateNavUser);
   window.addEventListener('offline', updateNavUser);
-  // Re-check after auth changes (poll-friendly)
   document.addEventListener('visibilitychange', () => { if (!document.hidden) updateNavUser(); });
 })();
 

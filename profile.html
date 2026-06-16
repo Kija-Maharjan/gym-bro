@@ -15,18 +15,51 @@
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
-<nav>
-  <a href="index.html" class="nav-logo">Tracker</a>
-  <ul class="nav-links" id="navLinks">
-    <li><a href="index.html">🏋️ <span>Tracker</span></a></li>
-    <li><a href="learning.html">📚 <span>Skills</span></a></li>
-    <li><a href="profile.html" class="active">👤 <span>Profile</span></a></li>
+<nav class="nav" id="nav">
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-icon">T</div>
+    <div class="nav-logo-text">
+      Tracker
+      <em>Calisthenics</em>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Tracker
+    </a></li>
+    <li><a href="learning.html">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Skills
+    </a></li>
+    <li><a href="profile.html" class="active">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile
+    </a></li>
   </ul>
-  <div class="nav-user" id="navUser"></div>
-  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-    <span></span><span></span><span></span>
-  </button>
+  <div class="nav-actions">
+    <div class="nav-user" id="navUser"></div>
+    <button class="nav-burger" id="burger" aria-label="Toggle menu" aria-expanded="false" aria-controls="drawer">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
 </nav>
+
+<div class="nav-drawer" id="drawer" role="dialog" aria-label="Navigation menu">
+  <a href="index.html" class="drawer-link">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Tracker
+  </a>
+  <a href="learning.html" class="drawer-link">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    Skills
+  </a>
+  <a href="profile.html" class="drawer-link active">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Profile
+  </a>
+  <div class="drawer-user" id="drawerUser"></div>
+</div>
 
 <div class="profile-page" id="profilePage">
   <div class="auth-section" id="authSection">
