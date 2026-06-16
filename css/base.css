@@ -289,13 +289,16 @@ body::before {
   overflow-y: auto;
   transform: translateY(-12px);
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.28s ease, transform 0.28s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  will-change: transform, opacity;
   z-index: 99;
 }
 .nav-drawer.open {
   opacity: 1;
   transform: translateY(0);
+  visibility: visible;
   pointer-events: all;
 }
 
