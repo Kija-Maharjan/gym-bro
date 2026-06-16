@@ -246,7 +246,7 @@ function getUserStats() {
     for (let w = 1; w <= 8; w++) {
       const cmts = getLocalComments(w, day.id);
       cmts.forEach(c => {
-        if (c.username === session.username || c.athlete === session.username) {
+        if (c.username === session.username) {
           allComments.push({ ...c, week: w, dayId: day.id, dayName: day.weekday });
         }
       });
@@ -312,7 +312,7 @@ function renderProfile() {
     } else {
       rc.innerHTML = stats.recentComments.slice(0, 10).map(c => {
         const avatar = c.avatar || '💬';
-        const name = c.username || c.athlete || 'Unknown';
+        const name = c.username || 'Unknown';
         return `<div class="comment-item">
           <div class="ci-head">
             <span class="ci-avatar">${avatar}</span>

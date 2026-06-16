@@ -131,7 +131,7 @@ function renderRestCard(d) {
             <div class="ra-note">${a.note}</div>
           </div>`).join('')}
         </div>
-        <div class="rehab-note">🎗️ <strong style="color:var(--b-col)">B — Shoulder rehab is non-negotiable on rest days.</strong> Band pull-aparts take 5 minutes and directly rebuild the rotator cuff. Don't skip it.</div>
+        <div class="rehab-note">🎗️ <strong>Shoulder rehab is non-negotiable on rest days.</strong> Band pull-aparts take 5 minutes and directly rebuild the rotator cuff. Don't skip it.</div>
       </div>
     </div>
   </div>`;
@@ -152,14 +152,12 @@ function renderTrainingCard(d) {
   const cmtHtml = comments.length === 0
     ? '<div class="no-comments">No comments yet — be first</div>'
     : comments.map(c => {
-        const isOld = !!c.athlete;
-        const avatar = c.avatar || (c.athlete === 'A' ? '🏋️' : '💪');
-        const name = c.username || (c.athlete === 'A' ? '71kg — A' : '100kg — B');
-        const cls = isOld ? (c.athlete === 'A' ? 'a' : 'b') : '';
+        const avatar = c.avatar || '💬';
+        const name = c.username || 'Unknown';
         return `<div class="comment-item">
           <div class="ci-header">
             <span class="ci-avatar-sm">${avatar}</span>
-            <span class="ci-who ${cls}">${esc(name)}</span>
+            <span class="ci-who">${esc(name)}</span>
             ${c.ex_name ? `<span class="ci-ex">on: ${esc(c.ex_name)}</span>` : ''}
             <span class="ci-time">${formatTime(c.created_at)}</span>
             <button class="ci-del" onclick="deleteComment('${d.id}',${JSON.stringify(c.id)})">✕</button>
@@ -188,8 +186,6 @@ function renderTrainingCard(d) {
       <div class="ex-wrap">
         <div class="ex-header">
           <span></span><span class="eh-img"></span><span>Exercise + Level</span>
-          <span class="eh-a">71 kg — A</span>
-          <span class="eh-b">100 kg — B</span>
         </div>
         ${exRows}
       </div>
@@ -293,8 +289,6 @@ function renderExRow(day, i, chk) {
   const lv = ex.levels[ps.level];
   const maxLv = ex.levels.length - 1;
   const streak = ps.streak || 0;
-  const pA = ex.type === 's' ? 'pill-s' : 'pill-a';
-  const pB = ex.type === 's' ? 'pill-s' : 'pill-b';
   const badge = `<span class="prog-badge ${ps.level === 0 ? 'lv1' : ps.level === 1 ? 'lv2' : 'lv3'}">${lv.label} · ${streak}/3 streak</span>`;
   const hint  = ps.level < maxLv
     ? `<div class="prog-next">→ Next: ${ex.levels[ps.level + 1].label} — tick 3 weeks to unlock</div>`
@@ -309,13 +303,10 @@ function renderExRow(day, i, chk) {
       <div class="en2">${ex.note}</div>
       ${badge}${hint}
       <div class="ex-pills-mobile">
-        <span class="pill ${pA}">${lv.a}</span>
-        <span class="pill ${pB}">${lv.b}</span>
+        <span class="pill pill-s">${lv.a}</span>
       </div>
       ${fg ? `<div class="fg-wrap"><button class="fg-btn" onclick="toggleGuidance('${day.id}',${i})">Form Tips</button><div class="fg-body" id="fg_${day.id}_${i}">${esc(fg)}</div></div>` : ''}
     </div>
-    <div class="ex-pill-cell"><span class="pill ${pA}">${lv.a}</span></div>
-    <div class="ex-pill-cell"><span class="pill ${pB}">${lv.b}</span></div>
   </div>`;
 }
 
@@ -421,14 +412,12 @@ function deleteComment(dayId, cmtId) {
     list.innerHTML = filtered.length === 0
       ? '<div class="no-comments">No comments yet — be first</div>'
       : filtered.map(c => {
-          const isOld = !!c.athlete;
-          const avatar = c.avatar || (c.athlete === 'A' ? '🏋️' : '💪');
-          const name = c.username || (c.athlete === 'A' ? '71kg — A' : '100kg — B');
-          const cls = isOld ? (c.athlete === 'A' ? 'a' : 'b') : '';
+          const avatar = c.avatar || '💬';
+          const name = c.username || 'Unknown';
           return `<div class="comment-item">
             <div class="ci-header">
               <span class="ci-avatar-sm">${avatar}</span>
-              <span class="ci-who ${cls}">${esc(name)}</span>
+              <span class="ci-who">${esc(name)}</span>
               ${c.ex_name ? `<span class="ci-ex">on: ${esc(c.ex_name)}</span>` : ''}
               <span class="ci-time">${formatTime(c.created_at)}</span>
               <button class="ci-del" onclick="deleteComment('${dayId}',${JSON.stringify(c.id)})">✕</button>

@@ -21,12 +21,6 @@
   --text: #c8c4bc;
   --text-dim: rgba(200,196,188,0.5);
   --text-dimmer: rgba(200,196,188,0.3);
-  --a-col: #b39ddb;
-  --a-bg: rgba(61,46,110,0.18);
-  --a-border: rgba(179,157,219,0.25);
-  --b-col: #80cbc4;
-  --b-bg: rgba(13,59,53,0.18);
-  --b-border: rgba(128,203,196,0.25);
   --done: #81c784;
   --done-bg: rgba(30,80,30,0.22);
   --done-border: rgba(129,199,132,0.25);
@@ -183,8 +177,6 @@ footer {
   max-width: 100%; overflow: hidden; text-overflow: ellipsis;
   border-radius: 4px;
 }
-.pill-a { background: var(--a-bg); color: var(--a-col); border-color: var(--a-border); }
-.pill-b { background: var(--b-bg); color: var(--b-col); border-color: var(--b-border); }
 .pill-s { background: rgba(184,150,12,0.08); color: var(--gold); border-color: var(--gold-border); }
 
 /* ── ANIMATIONS ── */
