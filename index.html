@@ -62,12 +62,19 @@
   <div class="drawer-user" id="drawerUser"></div>
 </div>
 
-<div class="hero">
-  <div class="hero-vertical-line"></div>
-  <div class="hero-tag">Training Tracker 2026</div>
-  <h1 class="hero-title">Calis<em>then</em>ics</h1>
-  <div class="hero-sub">Sun · Mon · Tue · Wed · Thu · Fri &nbsp;·&nbsp; 6 training days &nbsp;·&nbsp; Sat rest</div>
-</div>
+  <div class="hero">
+    <div class="hero-vertical-line"></div>
+    <div class="hero-tag">Training Tracker 2026</div>
+    <h1 class="hero-title" id="heroTitle">Calis<em>then</em>ics</h1>
+    <div class="hero-sub" id="heroSub">Sun · Mon · Tue · Wed · Thu · Fri &nbsp;·&nbsp; 6 training days &nbsp;·&nbsp; Sat rest</div>
+    <div class="plan-switcher">
+      <span class="ps-label">Plan</span>
+      <select class="ps-select" id="planSelect" onchange="onPlanChange(this.value)">
+        <option value="calisthenics">Calisthenics Split</option>
+        <option value="gym">Gym — Upper / Lower</option>
+      </select>
+    </div>
+  </div>
 
 <div class="main-wrap">
   <div class="wn-hd">
@@ -107,12 +114,12 @@
     <div class="rc">
       <div class="rc-icon">📆</div>
       <div class="rc-title">New Schedule</div>
-      <div class="rc-body">Sun Pull · Mon Push · Tue Legs+Core · Wed Shoulders/Cardio<br>Thu Pull (Heavy) · Fri Push/Cardio · Sat REST<br>Week starts Sunday — Nepali calendar<br>Rest days = rehab + light movement only</div>
+      <div class="rc-body" id="rulesSchedule">Sun · Mon · Tue · Wed · Thu · Fri training · Sat rest<br>Week starts Sunday — Nepali calendar<br>Rest days = active recovery + mobility only</div>
     </div>
     <div class="rc">
       <div class="rc-icon">🩺</div>
       <div class="rc-title">Shoulder Rehab Rules</div>
-      <div class="rc-body">NO overhead pressing for 4+ weeks<br>NO dips past 90° elbow bend<br>Band pull-aparts on EVERY rest day<br>Pain = stop. Not push through.</div>
+      <div class="rc-body" id="rulesRehab">Use full range of motion on every rep<br>Control the negative — don't let gravity do the work<br>Pain = stop. Not push through.<br>Form over weight, always.</div>
     </div>
     <div class="rc">
       <div class="rc-icon">🔓</div>

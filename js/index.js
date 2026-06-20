@@ -3,7 +3,10 @@
 
 // ── DATE HELPERS (Nepal: week starts Sunday) ──
 function startDateKey() {
-  return (typeof prefixedKey === 'function' ? prefixedKey('') : '') + 'cbros_start_date';
+  const base = (typeof prefixedKey === 'function' ? prefixedKey('') : '');
+  const planId = (typeof getActivePlanId === 'function' ? getActivePlanId() : 'calisthenics');
+  if (planId === 'calisthenics') return base + 'cbros_start_date';
+  return base + planId + '_cbros_start_date';
 }
 function getProgramStartDate() {
   const stored = localStorage.getItem(startDateKey());
@@ -25,7 +28,10 @@ function getCurrentWeekFromDate() {
   return Math.max(1, Math.min(8, Math.floor((now - start) / 86400000 / 7) + 1));
 }
 function currentWeekKey() {
-  return (typeof prefixedKey === 'function' ? prefixedKey('') : '') + 'cbros_current_week';
+  const base = (typeof prefixedKey === 'function' ? prefixedKey('') : '');
+  const planId = (typeof getActivePlanId === 'function' ? getActivePlanId() : 'calisthenics');
+  if (planId === 'calisthenics') return base + 'cbros_current_week';
+  return base + planId + '_cbros_current_week';
 }
 function getSavedWeek() {
   const raw = localStorage.getItem(currentWeekKey());
@@ -39,13 +45,24 @@ function saveCurrentWeek(w) {
   localStorage.setItem(currentWeekKey(), String(w));
 }
 
-// Day counting: 6 training days per week (Sun-Fri), Sat is rest
+// Day counting: training days per week based on active plan
+function getTrainingDayIds() {
+  const plan = typeof getActivePlan === 'function' ? getActivePlan() : null;
+  const days = plan ? plan.days : DAYS;
+  return days.filter(d => !d.isRest).map(d => d.id);
+}
 function trainingDayIdx(dayId) {
-  return { sun:1, mon:2, tue:3, wed:4, thu:5, fri:6 }[dayId] || 0;
+  const ids = getTrainingDayIds();
+  const idx = ids.indexOf(dayId);
+  return idx >= 0 ? idx + 1 : 0;
+}
+function totalTrainingDays() {
+  return getTrainingDayIds().length;
 }
 function globalDayNum(week, dayId) {
   const i = trainingDayIdx(dayId);
-  return i ? (week - 1) * 6 + i : 0;
+  const perWeek = totalTrainingDays();
+  return i ? (week - 1) * perWeek + i : 0;
 }
 
 let currentWeek = getSavedWeek();
@@ -519,6 +536,72 @@ function refreshCommentUsers() {
   });
 }
 
+// ── PLAN SWITCHER ──
+function onPlanChange(planId) {
+  if (planId === getActivePlanId()) return;
+  if (!confirm('Switch workout plan? Your progress for the current plan will be saved separately.')) {
+    document.getElementById('planSelect').value = getActivePlanId();
+    return;
+  }
+  applyPlan(planId);
+  currentWeek = getSavedWeek();
+  openCards.clear();
+  openWarmups.clear();
+  updateHeroTitle();
+  renderAll();
+  openCards.add(todayDayId);
+  const tc = document.getElementById('daycard_' + todayDayId);
+  if (tc) { tc.classList.add('open'); setTimeout(() => tc.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200); }
+}
+
+function dayTypeSummary(day) {
+  if (day.isRest) return day.type || 'Rest';
+  return day.name || 'Training';
+}
+function updateHeroTitle() {
+  const plan = getActivePlan();
+  const title = document.getElementById('heroTitle');
+  const sub = document.getElementById('heroSub');
+  if (title) {
+    if (plan.id === 'calisthenics') title.innerHTML = 'Calis<em>then</em>ics';
+    else title.innerHTML = 'Gym — <em>Upper / Lower</em>';
+  }
+  if (sub) {
+    const trainingDays = plan.days.filter(d => !d.isRest).length;
+    sub.textContent = `Sun · Mon · Tue · Wed · Thu · Fri · ${trainingDays} training days · Sat rest`;
+  }
+  // Update nav logo text
+  const navEm = document.querySelector('.nav-logo-text em');
+  if (navEm) {
+    navEm.textContent = plan.id === 'calisthenics' ? 'Calisthenics' : 'Gym Split';
+  }
+  // Update rules schedule
+  const rulesEl = document.getElementById('rulesSchedule');
+  if (rulesEl) {
+    const scheduleParts = plan.days.filter(d => !d.isRest).map(d =>
+      d.weekday.slice(0,3) + ' ' + d.type
+    );
+    const restDays = plan.days.filter(d => d.isRest);
+    restDays.forEach(d => scheduleParts.push(d.weekday.slice(0,3) + ' REST'));
+    rulesEl.innerHTML = scheduleParts.join(' · ') + '<br>Week starts Sunday — Nepali calendar<br>Rest days = active recovery + mobility only';
+  }
+  const rehabEl = document.getElementById('rulesRehab');
+  if (rehabEl) {
+    if (plan.id === 'calisthenics') {
+      rehabEl.innerHTML = 'NO overhead pressing for 4+ weeks<br>NO dips past 90° elbow bend<br>Band pull-aparts on EVERY rest day<br>Pain = stop. Not push through.';
+    } else {
+      rehabEl.innerHTML = 'Use full range of motion on every rep<br>Control the negative — don\'t let gravity do the work<br>Pain = stop. Not push through.<br>Form over weight, always.';
+    }
+  }
+}
+
+// Set plan selector to saved value on load
+(function initPlanSelector() {
+  const sel = document.getElementById('planSelect');
+  if (sel) sel.value = getActivePlanId();
+  updateHeroTitle();
+})();
+
 // ── INIT ──
 renderAll();
 
@@ -538,7 +621,8 @@ if (todayCard) {
   const dateStr = typeof getNepaliDateShort === 'function' ? getNepaliDateShort(today) : today.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
   const realWeek = getCurrentWeekFromDate();
   const dayNum = globalDayNum(realWeek, todayDayId);
-  const dayLabel = dayNum ? `Day ${dayNum} of 48 · Wk ${realWeek}` : `Rest Day · Wk ${realWeek}`;
+  const total = totalTrainingDays() * 8;
+  const dayLabel = dayNum ? `Day ${dayNum} of ${total} · Wk ${realWeek}` : `Rest Day · Wk ${realWeek}`;
   label.innerHTML = `✦ <span>${dateStr}</span> · <span>${dayLabel}</span>`;
   const wn = document.querySelector('.wn-hd');
   if (wn) wn.appendChild(label);

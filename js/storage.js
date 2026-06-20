@@ -11,9 +11,15 @@ function prefixedKey(base) {
   return getStoragePrefix() + base;
 }
 
-// Key format: cbros_{type}_w{week}_{dayId}
+// Key format: {planId}_cbros_{type}_w{week}_{dayId}
+// 'calisthenics' plan keeps old key format for backward compat
+function planPrefix() {
+  return (typeof getActivePlanId === 'function' ? getActivePlanId() : 'calisthenics');
+}
 function lsKey(week, id, type) {
-  return prefixedKey(`cbros_${type}_w${week}_${id}`);
+  const p = planPrefix();
+  if (p === 'calisthenics') return prefixedKey(`cbros_${type}_w${week}_${id}`);
+  return prefixedKey(`${p}_cbros_${type}_w${week}_${id}`);
 }
 
 function saveLocalCb(week, id, checks) {
@@ -63,9 +69,11 @@ function getLocalComments(week, id) {
 
 // ── PROGRESSION STATE ──
 // Tracks streak (consecutive weeks completed) and current level per exercise
-// Key: cbros_prog_{dayId}_{exIdx}
+// Key: {planId}_cbros_prog_{dayId}_{exIdx}
 function progKey(dayId, exIdx) {
-  return prefixedKey(`cbros_prog_${dayId}_${exIdx}`);
+  const p = planPrefix();
+  if (p === 'calisthenics') return prefixedKey(`cbros_prog_${dayId}_${exIdx}`);
+  return prefixedKey(`${p}_cbros_prog_${dayId}_${exIdx}`);
 }
 function getProgState(dayId, exIdx) {
   const raw = localStorage.getItem(progKey(dayId, exIdx));
